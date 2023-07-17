@@ -12,3 +12,9 @@
 - Jira 스토리 이슈 생성
 - TIL : JPA
 ---
+### 이용현
+- Git branch naming convention
+- ERD Diagram 생성
+- ERD Diagram export
+- TIL : AWS배포 관련
+---
