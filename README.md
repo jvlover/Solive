@@ -18,3 +18,8 @@
 - ERD Diagram export
 - TIL : AWS배포 관련
 ---
+### 최주호
+- Git branch naming convention
+- ERD Diagram 생성
+- ERD Diagram export
+- 회원탈퇴 목업 생성
