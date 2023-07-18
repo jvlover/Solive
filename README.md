@@ -30,6 +30,7 @@
 ---
 
 ### 최주호
+
 - Git branch naming convention
 - ERD Diagram 생성
 - ERD Diagram export
@@ -92,3 +93,14 @@
 - 컨설턴트님 피드백 회의
 - ERD 설계 수정 회의
 - 명세서 수정 회의
+
+---
+
+### 박민혁
+
+- Frontend 코딩 컨벤션
+- 컨설턴트님 피드백 회의
+- ERD 설계 수정 회의
+- 명세서 수정 회의
+
+---
