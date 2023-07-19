@@ -125,3 +125,13 @@
 - WebRTC 조사
 - 개발 환경 세팅
 - React 스터디
+
+---
+
+### 박민혁
+
+- ERD 설계 확정
+- Recoil, Tailwind CSS 조사
+- JPA, React 스터디
+
+---
