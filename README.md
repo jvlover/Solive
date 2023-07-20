@@ -151,3 +151,11 @@
 
 - Backend log 컨벤션 회의
 - CommonResponse Class 작성
+
+---
+
+### 이용현
+- Backend log 컨벤션 회의
+- JWT 관련 조사
+
+---
