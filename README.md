@@ -139,3 +139,15 @@
 - Spring Data JPA 스터디
 
 ---
+
+### 정선재
+
+- react 특강 강의 시청
+- 팀워크 성장 수업 시청
+
+---
+
+### 노성호
+
+- Backend log 컨벤션 회의
+- CommonResponse Class 작성
