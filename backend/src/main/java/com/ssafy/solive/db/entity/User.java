@@ -12,9 +12,10 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 public class User extends BaseEntity {
+
     private String loginId;
     private String loginPassword;
-    private String name;
+    private String nickname;
     private String email;
     private String pictureUrl;
     private String pictureName;
