@@ -25,4 +25,9 @@ public class UserServiceImpl implements UserService {
         user.setExperience(0L);
         return userRepository.save(user);
     }
+
+    @Override
+    public User getUserByUserId(String userLoginId) {
+        return userRepository.findByLoginId(userLoginId);
+    }
 }
