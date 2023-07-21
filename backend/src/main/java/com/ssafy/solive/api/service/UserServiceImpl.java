@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
         User user = registInfo.toDto();
         user.setDeleted(false);
         user.setSigninTime(LocalDateTime.now());
+        user.setExperience(0L);
         return userRepository.save(user);
     }
 }

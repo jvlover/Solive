@@ -12,6 +12,7 @@ import lombok.ToString;
 @ToString
 @MappedSuperclass
 public class BaseEntity {
+
     @Id
     @GeneratedValue
     private Long id;
