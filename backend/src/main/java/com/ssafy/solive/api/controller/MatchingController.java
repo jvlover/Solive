@@ -2,8 +2,8 @@ package com.ssafy.solive.api.controller;
 
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.service.QuestionService;
+import com.ssafy.solive.common.exception.ImageNotFoundException;
 import com.ssafy.solive.common.model.CommonResponse;
-import com.ssafy.solive.db.entity.Question;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,7 +27,11 @@ public class MatchingController {
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> inputQuestion(@RequestPart QuestionRegistPostReq questionRegistPostReq,
         @RequestPart("files") List<MultipartFile> files) {
-        Question question = questionService.inputQuestion(questionRegistPostReq, files);
-        return CommonResponse.success("success");
+        if (files.get(0).getSize() == 0) {
+            throw new ImageNotFoundException();
+        } else {
+            questionService.inputQuestion(questionRegistPostReq, files);
+            return CommonResponse.success("success");
+        }
     }
 }

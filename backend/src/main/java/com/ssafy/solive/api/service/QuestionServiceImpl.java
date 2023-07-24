@@ -1,7 +1,6 @@
 package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
-import com.ssafy.solive.common.exception.ImageNotFoundException;
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.db.entity.Question;
 import com.ssafy.solive.db.entity.QuestionPicture;
@@ -32,9 +31,6 @@ public class QuestionServiceImpl implements QuestionService {
     public Question inputQuestion(QuestionRegistPostReq questionRegistPostReq,
         List<MultipartFile> files) {
         Question question = questionRepository.save(questionRegistPostReq.toQuestion());
-        if (files == null || files.isEmpty()) {
-            throw new ImageNotFoundException();
-        }
         String uploadFilePath = "C:/solive/image/";
         for (MultipartFile file : files) {
             String prefix = file.getOriginalFilename()
