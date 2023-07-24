@@ -26,7 +26,7 @@ function Signup(): JSX.Element {
         </div>
         <div
           className="mx-auto w-96 h-96 flex flex-col items-center justify-start bg-white border-2 border-black text-center rounded-lg cursor-pointer"
-          onClick={() => navigate('/signup/TeacherSingup')}
+          onClick={() => navigate('/signup/TeacherSignup')}
         >
           <img src={TeacherImg} className="w-3/5 mt-8" alt="Logo" />
           <p className="text-2xl mt-auto mb-8">선생님으로 회원가입</p>
