@@ -18,15 +18,15 @@ public class UserRegistPostReq {
     int gender;
 
     public User toDto() {
-        User user = new User();
-        user.setLoginId(loginId);
-        user.setLoginPassword(loginPassword);
-        user.setNickname(nickname);
-        user.setEmail(email);
-        user.setPictureUrl(pictureUrl);
-        user.setPictureName(pictureName);
-        user.setIntroduce(introduce);
-        user.setGender(gender);
-        return user;
+        return User.builder()
+            .loginId(loginId)
+            .loginPassword(loginPassword)
+            .nickname(nickname)
+            .email(email)
+            .pictureUrl(pictureUrl)
+            .pictureName(pictureName)
+            .introduce(introduce)
+            .gender(gender)
+            .build();
     }
 }

@@ -1,14 +1,18 @@
 package com.ssafy.solive.db.entity;
 
 import jakarta.persistence.Entity;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
-
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @ToString
 @Entity
 public class User extends BaseEntity {
@@ -24,4 +28,10 @@ public class User extends BaseEntity {
     private LocalDateTime signinTime;
     private int gender;
     private boolean isDeleted;
+
+    public void init() {
+        this.isDeleted = false;
+        this.signinTime = LocalDateTime.now();
+        this.experience = 0L;
+    }
 }
