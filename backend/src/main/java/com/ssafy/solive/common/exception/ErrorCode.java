@@ -24,7 +24,9 @@ public enum ErrorCode {
     /**
      * 서버 에러 (서버 장애 상황)
      */
-    COMMON_SYSTEM_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "시스템 오류입니다. 잠시 후 다시 이용해주세요.");
+    COMMON_SYSTEM_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "시스템 오류입니다. 잠시 후 다시 이용해주세요."),
+
+    FILE_IO_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 입출력 오류입니다.");
     private final HttpStatus httpStatus;
     private final String message;
 
