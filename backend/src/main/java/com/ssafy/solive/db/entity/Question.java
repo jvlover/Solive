@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 @Getter
 @ToString
@@ -16,13 +17,14 @@ import org.hibernate.annotations.DynamicInsert;
 @AllArgsConstructor
 @Builder
 @DynamicInsert
+@Where(clause = "deleted_at is null")
 @Entity
 public class Question extends BaseEntity {
 
-    // 관련 엔티티 구현하면 차후 수정 필요, FK
+    // TODO: 관련 엔티티 구현하면 차후 수정 필요, FK
     private Integer studentId;
 
-    // 관련 엔티티 구현하면 차후 수정 필요, FK
+    // TODO: 관련 엔티티 구현하면 차후 수정 필요, FK
     private Integer masterCodeId;
 
     @Column(columnDefinition = "VARCHAR(255)")
@@ -33,4 +35,11 @@ public class Question extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
     private Boolean isMatched;
+
+    @Column
+    private LocalDateTime deletedAt;
+
+    public void deleteQuestion() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }
