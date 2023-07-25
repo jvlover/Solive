@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Getter
 @ToString
@@ -20,6 +22,8 @@ import org.hibernate.annotations.DynamicInsert;
 @AllArgsConstructor
 @Builder
 @DynamicInsert
+@SQLDelete(sql = "UPDATE article_picture SET deleted_at = now() WHERE id = ?")
+@Where(clause = "deleted_at is null")
 @Entity
 public class ArticlePicture extends BaseEntity {
 
@@ -47,4 +51,11 @@ public class ArticlePicture extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime time; // 업로드 시간
+
+    @Column
+    private LocalDateTime deletedAt;
+
+    public void deleteArticlePicture() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

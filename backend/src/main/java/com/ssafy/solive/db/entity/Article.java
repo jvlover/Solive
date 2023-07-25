@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 @Getter
 @ToString
@@ -20,6 +21,7 @@ import org.hibernate.annotations.DynamicInsert;
 @AllArgsConstructor
 @Builder
 @DynamicInsert
+@Where(clause = "deleted_at is null")
 @Entity
 public class Article extends BaseEntity {
 
@@ -46,9 +48,22 @@ public class Article extends BaseEntity {
     @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
     private Boolean isReported;
 
+    @Column
+    private LocalDateTime deletedAt;
+
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime time;
 
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime lastUpdateTime;
+
+    public void modifyArticle(String title, String content) {
+        this.title = title;
+        this.content = content;
+        this.lastUpdateTime = LocalDateTime.now();
+    }
+
+    public void deleteArticle() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

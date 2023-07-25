@@ -5,9 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ArticleRegistPostReq {
+public class ArticleModifyPutReq {
 
-    private Long userId;
+    private Long loginUserId;
+    private Long articleId;
     private String title;
     private String content;
 }
