@@ -40,6 +40,7 @@ public class QuestionServiceImpl implements QuestionService {
         // TODO: Studnt Entity 구현 후, Req의 StudentId 에 대해 Illegal Arg 확인 필요
         Question question = questionRepository.save(registInfo.toQuestion());
         // TODO: JpaRepository의 save에서 Exception이 발생할 경우 어떻게 처리할 지 조사할 필요
+        // TODO: 파일 업로드 관련 추가한 컬럼들 차후 상황에 따라 재고 필요
         String uploadFilePath = "C:/solive/image/";
         for (MultipartFile file : files) {
             String prefix = file.getOriginalFilename()
