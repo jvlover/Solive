@@ -7,7 +7,7 @@ import com.ssafy.solive.db.entity.Question;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface QuestionService {
+public interface MatchingService {
 
     Question registQuestion(QuestionRegistPostReq registInfo,
         List<MultipartFile> files);

@@ -20,13 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
-public class QuestionServiceImpl implements QuestionService {
+public class MatchingServiceImpl implements MatchingService {
 
     QuestionRepository questionRepository;
     QuestionPictureRepository questionPictureRepository;
 
     @Autowired
-    public QuestionServiceImpl(QuestionRepository questionRepository,
+    public MatchingServiceImpl(QuestionRepository questionRepository,
         QuestionPictureRepository questionPictureRepository) {
         this.questionRepository = questionRepository;
         this.questionPictureRepository = questionPictureRepository;
