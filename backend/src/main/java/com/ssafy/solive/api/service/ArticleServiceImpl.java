@@ -1,19 +1,27 @@
 package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.ArticleDeletePutReq;
+import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.common.exception.FileUploadException;
 import com.ssafy.solive.db.entity.Article;
+import com.ssafy.solive.db.entity.ArticleLike;
+import com.ssafy.solive.db.entity.ArticleLikeId;
 import com.ssafy.solive.db.entity.ArticlePicture;
 import com.ssafy.solive.db.entity.User;
+import com.ssafy.solive.db.repository.ArticleLikeRepsitory;
 import com.ssafy.solive.db.repository.ArticlePictureRepository;
 import com.ssafy.solive.db.repository.ArticleRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,13 +35,16 @@ public class ArticleServiceImpl implements ArticleService {
     UserRepository userRepository;
     ArticleRepository articleRepository;
     ArticlePictureRepository articlePictureRepository;
+    ArticleLikeRepsitory articleLikeRepsitory;
 
     @Autowired
     public ArticleServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
-        ArticlePictureRepository articlePictureRepository) {
+        ArticlePictureRepository articlePictureRepository,
+        ArticleLikeRepsitory articleLikeRepsitory) {
         this.userRepository = userRepository;
         this.articleRepository = articleRepository;
         this.articlePictureRepository = articlePictureRepository;
+        this.articleLikeRepsitory = articleLikeRepsitory;
     }
 
     @Override
@@ -117,7 +128,16 @@ public class ArticleServiceImpl implements ArticleService {
 
             // 게시글 기존 사진 전부 삭제
             List<ArticlePicture> articlePictures = articlePictureRepository.findByArticle(article);
-            articlePictureRepository.deleteAll(articlePictures);
+            // 실제 사진 삭제 및 DB에서도 삭제
+            for (ArticlePicture articlePicture : articlePictures) {
+                try {
+                    Path deleteFilePath = Paths.get(articlePicture.getPathName());
+                    Files.deleteIfExists(deleteFilePath);
+                    articlePictureRepository.delete(articlePicture);
+                } catch (IOException e) {
+                    throw new FileUploadException();
+                }
+            }
 
             // 게시글 사진 다시 업로드
             String uploadFilePath = "C:/solive/image/";
@@ -185,6 +205,35 @@ public class ArticleServiceImpl implements ArticleService {
             for (ArticlePicture articlePicture : articlePictures) {
                 articlePicture.deleteArticlePicture();
             }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean likeArticle(ArticleLikePostReq likeInfo) {
+        ArticleLikeId articleLikeId = ArticleLikeId.builder()
+            .user(likeInfo.getUserId())
+            .article(likeInfo.getArticleId())
+            .build();
+
+        Optional<ArticleLike> optionalArticleLike = articleLikeRepsitory.findById(articleLikeId);
+
+        if (optionalArticleLike.isEmpty()) {
+            User user = userRepository.findById(likeInfo.getUserId())
+                .orElseThrow(IllegalArgumentException::new);
+            Article article = articleRepository.findById(likeInfo.getArticleId())
+                .orElseThrow(IllegalArgumentException::new);
+
+            ArticleLike articleLike = ArticleLike.builder()
+                .user(user)
+                .article(article)
+                .build();
+
+            articleLikeRepsitory.save(articleLike);
+
+            article.likeArticle();
+            
             return true;
         }
         return false;

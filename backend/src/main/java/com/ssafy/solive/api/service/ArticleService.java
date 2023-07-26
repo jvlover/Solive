@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.ArticleDeletePutReq;
+import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.db.entity.Article;
@@ -13,4 +14,6 @@ public interface ArticleService {
     boolean deleteArticle(ArticleDeletePutReq deleteInfo);
 
     boolean modifyArticle(ArticleModifyPutReq modifyInfo, MultipartFile[] files);
+
+    boolean likeArticle(ArticleLikePostReq likeInfo);
 }

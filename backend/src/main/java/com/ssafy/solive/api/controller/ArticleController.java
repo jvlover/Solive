@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.controller;
 
 import com.ssafy.solive.api.request.ArticleDeletePutReq;
+import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.service.ArticleService;
@@ -34,6 +35,17 @@ public class ArticleController {
         Article article = articleService.registArticle(registInfo, files);
 
         if (article != null) {
+            return CommonResponse.success("success");
+        } else {
+            return CommonResponse.fail(ErrorCode.COMMON_SYSTEM_ERROR.getMessage(), "fail");
+        }
+    }
+
+    @PostMapping("/like")
+    public CommonResponse<?> like(@RequestBody ArticleLikePostReq likeInfo) {
+        boolean isLiked = articleService.likeArticle(likeInfo);
+
+        if (isLiked) {
             return CommonResponse.success("success");
         } else {
             return CommonResponse.fail(ErrorCode.COMMON_SYSTEM_ERROR.getMessage(), "fail");

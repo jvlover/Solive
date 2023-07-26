@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Getter
@@ -22,7 +21,6 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @Builder
 @DynamicInsert
-@SQLDelete(sql = "UPDATE article_picture SET deleted_at = now() WHERE id = ?")
 @Where(clause = "deleted_at is null")
 @Entity
 public class ArticlePicture extends BaseEntity {

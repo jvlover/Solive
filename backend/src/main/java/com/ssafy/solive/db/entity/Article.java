@@ -66,4 +66,8 @@ public class Article extends BaseEntity {
     public void deleteArticle() {
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void likeArticle() {
+        this.likeCount++;
+    }
 }
