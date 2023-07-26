@@ -4,8 +4,7 @@ import com.ssafy.solive.api.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.service.MatchingService;
-import com.ssafy.solive.common.exception.QuestionDeleteFailException;
-import com.ssafy.solive.common.exception.QuestionModifyFailException;
+import com.ssafy.solive.common.exception.QuestionPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,7 @@ public class MatchingController {
         if (isDeleted) {
             return CommonResponse.success(SUCCESS);
         } else {
-            throw new QuestionDeleteFailException();
+            throw new QuestionPossessionFailException();
         }
     }
 
@@ -59,7 +58,7 @@ public class MatchingController {
         if (isModified) {
             return CommonResponse.success(SUCCESS);
         } else {
-            throw new QuestionModifyFailException();
+            throw new QuestionPossessionFailException();
         }
     }
 }
