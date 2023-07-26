@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
+import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.db.entity.Question;
 import java.util.List;
@@ -12,4 +13,6 @@ public interface QuestionService {
         List<MultipartFile> files);
 
     boolean deleteQuestion(QuestionDeletePutReq deleteInfo);
+
+    boolean modifyQuestion(QuestionModifyPutReq modifyInfo);
 }

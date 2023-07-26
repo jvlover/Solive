@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
+import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.NoImageException;
@@ -78,8 +79,18 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(deleteInfo.getQuestionId())
             .orElseThrow(IllegalArgumentException::new);
         // TODO: IllegalArg Exception 을 적절한 Custom Exception으로 대체
-        // TODO: Student Entity 만들어지면 인가 과정 작성 필요
+        // TODO: Student Entity 만들어지면 인가 과정 작성 필요 -> 실패시 return false
         question.deleteQuestion();
+        return true;
+    }
+
+    @Override
+    public boolean modifyQuestion(QuestionModifyPutReq modifyInfo) {
+        Question question = questionRepository.findById(modifyInfo.getQuestionId())
+            .orElseThrow(IllegalArgumentException::new);
+        // TODO: IllegalArg Exception 을 적절한 Custom Exception으로 대체
+        // TODO: Student Entity 구현 완료 후 수정이 가능한 사용자인지 인가 과정 필요 -> 실패시 return false
+        question.modifyQuestion(question);
         return true;
     }
 }

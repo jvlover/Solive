@@ -33,6 +33,9 @@ public class Question extends BaseEntity {
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime time;
 
+    @Column(columnDefinition = "DATETIME DEFAULT NOW()")
+    private LocalDateTime lastUpdateTime;
+
     @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
     private Boolean isMatched;
 
@@ -41,5 +44,11 @@ public class Question extends BaseEntity {
 
     public void deleteQuestion() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void modifyQuestion(Question question) {
+        this.masterCodeId = question.getMasterCodeId();
+        this.description = question.getDescription();
+        this.lastUpdateTime = LocalDateTime.now();
     }
 }
