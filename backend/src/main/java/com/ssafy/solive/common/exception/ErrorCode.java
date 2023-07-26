@@ -20,6 +20,8 @@ public enum ErrorCode {
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "중복된 이메일 입니다."),
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임 입니다."),
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+    NO_IMAGE(HttpStatus.BAD_REQUEST, "요청에 이미지가 없습니다."),
+    IMAGE_UPLOAD_FAIL(HttpStatus.BAD_REQUEST, "이미지 업로드를 실패했습니다."),
 
     /**
      * 서버 에러 (서버 장애 상황)
