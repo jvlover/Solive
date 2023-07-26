@@ -23,7 +23,7 @@ import org.hibernate.annotations.DynamicInsert;
 public class QuestionPicture extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "questino_id")
+    @JoinColumn(name = "question_id")
     private Question question;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255)")

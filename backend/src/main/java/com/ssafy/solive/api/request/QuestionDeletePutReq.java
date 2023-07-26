@@ -7,5 +7,5 @@ public class QuestionDeletePutReq {
 
     Long questionId;
 
-    int studentId;
+    Long studentId;
 }

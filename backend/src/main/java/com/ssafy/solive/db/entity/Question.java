@@ -2,6 +2,9 @@ package com.ssafy.solive.db.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,11 +24,16 @@ import org.hibernate.annotations.Where;
 @Entity
 public class Question extends BaseEntity {
 
-    // TODO: 관련 엔티티 구현하면 차후 수정 필요, FK
-    private Integer studentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private User user;
 
-    // TODO: 관련 엔티티 구현하면 차후 수정 필요, FK
-    private Integer masterCodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "master_code_id")
+    private MasterCode masterCode;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(40)")
+    private String title;
 
     @Column(columnDefinition = "VARCHAR(255)")
     private String description;
@@ -46,9 +54,10 @@ public class Question extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void modifyQuestion(Question question) {
-        this.masterCodeId = question.getMasterCodeId();
-        this.description = question.getDescription();
+    public void modifyQuestion(MasterCode masterCode, String title, String description) {
+        this.masterCode = masterCode;
+        this.title = title;
+        this.description = description;
         this.lastUpdateTime = LocalDateTime.now();
     }
 }
