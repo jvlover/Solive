@@ -42,9 +42,7 @@ public final class CommonResponse<T> {
         return new CommonResponse<>(true, data, null);
     }
 
-
-    // 이 fail 함수를 사용할 일이 나중에 있을지 없을지 모르겠음.
-    // 일단 지금 BaseException, ControllerAdvice 대로면 쓸 일이 없을지도 모름
+    // API 요청 실패 시 fail 함수에 ErrorCode를 직접 넣을 수 있습니다.
     public static <T> CommonResponse<T> fail(ErrorCode errorCode) {
         return new CommonResponse<T>(
             false, null, new Error(errorCode.name(), errorCode.getMessage())
