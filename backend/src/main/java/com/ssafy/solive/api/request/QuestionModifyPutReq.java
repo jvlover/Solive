@@ -1,8 +1,8 @@
 package com.ssafy.solive.api.request;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class QuestionModifyPutReq {
 
     Long questionId;

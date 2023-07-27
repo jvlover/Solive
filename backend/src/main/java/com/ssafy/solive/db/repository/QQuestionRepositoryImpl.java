@@ -14,8 +14,10 @@ import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+@Slf4j
 @Repository
 public class QQuestionRepositoryImpl implements QQuestionRepository {
 
@@ -29,13 +31,20 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     public List<QuestionFindConditionRes> findByCondition(
         QuestionFindConditionGetReq findCondition) {
 
+        log.info("QuestionRepository, findByCondition: " + findCondition.toString());
         int code = 1000 + findCondition.getMasterCodeMiddle() + findCondition.getMasterCodeLow();
+//        String createTime = question.time.toString();
         return queryFactory
-            .select(Projections.constructor(QuestionFindConditionRes.class, user.nickname,
-                questionPicture.pathName, question.title, question.time))
+            .select(Projections.constructor(QuestionFindConditionRes.class,
+                user.nickname.as("userNickname"),
+                questionPicture.pathName.as("imagePathName"),
+                question.title.as("title"),
+                question.time.as("createTime")))
             .from(question)
-            .leftJoin(question.user, user)
-            .leftJoin(questionPicture, questionPicture)
+            .leftJoin(question.user, user).on(user.id.eq(question.user.id))
+            .leftJoin(questionPicture)
+            .on(questionPicture.question.id.eq(question.id))
+            .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()))
             .orderBy(timeSort(findCondition.getSort()))
             .fetch();
@@ -54,7 +63,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     }
 
     private BooleanExpression keywordSearch(String keyword) {
-        return keyword.isEmpty() ? null : question.title.contains(keyword);
+        return keyword == null ? null : question.title.contains(keyword);
     }
 
     private OrderSpecifier<LocalDateTime> timeSort(String sort) {

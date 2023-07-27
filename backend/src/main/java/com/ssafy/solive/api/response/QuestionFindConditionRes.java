@@ -1,8 +1,9 @@
 package com.ssafy.solive.api.response;
 
-import lombok.Getter;
+import java.time.LocalDateTime;
+import lombok.Data;
 
-@Getter
+@Data
 public class QuestionFindConditionRes {
 
     String userNickname;
@@ -11,17 +12,17 @@ public class QuestionFindConditionRes {
 
     String title;
 
-    String time;
+    String createTime;
 
     public QuestionFindConditionRes() {
 
     }
 
     public QuestionFindConditionRes(String userNickname, String imagePathName, String title,
-        String time) {
+        LocalDateTime createTime) {
         this.userNickname = userNickname;
         this.imagePathName = imagePathName;
         this.title = title;
-        this.time = time;
+        this.createTime = createTime.toString();
     }
 }

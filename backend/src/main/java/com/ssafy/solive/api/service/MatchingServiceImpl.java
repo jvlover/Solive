@@ -19,11 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Transactional
 @Service
 public class MatchingServiceImpl implements MatchingService {
@@ -132,6 +134,7 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     public List<QuestionFindConditionRes> findByCondition(
         QuestionFindConditionGetReq findCondition) {
+        log.info("MatchingService, findByCondition: " + findCondition.toString());
         return questionRepository.findByCondition(findCondition);
     }
 }

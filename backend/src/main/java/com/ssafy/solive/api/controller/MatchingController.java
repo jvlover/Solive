@@ -9,6 +9,7 @@ import com.ssafy.solive.api.service.MatchingService;
 import com.ssafy.solive.common.exception.QuestionPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequestMapping("/matching")
 public class MatchingController {
@@ -67,8 +68,8 @@ public class MatchingController {
     }
 
     @GetMapping()
-    public CommonResponse<?> findByCondition(
-        @RequestParam QuestionFindConditionGetReq findCondition) {
+    public CommonResponse<?> findByCondition(QuestionFindConditionGetReq findCondition) {
+        log.info("MatchingController, findByCondition: " + findCondition.toString());
         List<QuestionFindConditionRes> findResList = matchingService.findByCondition(findCondition);
         return CommonResponse.success(findResList);
     }
