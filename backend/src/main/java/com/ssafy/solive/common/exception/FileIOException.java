@@ -1,8 +1,8 @@
 package com.ssafy.solive.common.exception;
 
-public class FileUploadException extends BaseException {
+public class FileIOException extends BaseException {
 
-    public FileUploadException() {
+    public FileIOException() {
         super(ErrorCode.FILE_IO_ERROR);
     }
 }

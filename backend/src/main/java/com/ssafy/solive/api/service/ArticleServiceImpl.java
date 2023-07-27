@@ -4,7 +4,7 @@ import com.ssafy.solive.api.request.ArticleDeletePutReq;
 import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
-import com.ssafy.solive.common.exception.FileUploadException;
+import com.ssafy.solive.common.exception.FileIOException;
 import com.ssafy.solive.db.entity.Article;
 import com.ssafy.solive.db.entity.ArticleLike;
 import com.ssafy.solive.db.entity.ArticleLikeId;
@@ -114,7 +114,7 @@ public class ArticleServiceImpl implements ArticleService {
                     articlePictureRepository.save(articlePicture);
 
                 } catch (IOException e) {
-                    throw new FileUploadException();
+                    throw new FileIOException();
                 }
             }
         }
@@ -145,7 +145,7 @@ public class ArticleServiceImpl implements ArticleService {
                     Files.deleteIfExists(deleteFilePath);
                     articlePictureRepository.delete(articlePicture);
                 } catch (IOException e) {
-                    throw new FileUploadException();
+                    throw new FileIOException();
                 }
             }
 
@@ -191,7 +191,7 @@ public class ArticleServiceImpl implements ArticleService {
                         articlePictureRepository.save(articlePicture);
 
                     } catch (IOException e) {
-                        throw new FileUploadException();
+                        throw new FileIOException();
                     }
                 }
             }
