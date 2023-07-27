@@ -5,6 +5,8 @@ import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.request.ArticleReportPostReq;
+import com.ssafy.solive.api.response.ArticleFindAllRes;
+import com.ssafy.solive.api.response.ArticleFindRes;
 import com.ssafy.solive.common.exception.FileIOException;
 import com.ssafy.solive.db.entity.Article;
 import com.ssafy.solive.db.entity.ArticleLike;
@@ -30,6 +32,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -299,5 +303,38 @@ public class ArticleServiceImpl implements ArticleService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public ArticleFindRes findArticle(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+            .orElseThrow(IllegalArgumentException::new);
+        List<String> articlePicturePathNames = articlePictureRepository.findPathNameByArticle(
+            articleId);
+        return ArticleFindRes.builder()
+            .masterCodeId(article.getMasterCode().getId())
+            .userId(article.getUser().getId())
+            .title(article.getTitle())
+            .content(article.getContent())
+            .viewCount(article.getViewCount())
+            .likeCount(article.getLikeCount())
+            .reportCount(article.getReportCount())
+            .time(article.getTime().toString())
+            .lastUpdateTime(article.getLastUpdateTime().toString())
+            .articlePicturePathNames(articlePicturePathNames)
+            .build();
+    }
+
+    @Override
+    public Page<ArticleFindAllRes> findAllArticle(String keyword, Pageable pageable) {
+        return articleRepository.findByTitleContaining(keyword, pageable)
+            .map(m -> ArticleFindAllRes.builder()
+                .userId(m.getUser().getId())
+                .title(m.getTitle())
+                .viewCount(m.getViewCount())
+                .likeCount(m.getLikeCount())
+                .time(m.getTime().toString())
+                .hasPicture(articlePictureRepository.existsByArticle(m))
+                .build());
     }
 }
