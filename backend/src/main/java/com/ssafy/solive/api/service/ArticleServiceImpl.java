@@ -9,10 +9,12 @@ import com.ssafy.solive.db.entity.Article;
 import com.ssafy.solive.db.entity.ArticleLike;
 import com.ssafy.solive.db.entity.ArticleLikeId;
 import com.ssafy.solive.db.entity.ArticlePicture;
+import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.ArticleLikeRepsitory;
 import com.ssafy.solive.db.repository.ArticlePictureRepository;
 import com.ssafy.solive.db.repository.ArticleRepository;
+import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 import java.io.File;
 import java.io.IOException;
@@ -33,15 +35,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class ArticleServiceImpl implements ArticleService {
 
     UserRepository userRepository;
+    MasterCodeRepository masterCodeRepository;
     ArticleRepository articleRepository;
     ArticlePictureRepository articlePictureRepository;
     ArticleLikeRepsitory articleLikeRepsitory;
 
     @Autowired
-    public ArticleServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
-        ArticlePictureRepository articlePictureRepository,
+    public ArticleServiceImpl(UserRepository userRepository,
+        MasterCodeRepository masterCodeRepository,
+        ArticleRepository articleRepository, ArticlePictureRepository articlePictureRepository,
         ArticleLikeRepsitory articleLikeRepsitory) {
         this.userRepository = userRepository;
+        this.masterCodeRepository = masterCodeRepository;
         this.articleRepository = articleRepository;
         this.articlePictureRepository = articlePictureRepository;
         this.articleLikeRepsitory = articleLikeRepsitory;
@@ -53,11 +58,14 @@ public class ArticleServiceImpl implements ArticleService {
         // TODO: IllegalArgumentExeption 말고 custom exception 만들기
         User user = userRepository.findById(registInfo.getUserId())
             .orElseThrow(IllegalArgumentException::new);
+        MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId())
+            .orElseThrow(IllegalArgumentException::new);
         String title = registInfo.getTitle();
         String content = registInfo.getContent();
 
         Article article = Article.builder()
             .user(user)
+            .masterCode(masterCode)
             .title(title)
             .content(content)
             .build();
@@ -119,12 +127,14 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleRepository.findById(modifyInfo.getArticleId())
             .orElseThrow(IllegalArgumentException::new);
         // 현재 로그인 유저의 id와 글쓴이의 id가 일치할 때
-        if (article.getUser().getId().equals(modifyInfo.getLoginUserId())) {
+        if (article.getUser().getId().equals(modifyInfo.getUserId())) {
 
             // 게시글 수정
+            MasterCode masterCode = masterCodeRepository.findById(modifyInfo.getMasterCodeId())
+                .orElseThrow(IllegalArgumentException::new);
             String title = modifyInfo.getTitle();
             String content = modifyInfo.getContent();
-            article.modifyArticle(title, content);
+            article.modifyArticle(masterCode, title, content);
 
             // 게시글 기존 사진 전부 삭제
             List<ArticlePicture> articlePictures = articlePictureRepository.findByArticle(article);
@@ -233,7 +243,7 @@ public class ArticleServiceImpl implements ArticleService {
             articleLikeRepsitory.save(articleLike);
 
             article.likeArticle();
-            
+
             return true;
         }
         return false;

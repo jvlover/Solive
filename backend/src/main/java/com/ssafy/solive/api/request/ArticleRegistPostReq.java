@@ -8,6 +8,7 @@ import lombok.Setter;
 public class ArticleRegistPostReq {
 
     private Long userId;
+    private Integer masterCodeId;
     private String title;
     private String content;
 }

@@ -7,8 +7,9 @@ import lombok.Setter;
 @Setter
 public class ArticleModifyPutReq {
 
-    private Long loginUserId;
+    private Long userId;
     private Long articleId;
+    private Integer masterCodeId;
     private String title;
     private String content;
 }

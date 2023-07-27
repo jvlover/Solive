@@ -25,9 +25,9 @@ import org.hibernate.annotations.Where;
 @Entity
 public class Article extends BaseEntity {
 
-    // TODO: master code relation
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private Integer masterCodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "master_code_id")
+    private MasterCode masterCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -57,7 +57,8 @@ public class Article extends BaseEntity {
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime lastUpdateTime;
 
-    public void modifyArticle(String title, String content) {
+    public void modifyArticle(MasterCode masterCode, String title, String content) {
+        this.masterCode = masterCode;
         this.title = title;
         this.content = content;
         this.lastUpdateTime = LocalDateTime.now();
