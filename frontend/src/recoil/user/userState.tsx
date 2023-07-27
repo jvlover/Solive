@@ -2,35 +2,35 @@ import { atom } from 'recoil';
 
 interface CommonUserFields {
   id: number;
-  login_id: string;
-  login_password: string;
-  refresh_token: string | null;
-  master_code_id: number | null;
-  state_id: number | null;
+  loginId: string;
+  loginPassword: string;
+  refreshToken: string | null;
+  masterCodeId: number | null;
+  stateId: number | null;
   nickname: string;
   email: string;
-  picture_url: string | null;
-  picture_name: string | null;
+  pictureUrl: string | null;
+  pictureName: string | null;
   introduce: string | null;
   gender: number | null;
   experience: number;
-  signin_time: Date;
-  deleted_at: Date | null;
+  signinTime: Date;
+  deletedAt: Date | null;
 }
 
 interface TeacherFields {
-  user_id: number;
-  subject_id: number | null;
-  solved_count: number;
-  rating_sum: number;
-  rating_count: number;
-  solve_point: number;
+  userId: number;
+  subjectId: number | null;
+  solvedCount: number;
+  ratingSum: number;
+  ratingCount: number;
+  solvePoint: number;
 }
 
 interface StudentFields {
-  user_id: number;
-  question_count: number;
-  solve_point: number;
+  userId: number;
+  questionCount: number;
+  solvePoint: number;
 }
 
 type User = CommonUserFields & (TeacherFields | StudentFields);
