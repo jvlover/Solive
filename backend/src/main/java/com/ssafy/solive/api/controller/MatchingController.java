@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.controller;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
+import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.service.MatchingService;
@@ -9,10 +10,12 @@ import com.ssafy.solive.common.model.CommonResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,5 +63,10 @@ public class MatchingController {
         } else {
             throw new QuestionPossessionFailException();
         }
+    }
+
+    @GetMapping()
+    public CommonResponse<?> find(@RequestParam QuestionFindConditionGetReq findCondition) {
+        return CommonResponse.success(SUCCESS);
     }
 }
