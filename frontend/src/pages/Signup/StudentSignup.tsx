@@ -8,11 +8,11 @@ import BackgroundImg from '../../assets/background.png';
 const schema = yup.object().shape({
   name: yup.string().required('이름은 필수입니다.'),
   nickname: yup.string().required('닉네임은 필수입니다.'),
-  id: yup.string().required('아이디는 필수입니다.'),
-  password: yup.string().required('비밀번호는 필수입니다.'),
+  loginId: yup.string().required('아이디는 필수입니다.'),
+  loginPassword: yup.string().required('비밀번호는 필수입니다.'),
   passwordConfirm: yup
     .string()
-    .oneOf([yup.ref('password'), null], '비밀번호가 일치하지 않습니다.')
+    .oneOf([yup.ref('loginPassword'), null], '비밀번호가 일치하지 않습니다.')
     .required('비밀번호 확인은 필수입니다.'),
   email: yup
     .string()
@@ -28,20 +28,26 @@ function StudentSignup(): JSX.Element {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      // defaultValues 추가
       name: '',
       nickname: '',
-      id: '',
-      password: '',
+      loginId: '',
+      loginPassword: '',
       passwordConfirm: '',
       email: '',
     },
   });
 
-  //   실제 사용할 api나오면 변경해야함.
   const onSubmit = async (data: any) => {
+    const signupData = {
+      name: data.name,
+      nickname: data.nickname,
+      loginId: data.loginId,
+      loginPassword: data.loginPassword,
+      email: data.email,
+    };
+
     try {
-      const response = await axios.post('YOUR_API_ENDPOINT', data);
+      const response = await axios.post('YOUR_API_ENDPOINT', signupData);
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -88,7 +94,7 @@ function StudentSignup(): JSX.Element {
 
           <Controller
             control={control}
-            name="id"
+            name="loginId"
             render={({ field }) => (
               <input
                 {...field}
@@ -97,11 +103,11 @@ function StudentSignup(): JSX.Element {
               />
             )}
           />
-          <p>{errors.id?.message}</p>
+          <p>{errors.loginId?.message}</p>
 
           <Controller
             control={control}
-            name="password"
+            name="loginPassword"
             render={({ field }) => (
               <input
                 {...field}
@@ -111,7 +117,7 @@ function StudentSignup(): JSX.Element {
               />
             )}
           />
-          <p>{errors.password?.message}</p>
+          <p>{errors.loginPassword?.message}</p>
 
           <Controller
             control={control}

@@ -1,3 +1,5 @@
+// 학생으로 회원가입 하는지 회원으로 회원가입 하는지 backend에 알려주기
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import StudentImg from '../../assets/student.png';

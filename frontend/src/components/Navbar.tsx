@@ -23,6 +23,13 @@ function Navbar(): JSX.Element {
           >
             Signup
           </Link>
+          {/* 수정 navbar에 로그인 추가 */}
+          <Link
+            to="/login"
+            className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-white mr-4"
+          >
+            Login
+          </Link>
         </div>
       </div>
     </nav>
