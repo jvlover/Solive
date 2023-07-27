@@ -4,6 +4,7 @@ import com.ssafy.solive.api.request.ArticleDeletePutReq;
 import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
+import com.ssafy.solive.api.request.ArticleReportPostReq;
 import com.ssafy.solive.db.entity.Article;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,4 +17,6 @@ public interface ArticleService {
     boolean modifyArticle(ArticleModifyPutReq modifyInfo, MultipartFile[] files);
 
     boolean likeArticle(ArticleLikePostReq likeInfo);
+
+    boolean reportArticle(ArticleReportPostReq reportInfo);
 }

@@ -45,8 +45,8 @@ public class Article extends BaseEntity {
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private Long likeCount;
 
-    @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
-    private Boolean isReported;
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer reportCount;
 
     @Column
     private LocalDateTime deletedAt;
@@ -70,5 +70,9 @@ public class Article extends BaseEntity {
 
     public void likeArticle() {
         this.likeCount++;
+    }
+
+    public void reportArticle() {
+        this.reportCount++;
     }
 }

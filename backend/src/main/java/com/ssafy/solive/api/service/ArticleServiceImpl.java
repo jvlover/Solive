@@ -4,15 +4,19 @@ import com.ssafy.solive.api.request.ArticleDeletePutReq;
 import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
+import com.ssafy.solive.api.request.ArticleReportPostReq;
 import com.ssafy.solive.common.exception.FileIOException;
 import com.ssafy.solive.db.entity.Article;
 import com.ssafy.solive.db.entity.ArticleLike;
 import com.ssafy.solive.db.entity.ArticleLikeId;
 import com.ssafy.solive.db.entity.ArticlePicture;
+import com.ssafy.solive.db.entity.ArticleReport;
+import com.ssafy.solive.db.entity.ArticleReportId;
 import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.ArticleLikeRepsitory;
 import com.ssafy.solive.db.repository.ArticlePictureRepository;
+import com.ssafy.solive.db.repository.ArticleReportRepository;
 import com.ssafy.solive.db.repository.ArticleRepository;
 import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.UserRepository;
@@ -39,17 +43,20 @@ public class ArticleServiceImpl implements ArticleService {
     ArticleRepository articleRepository;
     ArticlePictureRepository articlePictureRepository;
     ArticleLikeRepsitory articleLikeRepsitory;
+    ArticleReportRepository articleReportRepository;
 
     @Autowired
     public ArticleServiceImpl(UserRepository userRepository,
         MasterCodeRepository masterCodeRepository,
         ArticleRepository articleRepository, ArticlePictureRepository articlePictureRepository,
-        ArticleLikeRepsitory articleLikeRepsitory) {
+        ArticleLikeRepsitory articleLikeRepsitory,
+        ArticleReportRepository articleReportRepository) {
         this.userRepository = userRepository;
         this.masterCodeRepository = masterCodeRepository;
         this.articleRepository = articleRepository;
         this.articlePictureRepository = articlePictureRepository;
         this.articleLikeRepsitory = articleLikeRepsitory;
+        this.articleReportRepository = articleReportRepository;
     }
 
     @Override
@@ -243,6 +250,51 @@ public class ArticleServiceImpl implements ArticleService {
             articleLikeRepsitory.save(articleLike);
 
             article.likeArticle();
+
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean reportArticle(ArticleReportPostReq reportInfo) {
+        ArticleReportId articleReportId = ArticleReportId.builder()
+            .userReportId(reportInfo.getUserReportId())
+            .article(reportInfo.getArticleId())
+            .build();
+
+        Optional<ArticleReport> optionalArticleReport = articleReportRepository.findById(
+            articleReportId);
+
+        if (optionalArticleReport.isEmpty()) {
+            User reportUser = userRepository.findById(reportInfo.getUserReportId())
+                .orElseThrow(IllegalArgumentException::new);
+            User reportedUser = userRepository.findById(reportInfo.getUserReportedId())
+                .orElseThrow(IllegalArgumentException::new);
+            Article article = articleRepository.findById(reportInfo.getArticleId())
+                .orElseThrow(IllegalArgumentException::new);
+            String content = reportInfo.getContent();
+
+            ArticleReport articleReport = ArticleReport.builder()
+                .userReportId(reportUser)
+                .userReportedId(reportedUser)
+                .article(article)
+                .content(content)
+                .build();
+
+            articleReportRepository.save(articleReport);
+
+            article.reportArticle();
+
+            // 신고 5회 이상 누적시 글 삭제
+            if (article.getReportCount() >= 5) {
+                article.deleteArticle();
+                List<ArticlePicture> articlePictures = articlePictureRepository.findByArticle(
+                    article);
+                for (ArticlePicture articlePicture : articlePictures) {
+                    articlePicture.deleteArticlePicture();
+                }
+            }
 
             return true;
         }

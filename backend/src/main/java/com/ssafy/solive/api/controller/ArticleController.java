@@ -4,6 +4,7 @@ import com.ssafy.solive.api.request.ArticleDeletePutReq;
 import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
+import com.ssafy.solive.api.request.ArticleReportPostReq;
 import com.ssafy.solive.api.service.ArticleService;
 import com.ssafy.solive.common.exception.ErrorCode;
 import com.ssafy.solive.common.model.CommonResponse;
@@ -69,6 +70,17 @@ public class ArticleController {
         boolean isDeleted = articleService.deleteArticle(deleteInfo);
 
         if (isDeleted) {
+            return CommonResponse.success("success");
+        } else {
+            return CommonResponse.fail(ErrorCode.COMMON_SYSTEM_ERROR.getMessage(), "fail");
+        }
+    }
+
+    @PostMapping("/report")
+    public CommonResponse<?> report(@RequestBody ArticleReportPostReq reportInfo) {
+        boolean isReported = articleService.reportArticle(reportInfo);
+
+        if (isReported) {
             return CommonResponse.success("success");
         } else {
             return CommonResponse.fail(ErrorCode.COMMON_SYSTEM_ERROR.getMessage(), "fail");
