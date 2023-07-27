@@ -5,14 +5,17 @@ import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
+import com.ssafy.solive.api.response.QuestionFindDetailRes;
 import com.ssafy.solive.api.service.MatchingService;
 import com.ssafy.solive.common.exception.QuestionPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,8 +72,15 @@ public class MatchingController {
 
     @GetMapping()
     public CommonResponse<?> findByCondition(QuestionFindConditionGetReq findCondition) {
-        log.info("MatchingController, findByCondition: " + findCondition.toString());
+        log.info("MatchingController_findByCondition_start: " + findCondition.toString());
         List<QuestionFindConditionRes> findResList = matchingService.findByCondition(findCondition);
         return CommonResponse.success(findResList);
+    }
+
+    @GetMapping("/{id}")
+    public CommonResponse<?> findDetail(@PathVariable Long id, HttpServletRequest req) {
+        log.info("MatchingController_findDetail_start: " + Long.toString(id) + req.toString());
+        QuestionFindDetailRes findDetailRes = matchingService.findDetail(id);
+        return CommonResponse.success(findDetailRes);
     }
 }

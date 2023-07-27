@@ -5,8 +5,10 @@ import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
+import com.ssafy.solive.api.response.QuestionFindDetailRes;
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.NoImageException;
+import com.ssafy.solive.common.exception.QuestionNotFoundException;
 import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.Question;
 import com.ssafy.solive.db.entity.QuestionPicture;
@@ -134,7 +136,18 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     public List<QuestionFindConditionRes> findByCondition(
         QuestionFindConditionGetReq findCondition) {
-        log.info("MatchingService, findByCondition: " + findCondition.toString());
+        log.info("MatchingService_findByCondition_start: " + findCondition.toString());
         return questionRepository.findByCondition(findCondition);
+    }
+
+    @Override
+    public QuestionFindDetailRes findDetail(Long id) {
+        log.info("MatchingService_findDetail_start: " + Long.toString(id));
+        QuestionFindDetailRes findDetailRes = questionRepository.findDetail(id);
+        if (findDetailRes == null) {
+            throw new QuestionNotFoundException();
+        } else {
+            return findDetailRes;
+        }
     }
 }

@@ -11,6 +11,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
+import com.ssafy.solive.api.response.QuestionFindDetailRes;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,9 +32,9 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     public List<QuestionFindConditionRes> findByCondition(
         QuestionFindConditionGetReq findCondition) {
 
-        log.info("QuestionRepository, findByCondition: " + findCondition.toString());
+        log.info("QQuestionRepository_findByCondition_start: " + findCondition.toString());
         int code = 1000 + findCondition.getMasterCodeMiddle() + findCondition.getMasterCodeLow();
-//        String createTime = question.time.toString();
+
         return queryFactory
             .select(Projections.constructor(QuestionFindConditionRes.class,
                 user.nickname.as("userNickname"),
@@ -48,6 +49,27 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
             .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()))
             .orderBy(timeSort(findCondition.getSort()))
             .fetch();
+    }
+
+    @Override
+    public QuestionFindDetailRes findDetail(Long id) {
+        log.info("QQuestionRepository_findDetail_start: " + Long.toString(id));
+
+        return queryFactory
+            .select(Projections.constructor(QuestionFindDetailRes.class,
+                user.nickname.as("userNickname"),
+                question.title.as("title"),
+                question.description.as("description"),
+                questionPicture.pathName.as("imagePathName"),
+                masterCode.id.as("masterCodeId"),
+                question.time.as("createTime")))
+            .from(question)
+            .leftJoin(question.user, user).on(user.id.eq(question.user.id))
+            .leftJoin(questionPicture)
+            .on(questionPicture.question.id.eq(question.id))
+            .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
+            .where(questionIdEq(id))
+            .fetchOne();
     }
 
     private BooleanExpression mastercodeBetween(int code) {
@@ -72,5 +94,9 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
         } else {
             return question.time.desc();
         }
+    }
+
+    private BooleanExpression questionIdEq(Long id) {
+        return question.id.eq(id);
     }
 }
