@@ -28,7 +28,6 @@ function StudentSignup(): JSX.Element {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      // defaultValues 추가
       name: '',
       nickname: '',
       id: '',
