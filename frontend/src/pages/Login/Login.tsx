@@ -4,14 +4,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
-import { userState } from '../../recoil/user/userState';
+import { userState, User } from '../../recoil/user/userState';
 import { useNavigate } from 'react-router-dom';
 import BackgroundImg from '../../assets/background.png';
 
 const schema = yup.object().shape({
-  id: yup.string().required('아이디는 필수입니다.'),
-  password: yup.string().required('비밀번호는 필수입니다.'),
+  loginId: yup.string().required('아이디는 필수입니다.'),
+  loginPassword: yup.string().required('비밀번호는 필수입니다.'),
 });
+
+interface LoginFormFields {
+  loginId: string;
+  loginPassword: string;
+}
 
 function Login() {
   const navigate = useNavigate(); // useNavigate 훅을 사용
@@ -24,14 +29,14 @@ function Login() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: LoginFormFields) => {
     try {
       const response = await axios.post('YOUR_LOGIN_API_ENDPOINT', data);
       const user: User = response.data;
       setUser(user);
-      if (user.master_code_id === 2) {
+      if (user.masterCodeId === 2) {
         navigate('/teacher');
-      } else if (user.master_code_id === 1) {
+      } else if (user.masterCodeId === 1) {
         navigate('/student');
       }
     } catch (error) {
@@ -54,7 +59,7 @@ function Login() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
             control={control}
-            name="id"
+            name="loginId"
             defaultValue=""
             render={({ field }) => (
               <input
@@ -64,11 +69,11 @@ function Login() {
               />
             )}
           />
-          <p>{errors.id?.message}</p>
+          <p>{errors.loginId?.message}</p>
 
           <Controller
             control={control}
-            name="password"
+            name="loginPassword"
             defaultValue=""
             render={({ field }) => (
               <input
@@ -79,7 +84,7 @@ function Login() {
               />
             )}
           />
-          <p>{errors.password?.message}</p>
+          <p>{errors.loginPassword?.message}</p>
 
           <button
             type="submit"

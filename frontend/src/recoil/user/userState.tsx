@@ -33,7 +33,7 @@ interface StudentFields {
   solvePoint: number;
 }
 
-type User = CommonUserFields & (TeacherFields | StudentFields);
+export type User = CommonUserFields & (TeacherFields | StudentFields);
 
 export const userState = atom<User | null>({
   key: 'userState',
