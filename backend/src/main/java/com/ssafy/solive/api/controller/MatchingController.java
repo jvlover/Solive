@@ -4,6 +4,7 @@ import com.ssafy.solive.api.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
+import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.service.MatchingService;
 import com.ssafy.solive.common.exception.QuestionPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
@@ -66,7 +67,9 @@ public class MatchingController {
     }
 
     @GetMapping()
-    public CommonResponse<?> find(@RequestParam QuestionFindConditionGetReq findCondition) {
-        return CommonResponse.success(SUCCESS);
+    public CommonResponse<?> findByCondition(
+        @RequestParam QuestionFindConditionGetReq findCondition) {
+        List<QuestionFindConditionRes> findResList = matchingService.findByCondition(findCondition);
+        return CommonResponse.success(findResList);
     }
 }

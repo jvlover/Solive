@@ -1,8 +1,10 @@
 package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
+import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
+import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.NoImageException;
 import com.ssafy.solive.db.entity.MasterCode;
@@ -125,5 +127,11 @@ public class MatchingServiceImpl implements MatchingService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<QuestionFindConditionRes> findByCondition(
+        QuestionFindConditionGetReq findCondition) {
+        return questionRepository.findByCondition(findCondition);
     }
 }
