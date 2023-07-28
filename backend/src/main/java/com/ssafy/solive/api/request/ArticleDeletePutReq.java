@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ArticleDeletePutReq {
 
-    private Long loginUserId;
+    private Long userId;
     private Long articleId;
 }
