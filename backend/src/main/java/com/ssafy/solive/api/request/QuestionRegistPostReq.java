@@ -1,22 +1,22 @@
 package com.ssafy.solive.api.request;
 
-import com.ssafy.solive.db.entity.Question;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+/*
+ *  문제 등록 API에 대한 Request
+ */
+@Data
 public class QuestionRegistPostReq {
 
-    int studentId;
+    // 문제 등록한 유저(학생) id
+    Long studentId;
 
-    int masterCodeId;
+    // 마스터코드 id
+    Integer masterCodeId;
 
+    // 문제 제목
+    String title;
+
+    // 문제 설명
     String description;
-
-    public Question toQuestion() {
-        return Question.builder()
-            .studentId(studentId)
-            .masterCodeId(masterCodeId)
-            .description(description)
-            .build();
-    }
 }

@@ -1,24 +1,25 @@
 package com.ssafy.solive.api.request;
 
-import com.ssafy.solive.db.entity.Question;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+/*
+ *  문제 수정 API에 대한 Request
+ */
+@Data
 public class QuestionModifyPutReq {
 
+    // 수정할 문제 id
     Long questionId;
 
-    int studentId;
+    // 문제 등록한 학생 id. DB에 등록된 것과 값이 같아야 함
+    Long studentId;
 
-    int masterCodeId;
+    // 마스터코드 id
+    Integer masterCodeId;
 
+    // 문제 제목
+    String title;
+
+    // 문제 설명
     String description;
-
-    public Question toQuestion() {
-        return Question.builder()
-            .studentId(studentId)
-            .masterCodeId(masterCodeId)
-            .description(description)
-            .build();
-    }
 }

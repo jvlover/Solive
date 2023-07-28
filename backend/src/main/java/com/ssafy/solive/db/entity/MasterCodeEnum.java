@@ -1,5 +1,8 @@
 package com.ssafy.solive.db.entity;
 
+/*
+ *  임시 구성. 지금(2023-07-28)은 사용하지 않음
+ */
 public enum MasterCodeEnum {
     // USER_TYPE (0 ~ 100)
     USER_TYPE_DEFAULT(0, "인증되지 않은 기본회원"),
