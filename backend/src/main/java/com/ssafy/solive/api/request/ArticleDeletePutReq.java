@@ -1,12 +1,10 @@
 package com.ssafy.solive.api.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ArticleDeletePutReq {
 
-    private Long loginUserId;
+    private Long userId;
     private Long articleId;
 }

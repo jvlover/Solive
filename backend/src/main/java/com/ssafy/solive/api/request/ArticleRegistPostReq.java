@@ -1,13 +1,12 @@
 package com.ssafy.solive.api.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ArticleRegistPostReq {
 
     private Long userId;
+    private Integer masterCodeId;
     private String title;
     private String content;
 }

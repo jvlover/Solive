@@ -4,16 +4,24 @@ import com.ssafy.solive.api.request.ArticleDeletePutReq;
 import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
+import com.ssafy.solive.api.request.ArticleReportPostReq;
+import com.ssafy.solive.api.response.ArticleFindAllRes;
+import com.ssafy.solive.api.response.ArticleFindRes;
 import com.ssafy.solive.api.service.ArticleService;
 import com.ssafy.solive.common.exception.ErrorCode;
 import com.ssafy.solive.common.model.CommonResponse;
 import com.ssafy.solive.db.entity.Article;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,6 +78,39 @@ public class ArticleController {
 
         if (isDeleted) {
             return CommonResponse.success("success");
+        } else {
+            return CommonResponse.fail(ErrorCode.COMMON_SYSTEM_ERROR.getMessage(), "fail");
+        }
+    }
+
+    @PostMapping("/report")
+    public CommonResponse<?> report(@RequestBody ArticleReportPostReq reportInfo) {
+        boolean isReported = articleService.reportArticle(reportInfo);
+
+        if (isReported) {
+            return CommonResponse.success("success");
+        } else {
+            return CommonResponse.fail(ErrorCode.COMMON_SYSTEM_ERROR.getMessage(), "fail");
+        }
+    }
+
+    @GetMapping("/{articleId}")
+    public CommonResponse<?> find(@PathVariable Long articleId) {
+        ArticleFindRes findInfo = articleService.findArticle(articleId);
+
+        if (findInfo != null) {
+            return CommonResponse.success(findInfo);
+        } else {
+            return CommonResponse.fail(ErrorCode.COMMON_SYSTEM_ERROR.getMessage(), "fail");
+        }
+    }
+
+    @GetMapping
+    public CommonResponse<?> findAll(@RequestParam String keyword, Pageable pageable) {
+        Page<ArticleFindAllRes> findAllInfo = articleService.findAllArticle(keyword, pageable);
+
+        if (findAllInfo != null) {
+            return CommonResponse.success(findAllInfo);
         } else {
             return CommonResponse.fail(ErrorCode.COMMON_SYSTEM_ERROR.getMessage(), "fail");
         }

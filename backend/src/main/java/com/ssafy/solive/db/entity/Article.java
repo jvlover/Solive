@@ -25,9 +25,9 @@ import org.hibernate.annotations.Where;
 @Entity
 public class Article extends BaseEntity {
 
-    // TODO: master code relation
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private Integer masterCodeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "master_code_id")
+    private MasterCode masterCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -45,8 +45,8 @@ public class Article extends BaseEntity {
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     private Long likeCount;
 
-    @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
-    private Boolean isReported;
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer reportCount;
 
     @Column
     private LocalDateTime deletedAt;
@@ -57,7 +57,8 @@ public class Article extends BaseEntity {
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime lastUpdateTime;
 
-    public void modifyArticle(String title, String content) {
+    public void modifyArticle(MasterCode masterCode, String title, String content) {
+        this.masterCode = masterCode;
         this.title = title;
         this.content = content;
         this.lastUpdateTime = LocalDateTime.now();
@@ -69,5 +70,9 @@ public class Article extends BaseEntity {
 
     public void likeArticle() {
         this.likeCount++;
+    }
+
+    public void reportArticle() {
+        this.reportCount++;
     }
 }

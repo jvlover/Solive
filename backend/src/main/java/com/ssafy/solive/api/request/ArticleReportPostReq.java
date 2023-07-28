@@ -3,11 +3,10 @@ package com.ssafy.solive.api.request;
 import lombok.Data;
 
 @Data
-public class ArticleModifyPutReq {
+public class ArticleReportPostReq {
 
-    private Long userId;
+    private Long userReportId;
+    private Long userReportedId;
     private Long articleId;
-    private Integer masterCodeId;
-    private String title;
     private String content;
 }
