@@ -5,6 +5,9 @@ import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
 import java.util.List;
 
+/*
+ *  Querydsl을 위한 Repository interface
+ */
 public interface QQuestionRepository {
 
     List<QuestionFindConditionRes> findByCondition(QuestionFindConditionGetReq findCondition);
