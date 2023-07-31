@@ -131,7 +131,7 @@ public class QuestionController {
     }
 
     /*
-     *  유저(강사)가 문제의 상세 정보를 확인하기 위한 API
+     *  유저가 문제의 상세 정보를 확인하기 위한 API
      */
     @GetMapping("/{id}")
     public CommonResponse<?> findDetail(@PathVariable Long id, HttpServletRequest req) {

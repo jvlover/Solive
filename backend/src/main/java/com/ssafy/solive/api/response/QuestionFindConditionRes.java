@@ -9,6 +9,9 @@ import lombok.Data;
 @Data
 public class QuestionFindConditionRes {
 
+    // 각 Question들의 id(PK). 상세 조회할 때 api 요청하기 위해 필요
+    Long questionId;
+
     // 문제 등록한 유저 이름
     String userNickname;
 
@@ -29,8 +32,10 @@ public class QuestionFindConditionRes {
     }
 
     // Querydsl을 위한 생성자
-    public QuestionFindConditionRes(String userNickname, String imagePathName, String title,
+    public QuestionFindConditionRes(Long questionId, String userNickname, String imagePathName,
+        String title,
         LocalDateTime createTime, String masterCodeName) {
+        this.questionId = questionId;
         this.userNickname = userNickname;
         this.imagePathName = imagePathName;
         this.title = title;

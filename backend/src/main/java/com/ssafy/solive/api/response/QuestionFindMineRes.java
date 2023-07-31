@@ -9,6 +9,9 @@ import lombok.Data;
 @Data
 public class QuestionFindMineRes {
 
+    // 각 Question들의 id(PK). 상세 조회할 때 api 요청하기 위해 필요
+    Long questionId;
+
     // 문제 이미지
     String imagePathName;
 
@@ -29,8 +32,9 @@ public class QuestionFindMineRes {
     }
 
     // Querydsl을 위한 생성자
-    public QuestionFindMineRes(String imagePathName, String title,
+    public QuestionFindMineRes(Long questionId, String imagePathName, String title,
         LocalDateTime createTime, String masterCodeName, Integer matchingState) {
+        this.questionId = questionId;
         this.imagePathName = imagePathName;
         this.title = title;
         this.createTime = createTime.toString();

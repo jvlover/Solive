@@ -48,6 +48,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
 
         return queryFactory
             .select(Projections.constructor(QuestionFindConditionRes.class,
+                question.id.as("questionId"),
                 user.nickname.as("userNickname"),
                 questionPicture.pathName.as("imagePathName"),
                 question.title.as("title"),
@@ -65,7 +66,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     }
 
     /*
-     *  유저(강사)가 문제를 상세 조회하기 위한 Query
+     *  유저가 문제를 상세 조회하기 위한 Query
      */
     @Override
     public QuestionFindDetailRes findDetail(Long id) {
@@ -104,6 +105,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
 
         return queryFactory
             .select(Projections.constructor(QuestionFindMineRes.class,
+                question.id.as("questionId"),
                 questionPicture.pathName.as("imagePathName"),
                 question.title.as("title"),
                 question.time.as("createTime"),
