@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Transactional
 @Service
-public class MatchingServiceImpl implements MatchingService {
+public class QuestionServiceImpl implements QuestionService {
 
     // Spring Data Jpa 사용을 위한 Repository들
     QuestionRepository questionRepository;
@@ -43,7 +43,7 @@ public class MatchingServiceImpl implements MatchingService {
     MasterCodeRepository masterCodeRepository;
 
     @Autowired
-    public MatchingServiceImpl(QuestionRepository questionRepository,
+    public QuestionServiceImpl(QuestionRepository questionRepository,
         QuestionPictureRepository questionPictureRepository, UserRepository userRepository,
         MasterCodeRepository masterCodeRepository) {
         this.questionRepository = questionRepository;

@@ -6,7 +6,7 @@ import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
-import com.ssafy.solive.api.service.MatchingService;
+import com.ssafy.solive.api.service.QuestionService;
 import com.ssafy.solive.common.exception.QuestionPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,16 +30,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/matching")
-public class MatchingController {
+@RequestMapping("/question")
+public class QuestionController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
 
-    MatchingService matchingService;
+    QuestionService questionService;
 
     @Autowired
-    public MatchingController(MatchingService matchingService) {
-        this.matchingService = matchingService;
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
     }
 
     /*
@@ -57,7 +57,7 @@ public class MatchingController {
         log.info("MatchingController_regist_start: " + registInfo.toString() + ", "
             + files.toString());
 
-        matchingService.registQuestion(registInfo, files);
+        questionService.registQuestion(registInfo, files);
 
         log.info("MatchingController_regist_end: success");
         return CommonResponse.success(SUCCESS);
@@ -76,7 +76,7 @@ public class MatchingController {
 
         log.info("MatchingController_delete_start: " + deleteInfo.toString());
 
-        boolean isDeleted = matchingService.deleteQuestion(deleteInfo); // 삭제 실패하면 false
+        boolean isDeleted = questionService.deleteQuestion(deleteInfo); // 삭제 실패하면 false
         if (isDeleted) {
             log.info("MatchingController_delete_end: success");
             return CommonResponse.success(SUCCESS);
@@ -100,7 +100,7 @@ public class MatchingController {
 
         log.info("MatchingController_modify_start: " + modifyInfo.toString());
 
-        boolean isModified = matchingService.modifyQuestion(modifyInfo); // 수정 실패하면 false
+        boolean isModified = questionService.modifyQuestion(modifyInfo); // 수정 실패하면 false
         if (isModified) {
             log.info("MatchingController_modify_end: success");
             return CommonResponse.success(SUCCESS);
@@ -122,7 +122,7 @@ public class MatchingController {
 
         log.info("MatchingController_findByCondition_start: " + findCondition.toString());
 
-        List<QuestionFindConditionRes> findResList = matchingService.findByCondition(findCondition);
+        List<QuestionFindConditionRes> findResList = questionService.findByCondition(findCondition);
 
         log.info("MatchingController_findByCondition_end: " + findResList.toString());
         return CommonResponse.success(findResList);
@@ -140,7 +140,7 @@ public class MatchingController {
 
         log.info("MatchingController_findDetail_start: " + Long.toString(id) + req.toString());
 
-        QuestionFindDetailRes findDetailRes = matchingService.findDetail(id);
+        QuestionFindDetailRes findDetailRes = questionService.findDetail(id);
 
         log.info("MatchingController_findDetail_end: " + findDetailRes.toString());
         return CommonResponse.success(findDetailRes);

@@ -9,7 +9,7 @@ import com.ssafy.solive.api.response.QuestionFindDetailRes;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface MatchingService {
+public interface QuestionService {
 
     void registQuestion(QuestionRegistPostReq registInfo,
         List<MultipartFile> files);
