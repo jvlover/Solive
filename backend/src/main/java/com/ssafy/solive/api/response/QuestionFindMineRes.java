@@ -4,16 +4,13 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /*
- *  문제 검색 API에 대한 Response
+ *  학생이 마이페이지에서 자신이 등록한 문제 검색 API Response
  */
 @Data
-public class QuestionFindConditionRes {
+public class QuestionFindMineRes {
 
     // 각 Question들의 id(PK). 상세 조회할 때 api 요청하기 위해 필요
     Long questionId;
-
-    // 문제 등록한 유저 이름
-    String userNickname;
 
     // 문제 이미지
     String imagePathName;
@@ -27,19 +24,21 @@ public class QuestionFindConditionRes {
     // 문제 마스터코드 분류명
     String masterCodeName;
 
-    public QuestionFindConditionRes() {
+    // 문제 매칭 상태
+    Integer matchingState;
+
+    public QuestionFindMineRes() {
 
     }
 
     // Querydsl을 위한 생성자
-    public QuestionFindConditionRes(Long questionId, String userNickname, String imagePathName,
-        String title,
-        LocalDateTime createTime, String masterCodeName) {
+    public QuestionFindMineRes(Long questionId, String imagePathName, String title,
+        LocalDateTime createTime, String masterCodeName, Integer matchingState) {
         this.questionId = questionId;
-        this.userNickname = userNickname;
         this.imagePathName = imagePathName;
         this.title = title;
         this.createTime = createTime.toString();
         this.masterCodeName = masterCodeName;
+        this.matchingState = matchingState;
     }
 }

@@ -2,10 +2,12 @@ package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
+import com.ssafy.solive.api.request.QuestionFindMineGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
+import com.ssafy.solive.api.response.QuestionFindMineRes;
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.NoImageException;
 import com.ssafy.solive.common.exception.QuestionNotFoundException;
@@ -34,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Transactional
 @Service
-public class MatchingServiceImpl implements MatchingService {
+public class QuestionServiceImpl implements QuestionService {
 
     // Spring Data Jpa 사용을 위한 Repository들
     QuestionRepository questionRepository;
@@ -43,7 +45,7 @@ public class MatchingServiceImpl implements MatchingService {
     MasterCodeRepository masterCodeRepository;
 
     @Autowired
-    public MatchingServiceImpl(QuestionRepository questionRepository,
+    public QuestionServiceImpl(QuestionRepository questionRepository,
         QuestionPictureRepository questionPictureRepository, UserRepository userRepository,
         MasterCodeRepository masterCodeRepository) {
         this.questionRepository = questionRepository;
@@ -203,7 +205,7 @@ public class MatchingServiceImpl implements MatchingService {
 
     /*
      *  유저(강사)가 문제를 검색하기 위한 API 서비스
-     *  검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     *  제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @Override
     public List<QuestionFindConditionRes> findByCondition(
@@ -223,7 +225,7 @@ public class MatchingServiceImpl implements MatchingService {
     }
 
     /*
-     *  유저(강사)가 문제의 상세 정보를 확인하기 위한 API
+     *  유저가 문제의 상세 정보를 확인하기 위한 API
      */
     @Override
     public QuestionFindDetailRes findDetail(Long id) {
@@ -244,4 +246,26 @@ public class MatchingServiceImpl implements MatchingService {
             return findDetailRes;
         }
     }
+
+    /*
+     *  유저(학생)가 자신이 등록했던 문제를 검색하기 위한 API
+     *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     */
+    @Override
+    public List<QuestionFindMineRes> findMyQuestion(
+        QuestionFindMineGetReq findCondition) {
+        /*
+         *  findCondition : 검색 조건
+         */
+
+        log.info("MatchingService_findMyQuestion_start: " + findCondition.toString());
+
+        List<QuestionFindMineRes> findConditionRes = questionRepository.findMyQuestion(
+            findCondition);
+
+        log.info("MatchingService_findMyQuestion_end: " + findConditionRes.toString());
+
+        return findConditionRes;
+    }
+
 }

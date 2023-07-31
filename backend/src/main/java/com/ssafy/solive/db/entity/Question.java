@@ -50,9 +50,9 @@ public class Question extends BaseEntity {
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime lastUpdateTime;
 
-    // 문제가 매칭 되었으면 true, 아니면 false
-    @Column(nullable = false, columnDefinition = "BIT DEFAULT 0")
-    private Boolean isMatched;
+    // 문제가 매칭 되었으면 2, 강사들의 지원이 있는 상태면 1, 문제가 등록만 된 초기 상태면 0
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer matchingState;
 
     // 문제가 삭제 되었으면 삭제된 시간, 아니면 null
     @Column

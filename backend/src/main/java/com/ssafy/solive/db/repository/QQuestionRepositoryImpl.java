@@ -10,8 +10,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
+import com.ssafy.solive.api.request.QuestionFindMineGetReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
+import com.ssafy.solive.api.response.QuestionFindMineRes;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,7 +35,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
 
     /*
      *  유저(강사)가 문제를 검색하기 위한 Query
-     *  검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     *  제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @Override
     public List<QuestionFindConditionRes> findByCondition(
@@ -46,22 +48,25 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
 
         return queryFactory
             .select(Projections.constructor(QuestionFindConditionRes.class,
+                question.id.as("questionId"),
                 user.nickname.as("userNickname"),
                 questionPicture.pathName.as("imagePathName"),
                 question.title.as("title"),
-                question.time.as("createTime")))
+                question.time.as("createTime"),
+                masterCode.name.as("masterCodeName")))
             .from(question)
             .leftJoin(question.user, user).on(user.id.eq(question.user.id))
             .leftJoin(questionPicture)
             .on(questionPicture.question.id.eq(question.id))
             .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
-            .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()))
+            .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()),
+                matchingStateLt())
             .orderBy(timeSort(findCondition.getSort()))
             .fetch();
     }
 
     /*
-     *  유저(강사)가 문제를 상세 조회하기 위한 Query
+     *  유저가 문제를 상세 조회하기 위한 Query
      */
     @Override
     public QuestionFindDetailRes findDetail(Long id) {
@@ -83,6 +88,38 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
             .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(questionIdEq(id))
             .fetchOne();
+    }
+
+    /*
+     *  유저(학생)가 자신이 등록했던 문제를 검색하기 위한 Query
+     *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     */
+    @Override
+    public List<QuestionFindMineRes> findMyQuestion(
+        QuestionFindMineGetReq findCondition) {
+
+        log.info("QQuestionRepository_findMyQuestion_start: " + findCondition.toString());
+
+        // masterCode 값 합치기
+        int code = 1000 + findCondition.getMasterCodeMiddle() + findCondition.getMasterCodeLow();
+
+        return queryFactory
+            .select(Projections.constructor(QuestionFindMineRes.class,
+                question.id.as("questionId"),
+                questionPicture.pathName.as("imagePathName"),
+                question.title.as("title"),
+                question.time.as("createTime"),
+                masterCode.name.as("masterCodeName"),
+                question.matchingState.as("matchingState")))
+            .from(question)
+            .leftJoin(questionPicture)
+            .on(questionPicture.question.id.eq(question.id))
+            .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
+            .where(studentIdEq(findCondition.getStudentId()), mastercodeBetween(code),
+                keywordSearch(findCondition.getKeyword()),
+                matchingStateEq(findCondition.getMatchingState()))
+            .orderBy(timeSort(findCondition.getSort()))
+            .fetch();
     }
 
     /*
@@ -126,4 +163,27 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     private BooleanExpression questionIdEq(Long id) {
         return question.id.eq(id);
     }
+
+    /*
+     *  student id로 본인이 등록한 question 조회하기 위한 where절에서 사용
+     */
+    private BooleanExpression studentIdEq(Long id) {
+        return user.id.eq(id);
+    }
+
+    /*
+     *  학생이 등록한 question 조회할 때 matchingState 검색 조건 반영하여 where절에서 사용
+     */
+    private BooleanExpression matchingStateEq(Integer id) {
+        return question.matchingState.eq(id);
+    }
+
+    /*
+     *  강사가 문제를 검색할 때, is_matched 값이 0 혹은 1인 경우만 검색되어야 함.
+     *  값이 2인 경우는 이미 매칭이 완료 되었으므로 검색 결과에서 제외
+     */
+    private BooleanExpression matchingStateLt() {
+        return question.matchingState.lt(2);
+    }
+
 }

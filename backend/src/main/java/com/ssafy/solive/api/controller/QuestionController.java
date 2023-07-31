@@ -2,11 +2,13 @@ package com.ssafy.solive.api.controller;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
+import com.ssafy.solive.api.request.QuestionFindMineGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
-import com.ssafy.solive.api.service.MatchingService;
+import com.ssafy.solive.api.response.QuestionFindMineRes;
+import com.ssafy.solive.api.service.QuestionService;
 import com.ssafy.solive.common.exception.QuestionPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,16 +32,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/matching")
-public class MatchingController {
+@RequestMapping("/question")
+public class QuestionController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
 
-    MatchingService matchingService;
+    QuestionService questionService;
 
     @Autowired
-    public MatchingController(MatchingService matchingService) {
-        this.matchingService = matchingService;
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
     }
 
     /*
@@ -57,7 +59,7 @@ public class MatchingController {
         log.info("MatchingController_regist_start: " + registInfo.toString() + ", "
             + files.toString());
 
-        matchingService.registQuestion(registInfo, files);
+        questionService.registQuestion(registInfo, files);
 
         log.info("MatchingController_regist_end: success");
         return CommonResponse.success(SUCCESS);
@@ -76,7 +78,7 @@ public class MatchingController {
 
         log.info("MatchingController_delete_start: " + deleteInfo.toString());
 
-        boolean isDeleted = matchingService.deleteQuestion(deleteInfo); // 삭제 실패하면 false
+        boolean isDeleted = questionService.deleteQuestion(deleteInfo); // 삭제 실패하면 false
         if (isDeleted) {
             log.info("MatchingController_delete_end: success");
             return CommonResponse.success(SUCCESS);
@@ -93,14 +95,14 @@ public class MatchingController {
     @PutMapping()
     public CommonResponse<?> modify(@RequestBody QuestionModifyPutReq modifyInfo) {
         /*
-         *  modifyInfo : 문제 삭제하기 위해 필요한 정보
+         *  modifyInfo : 문제 수정하기 위해 필요한 정보
          */
         // TODO: 인증 된 사용자인지 확인하는 과정 필요
         // TODO: is_matched가 true인 경우 수정 가능하게 할지 안 하게 할지
 
         log.info("MatchingController_modify_start: " + modifyInfo.toString());
 
-        boolean isModified = matchingService.modifyQuestion(modifyInfo); // 수정 실패하면 false
+        boolean isModified = questionService.modifyQuestion(modifyInfo); // 수정 실패하면 false
         if (isModified) {
             log.info("MatchingController_modify_end: success");
             return CommonResponse.success(SUCCESS);
@@ -112,7 +114,7 @@ public class MatchingController {
 
     /*
      *  유저(강사)가 문제를 검색하기 위한 API
-     *  검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     *  제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @GetMapping()
     public CommonResponse<?> findByCondition(QuestionFindConditionGetReq findCondition) {
@@ -122,14 +124,14 @@ public class MatchingController {
 
         log.info("MatchingController_findByCondition_start: " + findCondition.toString());
 
-        List<QuestionFindConditionRes> findResList = matchingService.findByCondition(findCondition);
+        List<QuestionFindConditionRes> findResList = questionService.findByCondition(findCondition);
 
         log.info("MatchingController_findByCondition_end: " + findResList.toString());
         return CommonResponse.success(findResList);
     }
 
     /*
-     *  유저(강사)가 문제의 상세 정보를 확인하기 위한 API
+     *  유저가 문제의 상세 정보를 확인하기 위한 API
      */
     @GetMapping("/{id}")
     public CommonResponse<?> findDetail(@PathVariable Long id, HttpServletRequest req) {
@@ -138,11 +140,30 @@ public class MatchingController {
          *  req : jwt token check 할 때 필요할 것 같아서 일단 넣었는데 아직 모름
          */
 
-        log.info("MatchingController_findDetail_start: " + Long.toString(id) + req.toString());
+        log.info("MatchingController_findDetail_start: " + id + ", " + req.toString());
 
-        QuestionFindDetailRes findDetailRes = matchingService.findDetail(id);
+        QuestionFindDetailRes findDetailRes = questionService.findDetail(id);
 
         log.info("MatchingController_findDetail_end: " + findDetailRes.toString());
         return CommonResponse.success(findDetailRes);
     }
+
+    /*
+     *  유저(학생)가 자신이 등록했던 문제를 검색하기 위한 API
+     *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     */
+    @GetMapping("/my")
+    public CommonResponse<?> findMyQuestion(QuestionFindMineGetReq findCondition) {
+        /*
+         *  findCondition : 검색 조건
+         */
+
+        log.info("MatchingController_findMyQuestion_start: " + findCondition.toString());
+
+        List<QuestionFindMineRes> findResList = questionService.findMyQuestion(findCondition);
+
+        log.info("MatchingController_findMyQuestion_end: " + findResList.toString());
+        return CommonResponse.success(findResList);
+    }
+
 }
