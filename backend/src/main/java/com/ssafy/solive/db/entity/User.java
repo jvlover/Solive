@@ -20,28 +20,31 @@ import org.hibernate.annotations.DynamicInsert;
 @Entity
 public class User extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(40)")
     private String loginId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "CHAR(60)")
     private String loginPassword;
 
-    @Column(columnDefinition = "")
+    @Column(nullable = false, columnDefinition = "VARCHAR(40)")
     private String refreshToken;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer masterCodeId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(40)")
     private String email;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String pictureUrl;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
     private String pictureName;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String introduce;
 
     @Column(nullable = false)
