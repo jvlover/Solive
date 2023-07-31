@@ -55,7 +55,8 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
             .leftJoin(questionPicture)
             .on(questionPicture.question.id.eq(question.id))
             .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
-            .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()))
+            .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()),
+                matchingStateLt())
             .orderBy(timeSort(findCondition.getSort()))
             .fetch();
     }
@@ -126,4 +127,13 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     private BooleanExpression questionIdEq(Long id) {
         return question.id.eq(id);
     }
+
+    /*
+     *  강사가 문제를 검색할 때, is_matched 값이 0 혹은 1인 경우만 검색되어야 함.
+     *  값이 2인 경우는 이미 매칭이 완료 되었으므로 검색 결과에서 제외
+     */
+    private BooleanExpression matchingStateLt() {
+        return question.matchingState.lt(2);
+    }
+
 }

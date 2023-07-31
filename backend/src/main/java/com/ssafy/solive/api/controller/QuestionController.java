@@ -93,7 +93,7 @@ public class QuestionController {
     @PutMapping()
     public CommonResponse<?> modify(@RequestBody QuestionModifyPutReq modifyInfo) {
         /*
-         *  modifyInfo : 문제 삭제하기 위해 필요한 정보
+         *  modifyInfo : 문제 수정하기 위해 필요한 정보
          */
         // TODO: 인증 된 사용자인지 확인하는 과정 필요
         // TODO: is_matched가 true인 경우 수정 가능하게 할지 안 하게 할지
@@ -138,7 +138,7 @@ public class QuestionController {
          *  req : jwt token check 할 때 필요할 것 같아서 일단 넣었는데 아직 모름
          */
 
-        log.info("MatchingController_findDetail_start: " + Long.toString(id) + req.toString());
+        log.info("MatchingController_findDetail_start: " + id + ", " + req.toString());
 
         QuestionFindDetailRes findDetailRes = questionService.findDetail(id);
 
