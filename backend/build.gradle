@@ -34,6 +34,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    // Bcrypt
+    implementation 'org.mindrot:jbcrypt:0.4'
 }
 
 //tasks.named('test') {

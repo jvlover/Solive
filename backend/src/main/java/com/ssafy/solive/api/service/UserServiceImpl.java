@@ -6,6 +6,7 @@ import com.ssafy.solive.config.JwtConfiguration;
 import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registUser(UserRegistPostReq registInfo) {
-        User user = registInfo.toUser();
+        // 비밀번호에 Bcrypt 적용
+        String hashedPassword = BCrypt.hashpw(registInfo.getLoginPassword(), BCrypt.gensalt());
+        User user = User.builder()
+            .loginId(registInfo.getLoginId())
+            .loginPassword(hashedPassword)
+            .masterCodeId(registInfo.getMasterCodeId())
+            .nickname(registInfo.getNickname())
+            .email(registInfo.getEmail())
+            .pictureUrl(registInfo.getPictureUrl())
+            .pictureName(registInfo.getPictureName())
+            .introduce(registInfo.getIntroduce())
+            .gender(registInfo.getGender())
+            .build();
         return userRepository.save(user);
     }
 
@@ -39,11 +52,8 @@ public class UserServiceImpl implements UserService {
         String userLoginId = loginInfo.getLoginId();
         String userLoginPassword = loginInfo.getLoginPassword();
         User user = userRepository.findByLoginId(userLoginId);
-        /* TODO: 암호화 후 아래 코드 개선해 사용
-         * 암호화 적용 전, 비밀번호 단순 비교
-         */
         // 로그인 성공
-        if (user.getLoginPassword().equals(userLoginPassword)) {
+        if (BCrypt.checkpw(userLoginPassword, user.getLoginPassword())) {
             // RefreshToken을 user DB에 저장
             user.updateRefreshToken(
                 jwtConfiguration.createRefreshToken("userloginid", userLoginId));

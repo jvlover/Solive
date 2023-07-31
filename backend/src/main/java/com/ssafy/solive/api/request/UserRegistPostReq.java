@@ -1,6 +1,5 @@
 package com.ssafy.solive.api.request;
 
-import com.ssafy.solive.db.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,18 +19,4 @@ public class UserRegistPostReq {
     String pictureName;
     String introduce;
     int gender;
-
-    public User toUser() {
-        return User.builder()
-            .loginId(loginId)
-            .loginPassword(loginPassword)
-            .masterCodeId(masterCodeId)
-            .nickname(nickname)
-            .email(email)
-            .pictureUrl(pictureUrl)
-            .pictureName(pictureName)
-            .introduce(introduce)
-            .gender(gender)
-            .build();
-    }
 }
