@@ -2,14 +2,17 @@ package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.UserLoginPostReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
+import com.ssafy.solive.common.exception.PasswordMismatchException;
 import com.ssafy.solive.config.JwtConfiguration;
 import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,6 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registUser(UserRegistPostReq registInfo) {
+        log.info("UserService_registUser_start: " + registInfo.toString());
         // 비밀번호에 Bcrypt 적용
         String hashedPassword = BCrypt.hashpw(registInfo.getLoginPassword(), BCrypt.gensalt());
         User user = User.builder()
@@ -38,7 +42,18 @@ public class UserServiceImpl implements UserService {
             .introduce(registInfo.getIntroduce())
             .gender(registInfo.getGender())
             .build();
-        return userRepository.save(user);
+        log.info("UserService_registUser_end: " + user.toString());
+
+        try {
+            userRepository.save(user);
+            log.info("UserService_registUser_end: " + user.toString());
+            return user;
+        } catch (Exception e) {
+            // TODO: 예외 관련 세분화 처리 ex) 중복확인, 미가입 유저 등
+            e.printStackTrace();
+            log.info("UserService_registUser_end: null");
+            return null;
+        }
     }
 
     /**
@@ -49,6 +64,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String loginAndGetAccessToken(UserLoginPostReq loginInfo) {
+        log.info("UserService_loginAndGetAccessToken_start: " + loginInfo.toString());
         String userLoginId = loginInfo.getLoginId();
         String userLoginPassword = loginInfo.getLoginPassword();
         User user = userRepository.findByLoginId(userLoginId);
@@ -58,9 +74,11 @@ public class UserServiceImpl implements UserService {
             user.updateRefreshToken(
                 jwtConfiguration.createRefreshToken("userloginid", userLoginId));
             // AccessToken을 return
-            return jwtConfiguration.createAccessToken("userloginid", userLoginId);
+            String accessToken = jwtConfiguration.createAccessToken("userloginid", userLoginId);
+            log.info("UserService_loginAndGetAccessToken_end: " + accessToken);
+            return accessToken;
         } else {
-            return null;
+            throw new PasswordMismatchException();
         }
     }
 }
