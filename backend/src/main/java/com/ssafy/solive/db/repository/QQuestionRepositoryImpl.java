@@ -51,7 +51,8 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 user.nickname.as("userNickname"),
                 questionPicture.pathName.as("imagePathName"),
                 question.title.as("title"),
-                question.time.as("createTime")))
+                question.time.as("createTime"),
+                masterCode.name.as("masterCodeName")))
             .from(question)
             .leftJoin(question.user, user).on(user.id.eq(question.user.id))
             .leftJoin(questionPicture)

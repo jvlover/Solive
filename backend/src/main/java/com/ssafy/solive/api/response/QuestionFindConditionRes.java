@@ -21,16 +21,20 @@ public class QuestionFindConditionRes {
     // 문제 등록 시간
     String createTime;
 
+    // 문제 마스터코드 분류명
+    String masterCodeName;
+
     public QuestionFindConditionRes() {
 
     }
 
     // Querydsl을 위한 생성자
     public QuestionFindConditionRes(String userNickname, String imagePathName, String title,
-        LocalDateTime createTime) {
+        LocalDateTime createTime, String masterCodeName) {
         this.userNickname = userNickname;
         this.imagePathName = imagePathName;
         this.title = title;
         this.createTime = createTime.toString();
+        this.masterCodeName = masterCodeName;
     }
 }
