@@ -1,5 +1,6 @@
 package com.ssafy.solive.common.model;
 
+import com.ssafy.solive.common.exception.ErrorCode;
 import lombok.Getter;
 
 /*
@@ -41,15 +42,12 @@ public final class CommonResponse<T> {
         return new CommonResponse<>(true, data, null);
     }
 
-/*
-    에러코드를 아직 작성하지 않아 주석처리합니다.
-
+    // API 요청 실패 시 fail 함수에 ErrorCode를 직접 넣을 수 있습니다.
     public static <T> CommonResponse<T> fail(ErrorCode errorCode) {
         return new CommonResponse<T>(
             false, null, new Error(errorCode.name(), errorCode.getMessage())
         );
     }
-*/
 
     // API 요청 실패 시 fail 함수에 ErrorCode 대신 코드와 메세지를 직접 넣어 리턴할 수 있습니다.
     public static <T> CommonResponse<T> fail(String code, String message) {
