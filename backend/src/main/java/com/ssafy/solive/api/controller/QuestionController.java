@@ -2,10 +2,12 @@ package com.ssafy.solive.api.controller;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
+import com.ssafy.solive.api.request.QuestionFindMineGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
+import com.ssafy.solive.api.response.QuestionFindMineRes;
 import com.ssafy.solive.api.service.QuestionService;
 import com.ssafy.solive.common.exception.QuestionPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
@@ -112,7 +114,7 @@ public class QuestionController {
 
     /*
      *  유저(강사)가 문제를 검색하기 위한 API
-     *  검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     *  제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @GetMapping()
     public CommonResponse<?> findByCondition(QuestionFindConditionGetReq findCondition) {
@@ -145,4 +147,23 @@ public class QuestionController {
         log.info("MatchingController_findDetail_end: " + findDetailRes.toString());
         return CommonResponse.success(findDetailRes);
     }
+
+    /*
+     *  유저(학생)가 자신이 등록했던 문제를 검색하기 위한 API
+     *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     */
+    @GetMapping("/my")
+    public CommonResponse<?> findMyQuestion(QuestionFindMineGetReq findCondition) {
+        /*
+         *  findCondition : 검색 조건
+         */
+
+        log.info("MatchingController_findMyQuestion_start: " + findCondition.toString());
+
+        List<QuestionFindMineRes> findResList = questionService.findMyQuestion(findCondition);
+
+        log.info("MatchingController_findMyQuestion_end: " + findResList.toString());
+        return CommonResponse.success(findResList);
+    }
+
 }
