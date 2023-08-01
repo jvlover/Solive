@@ -8,9 +8,13 @@ import {
   Button,
   IconButton,
 } from '@material-tailwind/react';
+<<<<<<< HEAD
 
 // 로그인 하면 로그인 했다고 표시
 const HeaderNav = () => {
+=======
+function HeaderNav(): JSX.Element {
+>>>>>>> 7c94e16 (Feat: 파일 생성 및 게시판 목록, 상세 페이지 작성)
   const [openNav, setOpenNav] = useState(false);
 
   useEffect(() => {
@@ -145,6 +149,10 @@ const HeaderNav = () => {
   //     </div>
   //   </nav>
   // );
+<<<<<<< HEAD
 };
+=======
+}
+>>>>>>> 7c94e16 (Feat: 파일 생성 및 게시판 목록, 상세 페이지 작성)
 
 export default HeaderNav;
