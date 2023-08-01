@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(BaseException.class)
-    public CommonResponse onBaseException(BaseException e) {
+    public CommonResponse<?> onBaseException(BaseException e) {
 
         return CommonResponse.fail(e.getErrorCode().name(), e.getMessage());
     }
