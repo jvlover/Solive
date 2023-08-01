@@ -74,7 +74,6 @@ public class QuestionController {
          *  deleteInfo : 문제 삭제하기 위해 필요한 정보
          */
         // TODO: 인증 된 사용자인지 확인하는 과정 필요
-        // TODO: is_matched 가 true 인 경우 삭제할 수 있게 할지, 없게 할지 체크하는 과정 고려
 
         log.info("QuestionController_delete_start: " + deleteInfo.toString());
 
@@ -98,7 +97,6 @@ public class QuestionController {
          *  modifyInfo : 문제 수정하기 위해 필요한 정보
          */
         // TODO: 인증 된 사용자인지 확인하는 과정 필요
-        // TODO: is_matched가 true인 경우 수정 가능하게 할지 안 하게 할지
 
         log.info("QuestionController_modify_start: " + modifyInfo.toString());
 
