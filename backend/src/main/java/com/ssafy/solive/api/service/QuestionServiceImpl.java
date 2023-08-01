@@ -66,7 +66,7 @@ public class QuestionServiceImpl implements QuestionService {
          */
         // TODO: Studnt Entity 구현 후, Student 지위 체크 과정 필요한 지 확인
 
-        log.info("MatchingService_registQuestion_start: " + registInfo.toString() + ", "
+        log.info("QuestionService_registQuestion_start: " + registInfo.toString() + ", "
             + files.toString());
 
         // 문제는 반드시 이미지가 필요하므로, 이미지가 없으면 NoImageException 처리
@@ -74,13 +74,17 @@ public class QuestionServiceImpl implements QuestionService {
             throw new NoImageException();
         }
 
+        // 전달 받은 마스터코드 분류 더해서 최종 마스터코드 번호 얻기
+        Integer masterCodeId =
+            registInfo.getSubject() + registInfo.getSubSubject() + registInfo.getDetail();
+
         /*
          *  registInfo를 바탕으로 Question Entity 생성 시작
          */
         // TODO: IllegalArgumentException을 BaseException을 상속 받는 Custom Exception으로 변경 필요
         User user = userRepository.findById(registInfo.getStudentId())
             .orElseThrow(IllegalArgumentException::new);
-        MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId())
+        MasterCode masterCode = masterCodeRepository.findById(masterCodeId)
             .orElseThrow(IllegalArgumentException::new);
         String title = registInfo.getTitle();
         String description = registInfo.getDescription();
@@ -143,7 +147,7 @@ public class QuestionServiceImpl implements QuestionService {
              */
         }
 
-        log.info("MatchingService_registQuestion_end: success");
+        log.info("QuestionService_registQuestion_end: success");
     }
 
     /*
@@ -156,7 +160,7 @@ public class QuestionServiceImpl implements QuestionService {
          */
         // TODO: IllegalArg Exception 을 적절한 Custom Exception으로 대체
 
-        log.info("MatchingService_deleteQuestion_start: " + deleteInfo.toString());
+        log.info("QuestionService_deleteQuestion_start: " + deleteInfo.toString());
 
         Question question = questionRepository.findById(deleteInfo.getQuestionId())
             .orElseThrow(IllegalArgumentException::new);
@@ -164,11 +168,11 @@ public class QuestionServiceImpl implements QuestionService {
         // deleteInfo의 유저 정보와 해당 문제의 실제 유저 정보가 같아야만 삭제
         if (question.getUser().getId().equals(deleteInfo.getStudentId())) {
             question.deleteQuestion();
-            log.info("MatchingService_deleteQuestion_end: true");
+            log.info("QuestionService_deleteQuestion_end: true");
             return true;
         }
         // deleteInfo의 유저 정보와 해당 문제의 실제 유저 정보가 다를 경우
-        log.info("MatchingService_deleteQuestion_end: false");
+        log.info("QuestionService_deleteQuestion_end: false");
         return false;
     }
 
@@ -182,7 +186,7 @@ public class QuestionServiceImpl implements QuestionService {
          */
         // TODO: IllegalArg Exception 을 적절한 Custom Exception으로 대체
 
-        log.info("MatchingService_modifyQuestion_start: " + modifyInfo.toString());
+        log.info("QuestionService_modifyQuestion_start: " + modifyInfo.toString());
 
         Question question = questionRepository.findById(modifyInfo.getQuestionId())
             .orElseThrow(IllegalArgumentException::new);
@@ -195,11 +199,11 @@ public class QuestionServiceImpl implements QuestionService {
         // modifyInfo의 유저 정보와 해당 문제의 실제 유저 정보가 같아야만 삭제
         if (question.getUser().getId().equals(modifyInfo.getStudentId())) {
             question.modifyQuestion(masterCode, title, description);
-            log.info("MatchingService_modifyQuestion_end: true");
+            log.info("QuestionService_modifyQuestion_end: true");
             return true;
         }
         // modifyInfo의 유저 정보와 해당 문제의 실제 유저 정보가 다를 경우
-        log.info("MatchingService_modifyQuestion_end: false");
+        log.info("QuestionService_modifyQuestion_end: false");
         return false;
     }
 
@@ -214,12 +218,12 @@ public class QuestionServiceImpl implements QuestionService {
          *  findCondition : 검색 조건
          */
 
-        log.info("MatchingService_findByCondition_start: " + findCondition.toString());
+        log.info("QuestionService_findByCondition_start: " + findCondition.toString());
 
         List<QuestionFindConditionRes> findConditionRes = questionRepository.findByCondition(
             findCondition);
 
-        log.info("MatchingService_findByCondition_end: " + findConditionRes.toString());
+        log.info("QuestionService_findByCondition_end: " + findConditionRes.toString());
 
         return findConditionRes;
     }
@@ -233,16 +237,16 @@ public class QuestionServiceImpl implements QuestionService {
          *  id : question의 id
          */
 
-        log.info("MatchingService_findDetail_start: " + id);
+        log.info("QuestionService_findDetail_start: " + id);
 
         QuestionFindDetailRes findDetailRes = questionRepository.findDetail(id);
 
         // 상세 정보 검색 결과가 null이면 NotFoundException 처리
         if (findDetailRes == null) {
-            log.info("MatchingService_findDetail_end: QuestionNotFoundException");
+            log.info("QuestionService_findDetail_end: QuestionNotFoundException");
             throw new QuestionNotFoundException();
         } else {
-            log.info("MatchingService_findDetail_end: " + findDetailRes.toString());
+            log.info("QuestionService_findDetail_end: " + findDetailRes.toString());
             return findDetailRes;
         }
     }
@@ -258,12 +262,12 @@ public class QuestionServiceImpl implements QuestionService {
          *  findCondition : 검색 조건
          */
 
-        log.info("MatchingService_findMyQuestion_start: " + findCondition.toString());
+        log.info("QuestionService_findMyQuestion_start: " + findCondition.toString());
 
         List<QuestionFindMineRes> findConditionRes = questionRepository.findMyQuestion(
             findCondition);
 
-        log.info("MatchingService_findMyQuestion_end: " + findConditionRes.toString());
+        log.info("QuestionService_findMyQuestion_end: " + findConditionRes.toString());
 
         return findConditionRes;
     }

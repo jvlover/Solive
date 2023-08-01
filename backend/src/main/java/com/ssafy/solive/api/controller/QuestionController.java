@@ -56,12 +56,12 @@ public class QuestionController {
          */
         // TODO: 인증 된 사용자인지 확인하는 과정 필요
 
-        log.info("MatchingController_regist_start: " + registInfo.toString() + ", "
+        log.info("QuestionController_regist_start: " + registInfo.toString() + ", "
             + files.toString());
 
         questionService.registQuestion(registInfo, files);
 
-        log.info("MatchingController_regist_end: success");
+        log.info("QuestionController_regist_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -76,15 +76,15 @@ public class QuestionController {
         // TODO: 인증 된 사용자인지 확인하는 과정 필요
         // TODO: is_matched 가 true 인 경우 삭제할 수 있게 할지, 없게 할지 체크하는 과정 고려
 
-        log.info("MatchingController_delete_start: " + deleteInfo.toString());
+        log.info("QuestionController_delete_start: " + deleteInfo.toString());
 
         boolean isDeleted = questionService.deleteQuestion(deleteInfo); // 삭제 실패하면 false
         if (isDeleted) {
-            log.info("MatchingController_delete_end: success");
+            log.info("QuestionController_delete_end: success");
             return CommonResponse.success(SUCCESS);
         } else {
             // 유저가 작성하지 않은 문제를 삭제하려고 하는 경우
-            log.info("MatchingController_delete_end: QuestionPossessionFailException");
+            log.info("QuestionController_delete_end: QuestionPossessionFailException");
             throw new QuestionPossessionFailException();
         }
     }
@@ -100,14 +100,14 @@ public class QuestionController {
         // TODO: 인증 된 사용자인지 확인하는 과정 필요
         // TODO: is_matched가 true인 경우 수정 가능하게 할지 안 하게 할지
 
-        log.info("MatchingController_modify_start: " + modifyInfo.toString());
+        log.info("QuestionController_modify_start: " + modifyInfo.toString());
 
         boolean isModified = questionService.modifyQuestion(modifyInfo); // 수정 실패하면 false
         if (isModified) {
-            log.info("MatchingController_modify_end: success");
+            log.info("QuestionController_modify_end: success");
             return CommonResponse.success(SUCCESS);
         } else {
-            log.info("MatchingController_modify_end: QuestionPossessionFailException");
+            log.info("QuestionController_modify_end: QuestionPossessionFailException");
             throw new QuestionPossessionFailException();
         }
     }
@@ -122,11 +122,11 @@ public class QuestionController {
          *  findCondition : 검색 조건
          */
 
-        log.info("MatchingController_findByCondition_start: " + findCondition.toString());
+        log.info("QuestionController_findByCondition_start: " + findCondition.toString());
 
         List<QuestionFindConditionRes> findResList = questionService.findByCondition(findCondition);
 
-        log.info("MatchingController_findByCondition_end: " + findResList.toString());
+        log.info("QuestionController_findByCondition_end: " + findResList.toString());
         return CommonResponse.success(findResList);
     }
 
@@ -140,11 +140,11 @@ public class QuestionController {
          *  req : jwt token check 할 때 필요할 것 같아서 일단 넣었는데 아직 모름
          */
 
-        log.info("MatchingController_findDetail_start: " + id + ", " + req.toString());
+        log.info("QuestionController_findDetail_start: " + id + ", " + req.toString());
 
         QuestionFindDetailRes findDetailRes = questionService.findDetail(id);
 
-        log.info("MatchingController_findDetail_end: " + findDetailRes.toString());
+        log.info("QuestionController_findDetail_end: " + findDetailRes.toString());
         return CommonResponse.success(findDetailRes);
     }
 
@@ -158,11 +158,11 @@ public class QuestionController {
          *  findCondition : 검색 조건
          */
 
-        log.info("MatchingController_findMyQuestion_start: " + findCondition.toString());
+        log.info("QuestionController_findMyQuestion_start: " + findCondition.toString());
 
         List<QuestionFindMineRes> findResList = questionService.findMyQuestion(findCondition);
 
-        log.info("MatchingController_findMyQuestion_end: " + findResList.toString());
+        log.info("QuestionController_findMyQuestion_end: " + findResList.toString());
         return CommonResponse.success(findResList);
     }
 
