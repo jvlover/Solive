@@ -1,13 +1,23 @@
 package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.UserLoginPostReq;
+import com.ssafy.solive.api.request.UserModifyPutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
+import com.ssafy.solive.api.response.UserLoginPostRes;
+import com.ssafy.solive.api.response.UserProfilePostRes;
 import com.ssafy.solive.db.entity.User;
 
 public interface UserService {
 
     public User registUser(UserRegistPostReq registInfo);
 
-    String loginAndGetAccessToken(UserLoginPostReq loginInfo);
+    public UserLoginPostRes loginAndGetTokens(UserLoginPostReq loginInfo);
 
+    public Long getUserIdByAccessToken(String token);
+
+    public UserProfilePostRes getUserProfileByUserId(Long userId);
+
+    void modifyUser(Long userId, UserModifyPutReq userInfo);
+
+    void deleteUser(Long userId);
 }

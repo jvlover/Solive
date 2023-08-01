@@ -1,9 +1,9 @@
 package com.ssafy.solive.db.entity;
 
+import com.ssafy.solive.api.request.UserModifyPutReq;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,10 +12,11 @@ import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString
+@NoArgsConstructor
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @DynamicInsert
 @Entity
 public class User extends BaseEntity {
@@ -26,7 +27,7 @@ public class User extends BaseEntity {
     @Column(nullable = false, columnDefinition = "CHAR(60)")
     private String loginPassword;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(40)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String refreshToken;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
@@ -38,17 +39,23 @@ public class User extends BaseEntity {
     @Column(nullable = false, columnDefinition = "VARCHAR(40)")
     private String email;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String pictureUrl;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String pictureName;
+
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String fileName;
+
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String pathName;
+
+    @Column(columnDefinition = "VARCHAR(10)")
+    private String contentType;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String introduce;
-
-    @Column(nullable = false)
-    private Integer gender;
 
     @Column(columnDefinition = "BIGINT DEFAULT 0")
     private Long experience;
@@ -56,11 +63,28 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime signinTime;
 
-    @Column(columnDefinition = "BIT DEFAULT 0")
-    private Boolean isDeleted;
+    @Column(nullable = false)
+    private Integer gender;
+
+    private LocalDateTime deletedAt;
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
+    public void addDeleteAt() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void modifyUser(UserModifyPutReq userInfo) {
+        this.nickname = userInfo.getNickname();
+        this.email = userInfo.getEmail();
+        this.pictureUrl = userInfo.getPictureUrl();
+        this.pictureName = userInfo.getPictureName();
+        this.fileName = userInfo.getFileName();
+        this.pathName = userInfo.getPathName();
+        this.contentType = userInfo.getContentType();
+        this.introduce = userInfo.getIntroduce();
+        this.gender = userInfo.getGender();
+    }
 }

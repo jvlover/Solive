@@ -15,7 +15,7 @@ public class JwtConfiguration {
     // SALT는 임의 생성 문자열
     // TODO: 아마 SALT 정보 분리 저장 및 공유가 필요해 보임
     private static final String SALT = "ssafySecret";
-    private static final int ACCESS_TOKEN_EXPIRE_MINUTES = 1; // 분단위
+    private static final int ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 9; // 분단위
     private static final int REFRESH_TOKEN_EXPIRE_MINUTES = 2; // 주단위
 
     public <T> String createAccessToken(String key, T data) {
@@ -30,6 +30,7 @@ public class JwtConfiguration {
     public <T> String create(String key, T data, String subject, long expire) {
         log.info("JwtConfiguration_create_start: " + "\nkey: " + key + "\ndata: " + data.toString()
             + "\nsubject: " + subject + "\nexpire: " + expire);
+
         Claims claims = Jwts.claims()
             .setSubject(subject) // 토큰 제목
             .setIssuedAt(new Date()) // 생성일
@@ -60,7 +61,13 @@ public class JwtConfiguration {
                 log.error("Making JWT Key Error ::: {}", e.getMessage());
             }
         }
-
         return key;
+    }
+
+    public Long getUserId(String accessToken) throws UnsupportedEncodingException {
+        return Long.valueOf(
+            Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(accessToken)
+                .getBody()
+                .get("userid").toString());
     }
 }
