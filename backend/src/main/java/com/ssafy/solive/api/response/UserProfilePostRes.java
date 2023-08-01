@@ -1,16 +1,15 @@
-package com.ssafy.solive.api.request;
+package com.ssafy.solive.api.response;
 
+import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Data;
 
-/**
- * 유저 회원가입 API ([POST] /api/v1/users) 요청에 필요한 리퀘스트 바디 정의.
- */
 @Data
-public class UserRegistPostReq {
+@Builder
+public class UserProfilePostRes {
 
-    String loginId;
-    String loginPassword;
     Integer masterCodeId;
+    String loginId;
     String nickname;
     String email;
     String pictureUrl;
@@ -19,5 +18,7 @@ public class UserRegistPostReq {
     String pathName;
     String contentType;
     String introduce;
+    Long experience;
+    LocalDateTime signinTime;
     int gender;
 }
