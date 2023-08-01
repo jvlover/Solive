@@ -64,7 +64,6 @@ public class QuestionServiceImpl implements QuestionService {
          *  files : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 null일 수 없음
          *  registInfo : 문제 등록할 때 입력한 정보
          */
-        // TODO: Studnt Entity 구현 후, Student 지위 체크 과정 필요한 지 확인
 
         log.info("QuestionService_registQuestion_start: " + registInfo.toString() + ", "
             + files.toString());
