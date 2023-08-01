@@ -2,6 +2,8 @@ package com.ssafy.solive.db.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ import org.hibernate.annotations.DynamicInsert;
 @AllArgsConstructor
 @ToString
 @DynamicInsert
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 public class User extends BaseEntity {
 
