@@ -238,16 +238,20 @@ public class QuestionServiceImpl implements QuestionService {
 
         log.info("QuestionService_findDetail_start: " + id);
 
+        // detail 정보 DB로부터 얻어오기
         QuestionFindDetailRes findDetailRes = questionRepository.findDetail(id);
-
         // 상세 정보 검색 결과가 null이면 NotFoundException 처리
         if (findDetailRes == null) {
             log.info("QuestionService_findDetail_end: QuestionNotFoundException");
             throw new QuestionNotFoundException();
-        } else {
-            log.info("QuestionService_findDetail_end: " + findDetailRes.toString());
-            return findDetailRes;
         }
+        // 해당 문제의 Images 얻어오기
+        List<String> questionImages = questionRepository.findQuestionImage(id);
+        // Response에 Images Setting
+        findDetailRes.setImagePathName(questionImages);
+
+        log.info("QuestionService_findDetail_end: " + findDetailRes.toString());
+        return findDetailRes;
     }
 
     /*

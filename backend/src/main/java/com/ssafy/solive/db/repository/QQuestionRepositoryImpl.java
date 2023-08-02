@@ -78,13 +78,10 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 student.nickname.as("userNickname"),
                 question.title.as("title"),
                 question.description.as("description"),
-                questionPicture.pathName.as("imagePathName"),
                 masterCode.id.as("masterCodeId"),
                 question.time.as("createTime")))
             .from(question)
             .leftJoin(question.student).on(student.id.eq(question.student.id))
-            .leftJoin(questionPicture)
-            .on(questionPicture.question.id.eq(question.id))
             .leftJoin(question.masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(questionIdEq(id))
             .fetchOne();
@@ -119,6 +116,15 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
             .orderBy(timeSort(findCondition.getSort()))
+            .fetch();
+    }
+
+    @Override
+    public List<String> findQuestionImage(Long questionId) {
+        return queryFactory
+            .select(questionPicture.pathName)
+            .from(questionPicture)
+            .where(questionPicture.question.id.eq(questionId))
             .fetch();
     }
 
