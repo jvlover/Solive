@@ -1,6 +1,5 @@
 package com.ssafy.solive.api.response;
 
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,17 +7,13 @@ import lombok.Data;
 @Builder
 public class UserProfilePostRes {
 
-    Integer masterCodeId;
-    String loginId;
-    String nickname;
-    String email;
     String pictureUrl;
     String pictureName;
     String fileName;
     String pathName;
     String contentType;
-    String introduce;
+    String nickname;
+    Integer gender;
     Long experience;
-    LocalDateTime signinTime;
-    int gender;
+    String introduce;
 }

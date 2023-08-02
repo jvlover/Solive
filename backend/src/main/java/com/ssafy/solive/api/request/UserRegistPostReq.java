@@ -13,11 +13,5 @@ public class UserRegistPostReq {
     Integer masterCodeId;
     String nickname;
     String email;
-    String pictureUrl;
-    String pictureName;
-    String fileName;
-    String pathName;
-    String contentType;
-    String introduce;
-    int gender;
+    Integer gender;
 }

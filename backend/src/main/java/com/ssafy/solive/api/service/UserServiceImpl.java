@@ -1,13 +1,22 @@
 package com.ssafy.solive.api.service;
 
+import com.ssafy.solive.api.request.TeacherRatePostReq;
 import com.ssafy.solive.api.request.UserLoginPostReq;
-import com.ssafy.solive.api.request.UserModifyPutReq;
+import com.ssafy.solive.api.request.UserModifyPasswordPutReq;
+import com.ssafy.solive.api.request.UserModifyProfilePutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
 import com.ssafy.solive.api.response.UserLoginPostRes;
+import com.ssafy.solive.api.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.response.UserProfilePostRes;
 import com.ssafy.solive.common.exception.PasswordMismatchException;
 import com.ssafy.solive.config.JwtConfiguration;
+import com.ssafy.solive.db.entity.MasterCode;
+import com.ssafy.solive.db.entity.Student;
+import com.ssafy.solive.db.entity.Teacher;
 import com.ssafy.solive.db.entity.User;
+import com.ssafy.solive.db.repository.MasterCodeRepository;
+import com.ssafy.solive.db.repository.StudentRepository;
+import com.ssafy.solive.db.repository.TeacherRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
@@ -23,31 +32,40 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private StudentRepository studentRepository;
+    private TeacherRepository teacherRepository;
+    private MasterCodeRepository masterCodeRepository;
     private JwtConfiguration jwtConfiguration;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, JwtConfiguration jwtConfiguration) {
+    public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository,
+        TeacherRepository teacherRepository, MasterCodeRepository masterCodeRepository,
+        JwtConfiguration jwtConfiguration) {
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
+        this.masterCodeRepository = masterCodeRepository;
         this.jwtConfiguration = jwtConfiguration;
     }
 
+    /**
+     * @param registInfo
+     * @return
+     */
     @Override
     public User registUser(UserRegistPostReq registInfo) {
         log.info("UserService_registUser_start: " + registInfo.toString());
         // 비밀번호에 Bcrypt 적용
         String hashedPassword = BCrypt.hashpw(registInfo.getLoginPassword(), BCrypt.gensalt());
+        // 마스터 코드 객체 생성
+        MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId()).get();
+
         User user = User.builder()
             .loginId(registInfo.getLoginId())
             .loginPassword(hashedPassword)
-            .masterCodeId(registInfo.getMasterCodeId())
+            .masterCodeId(masterCode)
             .nickname(registInfo.getNickname())
             .email(registInfo.getEmail())
-            .pictureUrl(registInfo.getPictureUrl())
-            .pictureName(registInfo.getPictureName())
-            .fileName(registInfo.getFileName())
-            .pathName(registInfo.getPathName())
-            .contentType(registInfo.getContentType())
-            .introduce(registInfo.getIntroduce())
             .gender(registInfo.getGender())
             .build();
         log.info("UserService_registUser_end: " + user.toString());
@@ -93,12 +111,22 @@ public class UserServiceImpl implements UserService {
             return UserLoginPostRes.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .loginId(userLoginId)
+                .masterCodeName(
+                    masterCodeRepository.findById(user.getMasterCodeId().getId()).get().getName())
+                .nickname(user.getNickname())
                 .build();
         } else { // 로그인 실패
             throw new PasswordMismatchException();
         }
     }
 
+    /**
+     * accessTokendmfh userId를 조회
+     *
+     * @param accessToken
+     * @return userId
+     */
     @Override
     public Long getUserIdByAccessToken(String accessToken) {
         try {
@@ -111,25 +139,27 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * userId로 프로필 정보 조회
+     *
+     * @param userId
+     * @return UserProfilePostRes
+     */
     @Override
     public UserProfilePostRes getUserProfileByUserId(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             return UserProfilePostRes.builder()
-                .masterCodeId(user.getMasterCodeId())
-                .loginId(user.getLoginId())
-                .nickname(user.getNickname())
-                .email(user.getEmail())
                 .pictureUrl(user.getPictureUrl())
                 .pictureName(user.getPictureName())
                 .fileName(user.getFileName())
                 .pathName(user.getFileName())
                 .contentType(user.getContentType())
-                .introduce(user.getIntroduce())
-                .experience(user.getExperience())
-                .signinTime(user.getSigninTime())
+                .nickname(user.getNickname())
                 .gender(user.getGender())
+                .experience(user.getExperience())
+                .introduce(user.getIntroduce())
                 .build();
         } else {
             // TODO: Exception
@@ -137,23 +167,127 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * userId로 개인정보 조회
+     *
+     * @param userId
+     * @return UserPrivacyPostRes
+     */
     @Override
-    public void modifyUser(Long userId, UserModifyPutReq userInfo) {
-        log.info("UserService_modifyUser_start: \nuserId: " + userId + "\nuserInfo: "
-            + userInfo.toString());
-        User user = userRepository.findById(userId).get();
-        log.info("UserService_modifyUser_mid: \nuser: " + user.toString());
-        user.modifyUser(userInfo);
-
-        log.info("UserService_modifyUser_mid: \nmodifiedUser: " + user.toString());
-
-        userRepository.save(user);
-        log.info("UserService_modifyUser_end");
+    public UserPrivacyPostRes getUserPrivacyByUserId(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return UserPrivacyPostRes.builder()
+                .email(user.getEmail())
+                .signinTime(user.getSigninTime())
+                .build();
+        } else {
+            // TODO: Exception
+            return null;
+        }
     }
 
+    /**
+     * 유저 프로필 수정
+     *
+     * @param userId
+     * @param userInfo 바꿀 정보들
+     */
+    @Override
+    public void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo) {
+        log.info("UserService_modifyUserProfile_start: \nuserId: " + userId + "\nuserInfo: "
+            + userInfo.toString());
+        User user = userRepository.findById(userId).get();
+        log.info("UserService_modifyUserProfile_mid: \nuser: " + user.toString());
+        user.modifyUserProfile(userInfo);
+
+        log.info("UserService_modifyUserProfile_mid: \nmodifiedUser: " + user.toString());
+
+        userRepository.save(user);
+        log.info("UserService_modifyUserProfiler_end");
+    }
+
+    /**
+     * 비밀번호 변경
+     *
+     * @param userId
+     * @param passwords 기존비밀번호, 새로운비밀번호
+     */
+    @Override
+    public void modifyUserPassword(Long userId, UserModifyPasswordPutReq passwords) {
+        log.info("UserService_modifyUserPrivacy_start: \nuserId: " + userId + "\npasswords: "
+            + passwords.toString());
+        User user = userRepository.findById(userId).get();
+        String oldPassword = passwords.getOldPassword();
+        String newPassword = passwords.getNewPassword();
+
+        // 비밀번호 일치 확인
+        if (BCrypt.checkpw(oldPassword, user.getLoginPassword())) {
+            String hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            user.modifyUserPassword(hashedNewPassword);
+        } else { // 비밀번호 불일치
+
+        }
+        log.info("UserService_modifyUserPassword_end");
+    }
+
+    /**
+     * 회원 탈퇴
+     *
+     * @param userId
+     */
     @Override
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).get();
         user.addDeleteAt();
+    }
+
+    /**
+     * 임시함수여서 지울듯
+     *
+     * @param userId
+     * @param code
+     */
+    @Override
+    public void setCode(Long userId, Integer code) {
+        User user = userRepository.findById(userId).get();
+        MasterCode masterCode = masterCodeRepository.findById(code).get();
+        user.setCode(masterCode);
+    }
+
+    /**
+     * 학생의 Solve Point 충전
+     *
+     * @param userId
+     * @param solvePoint 충전금액
+     */
+    @Override
+    public void chargeSolvePoint(Long userId, Integer solvePoint) {
+        Student student = studentRepository.findById(userId).get();
+        student.chargeSolvePoint(solvePoint);
+    }
+
+    /**
+     * 강사의 Solve Point 출금
+     *
+     * @param userId
+     * @param solvePoint 출금금액
+     */
+    @Override
+    public void cashOutSolvePoint(Long userId, Integer solvePoint) {
+        Teacher teacher = teacherRepository.findById(userId).get();
+        teacher.cashOutSolvePoint(solvePoint);
+    }
+
+    /**
+     * 학생의 강사 평점 입력
+     *
+     * @param ratingInfo 입력된 평점
+     */
+    @Override
+    public void rateTeacher(TeacherRatePostReq ratingInfo) {
+        Teacher teacher = teacherRepository.findById(ratingInfo.getUserId()).get();
+        teacher.addRating(ratingInfo.getRating());
     }
 }
