@@ -19,5 +19,7 @@ public interface QQuestionRepository {
     List<QuestionFindMineRes> findMyQuestion(
         QuestionFindMineGetReq findCondition);
 
-    List<String> findQuestionImage(Long questionId);
+    List<String> findQuestionImages(Long questionId);
+
+    String findQuestionImage(Long questionId);
 }

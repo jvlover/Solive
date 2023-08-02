@@ -219,8 +219,16 @@ public class QuestionServiceImpl implements QuestionService {
 
         log.info("QuestionService_findByCondition_start: " + findCondition.toString());
 
+        // 문제 리스트 DB에서 얻어 오기
         List<QuestionFindConditionRes> findConditionRes = questionRepository.findByCondition(
             findCondition);
+
+        // 문제 리스트의 각 문제에 썸네일 이미지 Setting
+        for (int i = 0; i < findConditionRes.size(); i++) {
+            String questionImage = questionRepository.findQuestionImage(
+                findConditionRes.get(i).getQuestionId());
+            findConditionRes.get(i).setImagePathName(questionImage);
+        }
 
         log.info("QuestionService_findByCondition_end: " + findConditionRes.toString());
 
@@ -246,7 +254,7 @@ public class QuestionServiceImpl implements QuestionService {
             throw new QuestionNotFoundException();
         }
         // 해당 문제의 Images 얻어오기
-        List<String> questionImages = questionRepository.findQuestionImage(id);
+        List<String> questionImages = questionRepository.findQuestionImages(id);
         // Response에 Images Setting
         findDetailRes.setImagePathName(questionImages);
 
@@ -267,8 +275,16 @@ public class QuestionServiceImpl implements QuestionService {
 
         log.info("QuestionService_findMyQuestion_start: " + findCondition.toString());
 
+        // 문제 리스트 DB에서 얻어 오기
         List<QuestionFindMineRes> findConditionRes = questionRepository.findMyQuestion(
             findCondition);
+
+        // 문제 리스트의 각 문제에 썸네일 이미지 Setting
+        for (int i = 0; i < findConditionRes.size(); i++) {
+            String questionImage = questionRepository.findQuestionImage(
+                findConditionRes.get(i).getQuestionId());
+            findConditionRes.get(i).setImagePathName(questionImage);
+        }
 
         log.info("QuestionService_findMyQuestion_end: " + findConditionRes.toString());
 

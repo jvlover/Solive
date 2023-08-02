@@ -32,10 +32,9 @@ public class QuestionFindMineRes {
     }
 
     // Querydsl을 위한 생성자
-    public QuestionFindMineRes(Long questionId, String imagePathName, String title,
-        LocalDateTime createTime, String masterCodeName, Integer matchingState) {
+    public QuestionFindMineRes(Long questionId, String title, LocalDateTime createTime,
+        String masterCodeName, Integer matchingState) {
         this.questionId = questionId;
-        this.imagePathName = imagePathName;
         this.title = title;
         this.createTime = createTime.toString();
         this.masterCodeName = masterCodeName;

@@ -32,12 +32,10 @@ public class QuestionFindConditionRes {
     }
 
     // Querydsl을 위한 생성자
-    public QuestionFindConditionRes(Long questionId, String userNickname, String imagePathName,
-        String title,
-        LocalDateTime createTime, String masterCodeName) {
+    public QuestionFindConditionRes(Long questionId, String userNickname,
+        String title, LocalDateTime createTime, String masterCodeName) {
         this.questionId = questionId;
         this.userNickname = userNickname;
-        this.imagePathName = imagePathName;
         this.title = title;
         this.createTime = createTime.toString();
         this.masterCodeName = masterCodeName;

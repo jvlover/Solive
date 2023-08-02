@@ -50,14 +50,11 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
             .select(Projections.constructor(QuestionFindConditionRes.class,
                 question.id.as("questionId"),
                 student.nickname.as("userNickname"),
-                questionPicture.pathName.as("imagePathName"),
                 question.title.as("title"),
                 question.time.as("createTime"),
                 masterCode.name.as("masterCodeName")))
             .from(question)
             .leftJoin(question.student).on(student.id.eq(question.student.id))
-            .leftJoin(questionPicture)
-            .on(questionPicture.question.id.eq(question.id))
             .leftJoin(question.masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()),
                 matchingStateLt())
@@ -103,14 +100,11 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
         return queryFactory
             .select(Projections.constructor(QuestionFindMineRes.class,
                 question.id.as("questionId"),
-                questionPicture.pathName.as("imagePathName"),
                 question.title.as("title"),
                 question.time.as("createTime"),
                 masterCode.name.as("masterCodeName"),
                 question.matchingState.as("matchingState")))
             .from(question)
-            .leftJoin(questionPicture)
-            .on(questionPicture.question.id.eq(question.id))
             .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(studentIdEq(findCondition.getStudentId()), mastercodeBetween(code),
                 keywordSearch(findCondition.getKeyword()),
@@ -119,13 +113,26 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
             .fetch();
     }
 
+    // 문제 상세 정보 조회 시 해당 문제의 이미지들 조회
     @Override
-    public List<String> findQuestionImage(Long questionId) {
+    public List<String> findQuestionImages(Long questionId) {
         return queryFactory
             .select(questionPicture.pathName)
             .from(questionPicture)
             .where(questionPicture.question.id.eq(questionId))
             .fetch();
+    }
+
+    // 문제 리스트 조회 시 각 문제의 썸네일 이미지를 조회
+    @Override
+    public String findQuestionImage(Long questionId) {
+        return queryFactory
+            .select(questionPicture.pathName)
+            .from(questionPicture)
+            .where(questionPicture.question.id.eq(questionId))
+            .offset(0)
+            .limit(1)
+            .fetchOne();
     }
 
     /*
