@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.service;
 
+import com.ssafy.solive.api.request.TeacherRatePostReq;
 import com.ssafy.solive.api.request.UserLoginPostReq;
 import com.ssafy.solive.api.request.UserModifyPutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
@@ -199,5 +200,11 @@ public class UserServiceImpl implements UserService {
     public void cashOutSolvePoint(Long userId, Integer solvePoint) {
         Teacher teacher = teacherRepository.findById(userId).get();
         teacher.cashOutSolvePoint(solvePoint);
+    }
+
+    @Override
+    public void rateTeacher(TeacherRatePostReq ratingInfo) {
+        Teacher teacher = teacherRepository.findById(ratingInfo.getUserId()).get();
+        teacher.addRating(ratingInfo.getRating());
     }
 }

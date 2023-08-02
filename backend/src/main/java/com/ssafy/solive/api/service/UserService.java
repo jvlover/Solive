@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.service;
 
+import com.ssafy.solive.api.request.TeacherRatePostReq;
 import com.ssafy.solive.api.request.UserLoginPostReq;
 import com.ssafy.solive.api.request.UserModifyPutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
@@ -29,4 +30,6 @@ public interface UserService {
     void chargeSolvePoint(Long userId, Integer solvePoint);
 
     void cashOutSolvePoint(Long userId, Integer solvePoint);
+
+    void rateTeacher(TeacherRatePostReq ratingInfo);
 }

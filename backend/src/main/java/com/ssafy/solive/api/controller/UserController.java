@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.controller;
 
+import com.ssafy.solive.api.request.TeacherRatePostReq;
 import com.ssafy.solive.api.request.UserLoginPostReq;
 import com.ssafy.solive.api.request.UserModifyPutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
@@ -148,5 +149,23 @@ public class UserController {
 
         return CommonResponse.success(SUCCESS);
         // TODO: Exception 처리
+    }
+
+    @PutMapping("/cashout")
+    public CommonResponse<?> cashoutSolvePoint(Integer solvePoint, HttpServletRequest request) {
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByAccessToken(accessToken);
+
+        userService.cashOutSolvePoint(userId, solvePoint);
+
+        return CommonResponse.success(SUCCESS);
+        // TODO: Exception 처리
+    }
+
+    @PutMapping("/rate")
+    public CommonResponse<?> rateTeacher(TeacherRatePostReq ratingInfo) {
+        userService.rateTeacher(ratingInfo);
+
+        return CommonResponse.success(SUCCESS);
     }
 }

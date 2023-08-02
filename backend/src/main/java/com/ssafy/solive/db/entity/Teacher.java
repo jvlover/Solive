@@ -44,4 +44,9 @@ public class Teacher extends User {
     public void cashOutSolvePoint(Integer solvePoint) {
         this.solvePoint -= solvePoint;
     }
+
+    public void addRating(Integer rating) {
+        this.ratingCount++;
+        this.ratingSum += rating;
+    }
 }
