@@ -20,4 +20,8 @@ public interface UserService {
     void modifyUser(Long userId, UserModifyPutReq userInfo);
 
     void deleteUser(Long userId);
+
+    void setCode(Long userId, Integer code);
+
+    void chargeSolvePoint(Long userId, int solvePoint);
 }

@@ -7,7 +7,12 @@ import com.ssafy.solive.api.response.UserLoginPostRes;
 import com.ssafy.solive.api.response.UserProfilePostRes;
 import com.ssafy.solive.common.exception.PasswordMismatchException;
 import com.ssafy.solive.config.JwtConfiguration;
+import com.ssafy.solive.db.entity.MasterCode;
+import com.ssafy.solive.db.entity.Student;
 import com.ssafy.solive.db.entity.User;
+import com.ssafy.solive.db.repository.MasterCodeRepository;
+import com.ssafy.solive.db.repository.StudentRepository;
+import com.ssafy.solive.db.repository.TeacherRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
@@ -23,11 +28,19 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private StudentRepository studentRepository;
+    private TeacherRepository teacherRepository;
+    private MasterCodeRepository masterCodeRepository;
     private JwtConfiguration jwtConfiguration;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, JwtConfiguration jwtConfiguration) {
+    public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository,
+        TeacherRepository teacherRepository, MasterCodeRepository masterCodeRepository,
+        JwtConfiguration jwtConfiguration) {
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
+        this.masterCodeRepository = masterCodeRepository;
         this.jwtConfiguration = jwtConfiguration;
     }
 
@@ -36,10 +49,13 @@ public class UserServiceImpl implements UserService {
         log.info("UserService_registUser_start: " + registInfo.toString());
         // 비밀번호에 Bcrypt 적용
         String hashedPassword = BCrypt.hashpw(registInfo.getLoginPassword(), BCrypt.gensalt());
+        // 마스터 코드 객체 생성
+        MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId()).get();
+
         User user = User.builder()
             .loginId(registInfo.getLoginId())
             .loginPassword(hashedPassword)
-            .masterCodeId(registInfo.getMasterCodeId())
+            .masterCodeId(masterCode)
             .nickname(registInfo.getNickname())
             .email(registInfo.getEmail())
             .pictureUrl(registInfo.getPictureUrl())
@@ -117,7 +133,6 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             return UserProfilePostRes.builder()
-                .masterCodeId(user.getMasterCodeId())
                 .loginId(user.getLoginId())
                 .nickname(user.getNickname())
                 .email(user.getEmail())
@@ -155,5 +170,18 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).get();
         user.addDeleteAt();
+    }
+
+    @Override
+    public void setCode(Long userId, Integer code) {
+        User user = userRepository.findById(userId).get();
+        MasterCode masterCode = masterCodeRepository.findById(code).get();
+        user.setCode(masterCode);
+    }
+
+    @Override
+    public void chargeSolvePoint(Long userId, int solvePoint) {
+        Student student = studentRepository.findById(userId).get();
+        student.chargeSolvePoint(solvePoint);
     }
 }

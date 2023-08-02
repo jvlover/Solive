@@ -60,7 +60,7 @@ public class UserController {
         if (userProfile != null) {
             return CommonResponse.success(userProfile);
         } else {
-            // TODO: Exception
+            // TODO: Exception 처리
             return null;
         }
     }
@@ -92,7 +92,7 @@ public class UserController {
             userService.modifyUser(userId, userInfo);
             return CommonResponse.success(SUCCESS);
         } catch (Exception e) {
-            // TODO: Exception처리
+            // TODO: Exception 처리
             return null;
         }
     }
@@ -101,8 +101,8 @@ public class UserController {
     public CommonResponse<?> delete(HttpServletRequest request) {
         try {
             String accessToken = request.getHeader("access-token");
-
             Long userId = userService.getUserIdByAccessToken(accessToken);
+
             userService.deleteUser(userId);
             return CommonResponse.success(SUCCESS);
         } catch (Exception e) {
@@ -111,5 +111,27 @@ public class UserController {
             return null;
 //            return new RuntimeException();
         }
+    }
+
+    @PutMapping("/setcode")
+    public CommonResponse<?> setCode(Integer code, HttpServletRequest request) {
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByAccessToken(accessToken);
+
+        userService.setCode(userId, code);
+
+        return CommonResponse.success(SUCCESS);
+        // TODO: Exception 처리
+    }
+
+    @PutMapping("/charge")
+    public CommonResponse<?> chargeSolvePoint(Integer solvePoint, HttpServletRequest request) {
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByAccessToken(accessToken);
+
+        userService.chargeSolvePoint(userId, solvePoint);
+
+        return CommonResponse.success(SUCCESS);
+        // TODO: Exception 처리
     }
 }

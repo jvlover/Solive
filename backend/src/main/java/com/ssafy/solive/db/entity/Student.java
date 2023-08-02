@@ -24,4 +24,8 @@ public class Student extends User {
     // 환전 가능한 SP
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer solvePoint;
+
+    public void chargeSolvePoint(int solvePoint) {
+        this.solvePoint += solvePoint;
+    }
 }
