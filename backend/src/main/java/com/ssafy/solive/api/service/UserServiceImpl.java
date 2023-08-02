@@ -60,26 +60,53 @@ public class UserServiceImpl implements UserService {
         // 마스터 코드 객체 생성
         MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId()).get();
 
-        User user = User.builder()
-            .loginId(registInfo.getLoginId())
-            .loginPassword(hashedPassword)
-            .masterCodeId(masterCode)
-            .nickname(registInfo.getNickname())
-            .email(registInfo.getEmail())
-            .gender(registInfo.getGender())
-            .build();
-        log.info("UserService_registUser_end: " + user.toString());
+        // 학생으로 회원가입 요청한 경우
+        if (registInfo.getMasterCodeId() == 2) {
+            Student student = Student.builder()
+                .loginId(registInfo.getLoginId())
+                .loginPassword(hashedPassword)
+                .masterCodeId(masterCode)
+                .nickname(registInfo.getNickname())
+                .email(registInfo.getEmail())
+                .gender(registInfo.getGender())
+                .build();
 
-        try {
-            userRepository.save(user);
-            log.info("UserService_registUser_end: " + user.toString());
-            return user;
-        } catch (Exception e) {
-            // TODO: 예외 관련 세분화 처리 ex) 중복확인, 미가입 유저 등
-            e.printStackTrace();
-            log.info("UserService_registUser_end: null");
-            return null;
+            log.info("UserService_registUser_end: " + student.toString());
+
+            try {
+                studentRepository.save(student);
+                log.info("UserService_registUser_end: " + student.toString());
+                return student;
+            } catch (Exception e) {
+                // TODO: 예외 관련 세분화 처리 ex) 중복확인, 미가입 유저 등
+                e.printStackTrace();
+                log.info("UserService_registUser_end: null");
+                return null;
+            }
+        } else {  // 임시로 나머지 경우 다 강사가 회원가입 요청한 경우로 처리함
+            Teacher teacher = Teacher.builder()
+                .loginId(registInfo.getLoginId())
+                .loginPassword(hashedPassword)
+                .masterCodeId(masterCode)
+                .nickname(registInfo.getNickname())
+                .email(registInfo.getEmail())
+                .gender(registInfo.getGender())
+                .build();
+
+            log.info("UserService_registUser_end: " + teacher.toString());
+
+            try {
+                teacherRepository.save(teacher);
+                log.info("UserService_registUser_end: " + teacher.toString());
+                return teacher;
+            } catch (Exception e) {
+                // TODO: 예외 관련 세분화 처리 ex) 중복확인, 미가입 유저 등
+                e.printStackTrace();
+                log.info("UserService_registUser_end: null");
+                return null;
+            }
         }
+
     }
 
     /**

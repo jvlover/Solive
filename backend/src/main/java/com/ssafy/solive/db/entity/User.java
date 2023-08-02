@@ -7,21 +7,22 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @DynamicInsert
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
@@ -42,7 +43,7 @@ public class User extends BaseEntity {
 
     // 유저의 상태, 학생인지 선생님인지
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 1")
+    @JoinColumn(name = "master_code_id")
     private MasterCode masterCodeId;
 
     // 웹에서 사용할 닉네임
@@ -74,7 +75,7 @@ public class User extends BaseEntity {
     private String contentType;
 
     // 소개글
-    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String introduce;
 
     // 경험치
