@@ -4,6 +4,7 @@ import com.ssafy.solive.api.request.UserLoginPostReq;
 import com.ssafy.solive.api.request.UserModifyPutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
 import com.ssafy.solive.api.response.UserLoginPostRes;
+import com.ssafy.solive.api.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.response.UserProfilePostRes;
 import com.ssafy.solive.api.service.UserService;
 import com.ssafy.solive.common.exception.UserNotFoundException;
@@ -65,14 +66,28 @@ public class UserController {
         }
     }
 
+    @GetMapping("/privacy")
+    public CommonResponse<?> getUserPrivacy(HttpServletRequest request) {
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByAccessToken(accessToken);
+
+        UserPrivacyPostRes userPrivacy = userService.getUserPrivacyByUserId(userId);
+        if (userPrivacy != null) {
+            return CommonResponse.success(userPrivacy);
+        } else {
+            // TODO: Exception 처리
+            return null;
+        }
+    }
+
     @PostMapping("/login")
     public CommonResponse<?> login(@RequestBody UserLoginPostReq loginInfo) {
         log.info("UserController_login_start: " + loginInfo.toString());
         try {
-            UserLoginPostRes Tokens = userService.loginAndGetTokens(loginInfo);
+            UserLoginPostRes userLoginPostRes = userService.loginAndGetTokens(loginInfo);
             // TODO: null이 아니라 PasswordMismatchException() 일때를 구현해야함
-            if (Tokens != null) {
-                return CommonResponse.success(Tokens);
+            if (userLoginPostRes != null) {
+                return CommonResponse.success(userLoginPostRes);
             } else {
                 return CommonResponse.fail(null, "Login Fail");
             }

@@ -4,6 +4,7 @@ import com.ssafy.solive.api.request.UserLoginPostReq;
 import com.ssafy.solive.api.request.UserModifyPutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
 import com.ssafy.solive.api.response.UserLoginPostRes;
+import com.ssafy.solive.api.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.response.UserProfilePostRes;
 import com.ssafy.solive.common.exception.PasswordMismatchException;
 import com.ssafy.solive.config.JwtConfiguration;
@@ -58,12 +59,6 @@ public class UserServiceImpl implements UserService {
             .masterCodeId(masterCode)
             .nickname(registInfo.getNickname())
             .email(registInfo.getEmail())
-            .pictureUrl(registInfo.getPictureUrl())
-            .pictureName(registInfo.getPictureName())
-            .fileName(registInfo.getFileName())
-            .pathName(registInfo.getPathName())
-            .contentType(registInfo.getContentType())
-            .introduce(registInfo.getIntroduce())
             .gender(registInfo.getGender())
             .build();
         log.info("UserService_registUser_end: " + user.toString());
@@ -109,6 +104,10 @@ public class UserServiceImpl implements UserService {
             return UserLoginPostRes.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .loginId(userLoginId)
+                .masterCodeName(
+                    masterCodeRepository.findById(user.getMasterCodeId().getId()).get().getName())
+                .nickname(user.getNickname())
                 .build();
         } else { // 로그인 실패
             throw new PasswordMismatchException();
@@ -133,9 +132,6 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             return UserProfilePostRes.builder()
-                .loginId(user.getLoginId())
-                .nickname(user.getNickname())
-                .email(user.getEmail())
                 .pictureUrl(user.getPictureUrl())
                 .pictureName(user.getPictureName())
                 .fileName(user.getFileName())
@@ -143,8 +139,21 @@ public class UserServiceImpl implements UserService {
                 .contentType(user.getContentType())
                 .introduce(user.getIntroduce())
                 .experience(user.getExperience())
+                .build();
+        } else {
+            // TODO: Exception
+            return null;
+        }
+    }
+
+    @Override
+    public UserPrivacyPostRes getUserPrivacyByUserId(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return UserPrivacyPostRes.builder()
+                .email(user.getEmail())
                 .signinTime(user.getSigninTime())
-                .gender(user.getGender())
                 .build();
         } else {
             // TODO: Exception
