@@ -8,7 +8,7 @@ import com.ssafy.solive.api.response.QuestionFindMineRes;
 import java.util.List;
 
 /*
- *  Querydsl을 위한 Repository interface
+ *  Querydsl을 위한 Question Repository interface
  */
 public interface QQuestionRepository {
 
@@ -18,4 +18,8 @@ public interface QQuestionRepository {
 
     List<QuestionFindMineRes> findMyQuestion(
         QuestionFindMineGetReq findCondition);
+
+    List<String> findQuestionImages(Long questionId);
+
+    String findQuestionImage(Long questionId);
 }

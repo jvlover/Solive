@@ -3,7 +3,7 @@ package com.ssafy.solive.db.repository;
 import static com.ssafy.solive.db.entity.QMasterCode.masterCode;
 import static com.ssafy.solive.db.entity.QQuestion.question;
 import static com.ssafy.solive.db.entity.QQuestionPicture.questionPicture;
-import static com.ssafy.solive.db.entity.QUser.user;
+import static com.ssafy.solive.db.entity.QStudent.student;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 /*
- *  Querydsl을 위한 Repository 구현
+ *  Querydsl을 위한 Question Repository 구현
  */
 @Slf4j
 @Repository
@@ -49,16 +49,13 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
         return queryFactory
             .select(Projections.constructor(QuestionFindConditionRes.class,
                 question.id.as("questionId"),
-                user.nickname.as("userNickname"),
-                questionPicture.pathName.as("imagePathName"),
+                student.nickname.as("userNickname"),
                 question.title.as("title"),
                 question.time.as("createTime"),
                 masterCode.name.as("masterCodeName")))
             .from(question)
-            .leftJoin(question.user, user).on(user.id.eq(question.user.id))
-            .leftJoin(questionPicture)
-            .on(questionPicture.question.id.eq(question.id))
-            .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
+            .leftJoin(question.student).on(student.id.eq(question.student.id))
+            .leftJoin(question.masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()),
                 matchingStateLt())
             .orderBy(timeSort(findCondition.getSort()))
@@ -75,17 +72,14 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
 
         return queryFactory
             .select(Projections.constructor(QuestionFindDetailRes.class,
-                user.nickname.as("userNickname"),
+                student.nickname.as("userNickname"),
                 question.title.as("title"),
                 question.description.as("description"),
-                questionPicture.pathName.as("imagePathName"),
                 masterCode.id.as("masterCodeId"),
                 question.time.as("createTime")))
             .from(question)
-            .leftJoin(question.user, user).on(user.id.eq(question.user.id))
-            .leftJoin(questionPicture)
-            .on(questionPicture.question.id.eq(question.id))
-            .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
+            .leftJoin(question.student).on(student.id.eq(question.student.id))
+            .leftJoin(question.masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(questionIdEq(id))
             .fetchOne();
     }
@@ -106,20 +100,39 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
         return queryFactory
             .select(Projections.constructor(QuestionFindMineRes.class,
                 question.id.as("questionId"),
-                questionPicture.pathName.as("imagePathName"),
                 question.title.as("title"),
                 question.time.as("createTime"),
                 masterCode.name.as("masterCodeName"),
                 question.matchingState.as("matchingState")))
             .from(question)
-            .leftJoin(questionPicture)
-            .on(questionPicture.question.id.eq(question.id))
             .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(studentIdEq(findCondition.getStudentId()), mastercodeBetween(code),
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
             .orderBy(timeSort(findCondition.getSort()))
             .fetch();
+    }
+
+    // 문제 상세 정보 조회 시 해당 문제의 이미지들 조회
+    @Override
+    public List<String> findQuestionImages(Long questionId) {
+        return queryFactory
+            .select(questionPicture.pathName)
+            .from(questionPicture)
+            .where(questionPicture.question.id.eq(questionId))
+            .fetch();
+    }
+
+    // 문제 리스트 조회 시 각 문제의 썸네일 이미지를 조회
+    @Override
+    public String findQuestionImage(Long questionId) {
+        return queryFactory
+            .select(questionPicture.pathName)
+            .from(questionPicture)
+            .where(questionPicture.question.id.eq(questionId))
+            .offset(0)
+            .limit(1)
+            .fetchOne();
     }
 
     /*
@@ -168,7 +181,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
      *  student id로 본인이 등록한 question 조회하기 위한 where절에서 사용
      */
     private BooleanExpression studentIdEq(Long id) {
-        return user.id.eq(id);
+        return student.id.eq(id);
     }
 
     /*
