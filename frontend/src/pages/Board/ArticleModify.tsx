@@ -1,6 +1,7 @@
-import { ChangeEvent, useRef, useState } from 'react';
-import { registArticle } from '../../api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Article } from '../../recoil/atoms';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { fetchArticleById, modifyArticle } from '../../api';
 import {
   Button,
   Card,
@@ -13,19 +14,28 @@ import {
   Typography,
 } from '@material-tailwind/react';
 
-function ArticleRegist(): JSX.Element {
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
+function ArticleModify(): JSX.Element {
+  const { id } = useParams();
+  const [article, setArticle] = useState<Article | null>(null);
   const [files, setFiles] = useState<FileList>();
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const imageInput = useRef(); // file input을 버튼으로 대체하기 위함
+  const imageInput = useRef();
 
-  const regist = async () => {
-    // TODO: 추후 유저 id, mastercode 제대로 넘겨줘야함
-    await registArticle(0, 2000, title, content, files);
-    navigate('/board');
+  useEffect(() => {
+    fetchArticle();
+  }, []);
+
+  const fetchArticle = async () => {
+    const article = await fetchArticleById(Number(id));
+    setArticle(article);
+  };
+
+  const modify = async () => {
+    // 추후 userId, mastercode 제대로 넘기기
+    await modifyArticle(0, 2000, article, files);
+    navigate(`/board/${id}`);
   };
 
   const onChangeFiles = (e: ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +46,7 @@ function ArticleRegist(): JSX.Element {
   };
 
   const handleOpen = () => {
-    if (title && content) {
+    if (article?.title && article?.content) {
       setIsOpenDialog(!isOpenDialog);
     }
   };
@@ -48,18 +58,20 @@ function ArticleRegist(): JSX.Element {
         className="flex flex-col gap-6 mt-5 mb-10 w-[60%] min-w-fit"
       >
         <Typography variant="h2" color="blue-gray">
-          게시글 작성
+          게시글 수정
         </Typography>
         <Input
           label="제목"
           type="text"
-          onChange={(e) => setTitle(e.target.value)}
+          value={article?.title}
+          onChange={(e) => setArticle({ ...article, title: e.target.value })}
         ></Input>
         <Textarea
           label="내용"
           size="lg"
           className="h-[400px] max-h-screen"
-          onChange={(e) => setContent(e.target.value)}
+          value={article?.content}
+          onChange={(e) => setArticle({ ...article, content: e.target.value })}
         ></Textarea>
         <div className="flex justify-between items-center">
           <input
@@ -86,13 +98,13 @@ function ArticleRegist(): JSX.Element {
               color="red"
               className="mr-1 focus:outline-none focus:ring-red-300 focus:ring-1"
               onClick={() => {
-                navigate('/board');
+                navigate(`/board/${id}`);
               }}
             >
               취소
             </Button>
             <Tooltip
-              open={(!title || !content) && onmouseenter}
+              open={(!article?.title || !article?.content) && onmouseenter}
               animate={{
                 mount: { scale: 1, y: 0 },
                 unmount: { scale: 0, y: 25 },
@@ -105,12 +117,12 @@ function ArticleRegist(): JSX.Element {
                 className="btn-primary px-6 py-3 font-sans text-xs font-semibold"
                 onClick={handleOpen}
               >
-                등록
+                수정
               </button>
             </Tooltip>
           </div>
           <Dialog size="xs" open={isOpenDialog} handler={handleOpen}>
-            <DialogBody>글을 등록하시겠습니까?</DialogBody>
+            <DialogBody>글을 수정하시겠습니까?</DialogBody>
             <DialogFooter>
               <Button
                 variant="text"
@@ -122,7 +134,7 @@ function ArticleRegist(): JSX.Element {
               </Button>
               <button
                 className="btn-primary px-6 py-3 font-sans text-xs font-semibold"
-                onClick={regist}
+                onClick={modify}
               >
                 확인
               </button>
@@ -133,4 +145,4 @@ function ArticleRegist(): JSX.Element {
     </div>
   );
 }
-export default ArticleRegist;
+export default ArticleModify;

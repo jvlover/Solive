@@ -10,6 +10,7 @@ import ArticleList from './pages/Board/ArticleList';
 import HeaderNav from './components/HeaderNav';
 import ArticleDetail from './pages/Board/ArticleDetail';
 import ArticleRegist from './pages/Board/ArticleRegist';
+import ArticleModify from './pages/Board/ArticleModify';
 
 function App(): JSX.Element {
   return (
@@ -21,6 +22,7 @@ function App(): JSX.Element {
         <Route path="/board" element={<ArticleList />} />
         <Route path="/board/:id" element={<ArticleDetail />} />
         <Route path="/board/regist" element={<ArticleRegist />} />
+        <Route path="/board/modify/:id" element={<ArticleModify />} />
         <Route path="/signup/StudentSignup" element={<StudentSignup />} />
         <Route path="/signup/TeacherSignup" element={<TeacherSignup />} />
         <Route path="/login" element={<Login />} />

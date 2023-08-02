@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+//import { atom } from 'recoil';
 
 export interface Article {
   id: number;
@@ -13,7 +13,13 @@ export interface Article {
   articlePicturePathNames: string[] | null;
 }
 
-export const articleListState = atom<Article[]>({
-  key: 'articleListState',
-  default: [],
-});
+export interface ArticlePage {
+  content: Article[];
+  number: number;
+  totalPages: number;
+}
+
+// export const articleListState = atom<Article[] | undefined>({
+//   key: 'articleListState',
+//   default: [],
+// });
