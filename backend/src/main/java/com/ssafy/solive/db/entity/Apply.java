@@ -32,7 +32,7 @@ public class Apply extends BaseEntity {
     // user(teacher)의 id, FK
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
-    private User user;
+    private Teacher teacher;
 
     // 지원 신청 시간
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")

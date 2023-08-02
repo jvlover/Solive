@@ -8,7 +8,7 @@ import com.ssafy.solive.api.response.QuestionFindMineRes;
 import java.util.List;
 
 /*
- *  Querydsl을 위한 Repository interface
+ *  Querydsl을 위한 Question Repository interface
  */
 public interface QQuestionRepository {
 

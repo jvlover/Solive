@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 /*
- *  Querydsl을 위한 Repository 구현
+ *  Querydsl을 위한 Question Repository 구현
  */
 @Slf4j
 @Repository

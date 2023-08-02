@@ -1,12 +1,16 @@
 package com.ssafy.solive.api.controller;
 
 import com.ssafy.solive.api.request.ApplyDeletePutReq;
+import com.ssafy.solive.api.request.ApplyFindGetReq;
 import com.ssafy.solive.api.request.ApplyRegistPostReq;
+import com.ssafy.solive.api.response.ApplyFindRes;
 import com.ssafy.solive.api.service.ApplyService;
 import com.ssafy.solive.common.exception.ApplyPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,7 +53,6 @@ public class ApplyController {
         return CommonResponse.success(SUCCESS);
     }
 
-
     /*
      *  강사가 문제에 지원했다가 취소하기 위한 API
      */
@@ -71,5 +74,24 @@ public class ApplyController {
             log.info("ApplyController_delete_end: ApplyPossessionFailException");
             throw new ApplyPossessionFailException();
         }
+    }
+    
+    /*
+     *  유저(학생)가 자신이 등록한 문제에 어떤 강사들이 지원 신청했는지 검색하기 위한 API
+     *  정렬 / 검색 기준 : 예상 풀이시간순, 가격순, 평점순 정렬, 강사의 선호 과목과 문제의 과목 일치 여부 선택
+     *  Response : 강사명, 강사 프로필 사진, 강사의 선호 과목, 강사가 달아 놓은 SP, 예측 시간, 강사 평점
+     */
+    @GetMapping()
+    public CommonResponse<?> findByCondition(ApplyFindGetReq findCondition) {
+        /*
+         *  findCondition : 검색 조건
+         */
+
+        log.info("ApplyController_findByCondition_start: " + findCondition.toString());
+
+        List<ApplyFindRes> findResList = applyService.findByCondition(findCondition);
+
+        log.info("ApplyController_findByCondition_end: " + findResList.toString());
+        return CommonResponse.success(findResList);
     }
 }
