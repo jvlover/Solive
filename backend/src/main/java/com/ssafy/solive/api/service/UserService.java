@@ -26,5 +26,7 @@ public interface UserService {
 
     void setCode(Long userId, Integer code);
 
-    void chargeSolvePoint(Long userId, int solvePoint);
+    void chargeSolvePoint(Long userId, Integer solvePoint);
+
+    void cashOutSolvePoint(Long userId, Integer solvePoint);
 }

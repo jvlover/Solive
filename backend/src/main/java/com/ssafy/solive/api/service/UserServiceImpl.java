@@ -10,6 +10,7 @@ import com.ssafy.solive.common.exception.PasswordMismatchException;
 import com.ssafy.solive.config.JwtConfiguration;
 import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.Student;
+import com.ssafy.solive.db.entity.Teacher;
 import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.StudentRepository;
@@ -189,8 +190,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void chargeSolvePoint(Long userId, int solvePoint) {
+    public void chargeSolvePoint(Long userId, Integer solvePoint) {
         Student student = studentRepository.findById(userId).get();
         student.chargeSolvePoint(solvePoint);
+    }
+
+    @Override
+    public void cashOutSolvePoint(Long userId, Integer solvePoint) {
+        Teacher teacher = teacherRepository.findById(userId).get();
+        teacher.cashOutSolvePoint(solvePoint);
     }
 }
