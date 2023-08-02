@@ -25,6 +25,11 @@ public class Student extends User {
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer solvePoint;
 
+    /**
+     * 학생이 Solve Point를 충전할 때
+     *
+     * @param solvePoint 충전할 금액
+     */
     public void chargeSolvePoint(int solvePoint) {
         this.solvePoint += solvePoint;
     }

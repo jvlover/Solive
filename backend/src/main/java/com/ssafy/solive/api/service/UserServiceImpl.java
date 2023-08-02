@@ -48,6 +48,10 @@ public class UserServiceImpl implements UserService {
         this.jwtConfiguration = jwtConfiguration;
     }
 
+    /**
+     * @param registInfo
+     * @return
+     */
     @Override
     public User registUser(UserRegistPostReq registInfo) {
         log.info("UserService_registUser_start: " + registInfo.toString());
@@ -117,6 +121,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * accessTokendmfh userId를 조회
+     *
+     * @param accessToken
+     * @return userId
+     */
     @Override
     public Long getUserIdByAccessToken(String accessToken) {
         try {
@@ -129,6 +139,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * userId로 프로필 정보 조회
+     *
+     * @param userId
+     * @return UserProfilePostRes
+     */
     @Override
     public UserProfilePostRes getUserProfileByUserId(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -151,6 +167,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * userId로 개인정보 조회
+     *
+     * @param userId
+     * @return UserPrivacyPostRes
+     */
     @Override
     public UserPrivacyPostRes getUserPrivacyByUserId(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -166,6 +188,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 유저 프로필 수정
+     *
+     * @param userId
+     * @param userInfo 바꿀 정보들
+     */
     @Override
     public void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo) {
         log.info("UserService_modifyUserProfile_start: \nuserId: " + userId + "\nuserInfo: "
@@ -180,6 +208,12 @@ public class UserServiceImpl implements UserService {
         log.info("UserService_modifyUserProfiler_end");
     }
 
+    /**
+     * 비밀번호 변경
+     *
+     * @param userId
+     * @param passwords 기존비밀번호, 새로운비밀번호
+     */
     @Override
     public void modifyUserPassword(Long userId, UserModifyPasswordPutReq passwords) {
         log.info("UserService_modifyUserPrivacy_start: \nuserId: " + userId + "\npasswords: "
@@ -193,17 +227,28 @@ public class UserServiceImpl implements UserService {
             String hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             user.modifyUserPassword(hashedNewPassword);
         } else { // 비밀번호 불일치
-            
+
         }
         log.info("UserService_modifyUserPassword_end");
     }
 
+    /**
+     * 회원 탈퇴
+     *
+     * @param userId
+     */
     @Override
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).get();
         user.addDeleteAt();
     }
 
+    /**
+     * 임시함수여서 지울듯
+     *
+     * @param userId
+     * @param code
+     */
     @Override
     public void setCode(Long userId, Integer code) {
         User user = userRepository.findById(userId).get();
@@ -211,18 +256,35 @@ public class UserServiceImpl implements UserService {
         user.setCode(masterCode);
     }
 
+    /**
+     * 학생의 Solve Point 충전
+     *
+     * @param userId
+     * @param solvePoint 충전금액
+     */
     @Override
     public void chargeSolvePoint(Long userId, Integer solvePoint) {
         Student student = studentRepository.findById(userId).get();
         student.chargeSolvePoint(solvePoint);
     }
 
+    /**
+     * 강사의 Solve Point 출금
+     *
+     * @param userId
+     * @param solvePoint 출금금액
+     */
     @Override
     public void cashOutSolvePoint(Long userId, Integer solvePoint) {
         Teacher teacher = teacherRepository.findById(userId).get();
         teacher.cashOutSolvePoint(solvePoint);
     }
 
+    /**
+     * 학생의 강사 평점 입력
+     *
+     * @param ratingInfo 입력된 평점
+     */
     @Override
     public void rateTeacher(TeacherRatePostReq ratingInfo) {
         Teacher teacher = teacherRepository.findById(ratingInfo.getUserId()).get();

@@ -41,10 +41,20 @@ public class Teacher extends User {
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer solvePoint;
 
+    /**
+     * 강사가 Solve Point를 출금할 때
+     *
+     * @param solvePoint 출금할 금액
+     */
     public void cashOutSolvePoint(Integer solvePoint) {
         this.solvePoint -= solvePoint;
     }
 
+    /**
+     * 학생이 강사를 평가했을 때
+     *
+     * @param rating 추가할 평점
+     */
     public void addRating(Integer rating) {
         this.ratingCount++;
         this.ratingSum += rating;

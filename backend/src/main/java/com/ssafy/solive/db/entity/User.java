@@ -104,18 +104,36 @@ public class User extends BaseEntity {
         this.introduce = userInfo.getIntroduce();
     }
 
+    /**
+     * 비밀번호 수정
+     *
+     * @param newPassword
+     */
     public void modifyUserPassword(String newPassword) {
         this.loginPassword = newPassword;
     }
 
+    /**
+     * refreshToken 갱신
+     *
+     * @param refreshToken
+     */
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
+    /**
+     * 회원탈퇴 -> 탈퇴일시 추가
+     */
     public void addDeleteAt() {
         this.deletedAt = LocalDateTime.now();
     }
 
+    /**
+     * 임시라 지워질 듯
+     *
+     * @param code 바뀔 코드
+     */
     public void setCode(MasterCode code) {
         this.masterCodeId = code;
     }
