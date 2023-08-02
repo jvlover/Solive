@@ -13,5 +13,5 @@ public class UserRegistPostReq {
     Integer masterCodeId;
     String nickname;
     String email;
-    int gender;
+    Integer gender;
 }

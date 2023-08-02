@@ -12,6 +12,8 @@ public class UserProfilePostRes {
     String fileName;
     String pathName;
     String contentType;
-    String introduce;
+    String nickname;
+    Integer gender;
     Long experience;
+    String introduce;
 }

@@ -2,7 +2,8 @@ package com.ssafy.solive.api.controller;
 
 import com.ssafy.solive.api.request.TeacherRatePostReq;
 import com.ssafy.solive.api.request.UserLoginPostReq;
-import com.ssafy.solive.api.request.UserModifyPutReq;
+import com.ssafy.solive.api.request.UserModifyPasswordPutReq;
+import com.ssafy.solive.api.request.UserModifyProfilePutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
 import com.ssafy.solive.api.response.UserLoginPostRes;
 import com.ssafy.solive.api.response.UserPrivacyPostRes;
@@ -99,13 +100,13 @@ public class UserController {
     }
 
     @PutMapping()
-    public CommonResponse<?> modify(@RequestBody UserModifyPutReq userInfo,
+    public CommonResponse<?> modifyProfile(@RequestBody UserModifyProfilePutReq userInfo,
         HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByAccessToken(accessToken);
 
         try {
-            userService.modifyUser(userId, userInfo);
+            userService.modifyUserProfile(userId, userInfo);
             return CommonResponse.success(SUCCESS);
         } catch (Exception e) {
             // TODO: Exception 처리
@@ -113,6 +114,26 @@ public class UserController {
         }
     }
 
+    @PutMapping("/password")
+    public CommonResponse<?> modifyPassword(@RequestBody UserModifyPasswordPutReq passwords,
+        HttpServletRequest request) {
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByAccessToken(accessToken);
+
+        try {
+            userService.modifyUserPassword(userId, passwords);
+            return CommonResponse.success(SUCCESS);
+        } catch (Exception e) {
+            // TODO: Exception 처리
+            return null;
+        }
+    }
+
+    /**
+     * 회원 탈퇴 API, User DB에 deletedAt 값 추가
+     *
+     * @param request accessToken의 userId를 받기 위한 request
+     */
     @PutMapping("/delete")
     public CommonResponse<?> delete(HttpServletRequest request) {
         try {
@@ -163,7 +184,7 @@ public class UserController {
     }
 
     @PutMapping("/rate")
-    public CommonResponse<?> rateTeacher(TeacherRatePostReq ratingInfo) {
+    public CommonResponse<?> rateTeacher(@RequestBody TeacherRatePostReq ratingInfo) {
         userService.rateTeacher(ratingInfo);
 
         return CommonResponse.success(SUCCESS);

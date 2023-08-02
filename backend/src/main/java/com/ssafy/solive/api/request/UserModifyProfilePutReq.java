@@ -3,15 +3,15 @@ package com.ssafy.solive.api.request;
 import lombok.Data;
 
 @Data
-public class UserModifyPutReq {
+public class UserModifyProfilePutReq {
 
-    String nickname;
-    String email;
     String pictureUrl;
     String pictureName;
     String fileName;
     String pathName;
     String contentType;
+    String nickname;
+    Integer gender;
+    Long experience;
     String introduce;
-    int gender;
 }

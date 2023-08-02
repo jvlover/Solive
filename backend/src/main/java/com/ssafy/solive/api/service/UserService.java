@@ -2,7 +2,8 @@ package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.TeacherRatePostReq;
 import com.ssafy.solive.api.request.UserLoginPostReq;
-import com.ssafy.solive.api.request.UserModifyPutReq;
+import com.ssafy.solive.api.request.UserModifyPasswordPutReq;
+import com.ssafy.solive.api.request.UserModifyProfilePutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
 import com.ssafy.solive.api.response.UserLoginPostRes;
 import com.ssafy.solive.api.response.UserPrivacyPostRes;
@@ -21,7 +22,9 @@ public interface UserService {
 
     UserPrivacyPostRes getUserPrivacyByUserId(Long userId);
 
-    void modifyUser(Long userId, UserModifyPutReq userInfo);
+    void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo);
+
+    void modifyUserPassword(Long userId, UserModifyPasswordPutReq userInfo);
 
     void deleteUser(Long userId);
 

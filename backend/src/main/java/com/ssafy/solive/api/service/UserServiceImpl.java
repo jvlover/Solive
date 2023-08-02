@@ -2,7 +2,8 @@ package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.TeacherRatePostReq;
 import com.ssafy.solive.api.request.UserLoginPostReq;
-import com.ssafy.solive.api.request.UserModifyPutReq;
+import com.ssafy.solive.api.request.UserModifyPasswordPutReq;
+import com.ssafy.solive.api.request.UserModifyProfilePutReq;
 import com.ssafy.solive.api.request.UserRegistPostReq;
 import com.ssafy.solive.api.response.UserLoginPostRes;
 import com.ssafy.solive.api.response.UserPrivacyPostRes;
@@ -139,8 +140,10 @@ public class UserServiceImpl implements UserService {
                 .fileName(user.getFileName())
                 .pathName(user.getFileName())
                 .contentType(user.getContentType())
-                .introduce(user.getIntroduce())
+                .nickname(user.getNickname())
+                .gender(user.getGender())
                 .experience(user.getExperience())
+                .introduce(user.getIntroduce())
                 .build();
         } else {
             // TODO: Exception
@@ -164,17 +167,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void modifyUser(Long userId, UserModifyPutReq userInfo) {
-        log.info("UserService_modifyUser_start: \nuserId: " + userId + "\nuserInfo: "
+    public void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo) {
+        log.info("UserService_modifyUserProfile_start: \nuserId: " + userId + "\nuserInfo: "
             + userInfo.toString());
         User user = userRepository.findById(userId).get();
-        log.info("UserService_modifyUser_mid: \nuser: " + user.toString());
-        user.modifyUser(userInfo);
+        log.info("UserService_modifyUserProfile_mid: \nuser: " + user.toString());
+        user.modifyUserProfile(userInfo);
 
-        log.info("UserService_modifyUser_mid: \nmodifiedUser: " + user.toString());
+        log.info("UserService_modifyUserProfile_mid: \nmodifiedUser: " + user.toString());
 
         userRepository.save(user);
-        log.info("UserService_modifyUser_end");
+        log.info("UserService_modifyUserProfiler_end");
+    }
+
+    @Override
+    public void modifyUserPassword(Long userId, UserModifyPasswordPutReq passwords) {
+        log.info("UserService_modifyUserPrivacy_start: \nuserId: " + userId + "\npasswords: "
+            + passwords.toString());
+        User user = userRepository.findById(userId).get();
+        String oldPassword = passwords.getOldPassword();
+        String newPassword = passwords.getNewPassword();
+
+        // 비밀번호 일치 확인
+        if (BCrypt.checkpw(oldPassword, user.getLoginPassword())) {
+            String hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            user.modifyUserPassword(hashedNewPassword);
+        } else { // 비밀번호 불일치
+            
+        }
+        log.info("UserService_modifyUserPassword_end");
     }
 
     @Override

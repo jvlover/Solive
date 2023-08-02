@@ -1,6 +1,6 @@
 package com.ssafy.solive.db.entity;
 
-import com.ssafy.solive.api.request.UserModifyPutReq;
+import com.ssafy.solive.api.request.UserModifyProfilePutReq;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,6 +8,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,8 +18,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @ToString
-@NoArgsConstructor
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @DynamicInsert
@@ -90,16 +90,22 @@ public class User extends BaseEntity {
     // 회원탈퇴 여부, 회원탈퇴시 탈퇴시간 부여
     private LocalDateTime deletedAt;
 
-    public void modifyUser(UserModifyPutReq userInfo) {
-        this.nickname = userInfo.getNickname();
-        this.email = userInfo.getEmail();
+    /**
+     * @param userInfo
+     */
+    public void modifyUserProfile(UserModifyProfilePutReq userInfo) {
         this.pictureUrl = userInfo.getPictureUrl();
         this.pictureName = userInfo.getPictureName();
         this.fileName = userInfo.getFileName();
         this.pathName = userInfo.getPathName();
         this.contentType = userInfo.getContentType();
-        this.introduce = userInfo.getIntroduce();
+        this.nickname = userInfo.getNickname();
         this.gender = userInfo.getGender();
+        this.introduce = userInfo.getIntroduce();
+    }
+
+    public void modifyUserPassword(String newPassword) {
+        this.loginPassword = newPassword;
     }
 
     public void updateRefreshToken(String refreshToken) {
