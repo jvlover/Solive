@@ -75,7 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         // 전달 받은 마스터코드 분류 더해서 최종 마스터코드 번호 얻기
         Integer masterCodeId =
-            registInfo.getSubject() + registInfo.getSubSubject() + registInfo.getDetail();
+            1000 + registInfo.getSubject() + registInfo.getSubSubject() + registInfo.getDetail();
 
         /*
          *  registInfo를 바탕으로 Question Entity 생성 시작
