@@ -1,6 +1,7 @@
 package com.ssafy.solive.db.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -17,6 +18,7 @@ import org.hibernate.annotations.DynamicInsert;
 @AllArgsConstructor
 @ToString
 @DynamicInsert
+@DiscriminatorValue("Teacher")
 @Entity
 public class Teacher extends User {
 

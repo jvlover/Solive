@@ -2,6 +2,7 @@ package com.ssafy.solive.db.entity;
 
 import com.ssafy.solive.api.request.UserModifyPutReq;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Builder
 @DynamicInsert
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn
 @Entity
 public class User extends BaseEntity {
 
