@@ -44,6 +44,20 @@ const ArticleList = () => {
     [],
   );
 
+  // API를 호출하여 게시글 목록을 가져오는 함수
+  const fetchAndSetArticles = useCallback(
+    async (page: number, orderBy?: string) => {
+      const articlePages = await fetchArticles(keyword, page, orderBy);
+      setArticlePages(articlePages);
+      setActivePage(page);
+      const firstNum = page % 5 ? page - (page % 5) + 1 : page - 4;
+      const pageLength = Math.min(5, articlePages.totalPages - firstNum + 1);
+      setFirstNum(firstNum);
+      setPageLength(pageLength);
+    },
+    [],
+  );
+
   // useEffect를 사용하여 ArticleList 컴포넌트가 마운트될 때
   // fetchAndSetArticles 함수를 호출하여 초기 게시글 목록을 가져옴
   useEffect(() => {
