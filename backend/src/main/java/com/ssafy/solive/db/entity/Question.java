@@ -27,7 +27,7 @@ public class Question extends BaseEntity {
     // user(student)의 id, FK
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
-    private User user;
+    private Student student;
 
     // masterCode id, FK
     @ManyToOne(fetch = FetchType.LAZY)
