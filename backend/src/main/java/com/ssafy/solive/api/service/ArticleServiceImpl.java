@@ -80,9 +80,12 @@ public class ArticleServiceImpl implements ArticleService {
          *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  registInfo : 게시글 등록할 때 입력한 정보
          */
-        log.info("ArticleService_registArticle_start: " + registInfo.toString() + ", "
-            + files.toString());
-
+        if (files != null) {
+            log.info("ArticleService_registArticle_start: " + registInfo.toString() + ", "
+                + files.toString());
+        } else {
+            log.info("ArticleService_registArticle_start: " + registInfo.toString());
+        }
         // user가 null일 수 있으므로 controller로 exception throw
         // TODO: IllegalArgumentExeption 말고 custom exception 만들기
         User user = userRepository.findById(registInfo.getUserId())
@@ -172,9 +175,12 @@ public class ArticleServiceImpl implements ArticleService {
          *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  modifyInfo : 게시글 수정할 때 입력한 정보
          */
-        log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString() + ", "
-            + files.toString());
-
+        if (files != null) {
+            log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString() + ", "
+                + files.toString());
+        } else {
+            log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString());
+        }
         Article article = articleRepository.findById(modifyInfo.getArticleId())
             .orElseThrow(IllegalArgumentException::new);
         // 현재 로그인 유저의 id와 글쓴이의 id가 일치할 때
@@ -396,8 +402,8 @@ public class ArticleServiceImpl implements ArticleService {
             articleId);
 
         ArticleFindRes articleFindRes = ArticleFindRes.builder()
-            .masterCodeId(article.getMasterCode().getId())
-            .userId(article.getUser().getId())
+            .id(articleId)
+            .author(article.getUser().getNickname())
             .title(article.getTitle())
             .content(article.getContent())
             .viewCount(article.getViewCount())
@@ -429,12 +435,17 @@ public class ArticleServiceImpl implements ArticleService {
         Page<ArticleFindAllRes> articleFindAllRes = articleRepository.findByTitleContaining(keyword,
                 pageable)
             .map(m -> ArticleFindAllRes.builder()
-                .userId(m.getUser().getId())
+                .id(m.getId())
+                .author(m.getUser().getNickname())
                 .title(m.getTitle())
+                .content(m.getContent())
                 .viewCount(m.getViewCount())
                 .likeCount(m.getLikeCount())
+                .reportCount(m.getReportCount())
                 .time(m.getTime().toString())
-                .hasPicture(articlePictureRepository.existsByArticle(m))
+                .lastUpdateTime(m.getLastUpdateTime().toString())
+                .articlePicturePathNames(articlePictureRepository.findPathNameByArticle(
+                    m.getId()))
                 .build());
 
         log.info("ArticleService_findAllArticle_end: " + articleFindAllRes.toString());

@@ -9,8 +9,8 @@ import lombok.Data;
 @Builder
 public class ArticleFindRes {
 
-    private Integer masterCodeId;
-    private Long userId;
+    private Long id; // 게시글 id
+    private String author; // 글쓴이
     private String title;
     private String content;
     private Long viewCount;

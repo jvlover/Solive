@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,9 +35,11 @@ import org.springframework.web.multipart.MultipartFile;
  *  유저가 게시판을 이용할 때 필요한 API를 모은 컨트롤러
  */
 
+// TODO: CORS 문제 해결 필요
 @Slf4j
 @RestController
 @RequestMapping("/board")
+@CrossOrigin("*")
 public class ArticleController {
 
     private static final String SUCCESS = "success"; // API 성공 시 return
@@ -58,9 +61,12 @@ public class ArticleController {
          *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  registInfo : 게시글 등록할 때 입력한 정보
          */
-        log.info("ArticleController_regist_start: " + registInfo.toString() + ", "
-            + files.toString());
-
+        if (files != null) {
+            log.info("ArticleController_regist_start: " + registInfo.toString() + ", "
+                + files.toString());
+        } else {
+            log.info("ArticleController_regist_start: " + registInfo.toString());
+        }
         Article article = articleService.registArticle(registInfo, files);
 
         if (article != null) {
@@ -103,9 +109,12 @@ public class ArticleController {
          *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  modifyInfo : 게시글 수정할 때 입력한 정보
          */
-        log.info("ArticleController_modify_start: " + modifyInfo.toString() + ", "
-            + files.toString());
-
+        if (files != null) {
+            log.info("ArticleController_modify_start: " + modifyInfo.toString() + ", "
+                + files.toString());
+        } else {
+            log.info("ArticleController_modify_start: " + modifyInfo.toString());
+        }
         boolean isModified = articleService.modifyArticle(modifyInfo, files);
 
         if (isModified) {
