@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import BackgroundImg from '../assets/background.png';
 
-function Home(): JSX.Element {
+const Home = () => {
   const navigate = useNavigate();
 
   return (
@@ -32,6 +32,6 @@ function Home(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default Home;

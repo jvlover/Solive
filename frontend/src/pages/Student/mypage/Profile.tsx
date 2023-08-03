@@ -11,7 +11,7 @@ interface UserProfile {
   introduce: string;
 }
 
-function ProfilePage() {
+const ProfilePage = () => {
   const [userProfile, setUserProfile] = useState<UserProfile>({
     pathName: '',
     nickname: '',
@@ -200,6 +200,6 @@ function ProfilePage() {
       </form>
     </div>
   );
-}
+};
 
 export default ProfilePage;

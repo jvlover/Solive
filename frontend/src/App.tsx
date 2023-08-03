@@ -14,7 +14,7 @@ import ArticleDetail from './pages/Board/ArticleDetail';
 import ArticleRegist from './pages/Board/ArticleRegist';
 import ArticleModify from './pages/Board/ArticleModify';
 
-function App(): JSX.Element {
+const App = () => {
   return (
     <Router>
       <HeaderNav />
@@ -50,6 +50,6 @@ function App(): JSX.Element {
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;

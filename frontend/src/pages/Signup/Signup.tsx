@@ -3,7 +3,7 @@ import StudentImg from '../../assets/student.png';
 import TeacherImg from '../../assets/teacher.png';
 import BackgroundImg from '../../assets/background.png';
 
-function Signup(): JSX.Element {
+const Signup = () => {
   const navigate = useNavigate();
 
   return (
@@ -33,6 +33,6 @@ function Signup(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default Signup;

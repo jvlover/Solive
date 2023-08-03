@@ -20,7 +20,7 @@ import {
   Typography,
 } from '@material-tailwind/react';
 
-function ArticleList(): JSX.Element {
+const ArticleList = () => {
   //const user = useRecoilValue(userState);
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState<string>('');
@@ -41,6 +41,7 @@ function ArticleList(): JSX.Element {
       setFirstNum(firstNum);
       setPageLength(pageLength);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -222,6 +223,6 @@ function ArticleList(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default ArticleList;

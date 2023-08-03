@@ -13,14 +13,14 @@ import {
   Typography,
 } from '@material-tailwind/react';
 
-function ArticleRegist(): JSX.Element {
+const ArticleRegist = () => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [files, setFiles] = useState<FileList>();
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const imageInput = useRef(); // file input을 버튼으로 대체하기 위함
+  const imageInput = useRef<HTMLInputElement>(); // file input을 버튼으로 대체하기 위함
 
   const regist = async () => {
     // TODO: 추후 유저 id, mastercode 제대로 넘겨줘야함
@@ -132,5 +132,5 @@ function ArticleRegist(): JSX.Element {
       </Card>
     </div>
   );
-}
+};
 export default ArticleRegist;

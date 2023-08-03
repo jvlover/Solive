@@ -31,7 +31,7 @@ const schema = yup.object().shape({
   university: yup.string().required('대학교 이름은 필수입니다.'),
 });
 
-function TeacherSignup(): JSX.Element {
+const TeacherSignup = () => {
   const navigate = useNavigate();
   const {
     control,
@@ -180,6 +180,6 @@ function TeacherSignup(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default TeacherSignup;

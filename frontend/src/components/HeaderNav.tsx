@@ -8,7 +8,7 @@ import {
   Button,
   IconButton,
 } from '@material-tailwind/react';
-function HeaderNav(): JSX.Element {
+const HeaderNav = () => {
   const [openNav, setOpenNav] = useState(false);
 
   useEffect(() => {
@@ -143,6 +143,6 @@ function HeaderNav(): JSX.Element {
   //     </div>
   //   </nav>
   // );
-}
+};
 
 export default HeaderNav;

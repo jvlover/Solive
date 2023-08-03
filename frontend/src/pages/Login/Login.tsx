@@ -17,7 +17,7 @@ interface LoginFormFields {
   loginPassword: string;
 }
 
-function Login() {
+const Login = () => {
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
   const {
@@ -97,6 +97,6 @@ function Login() {
       </div>
     </div>
   );
-}
+};
 
 export default Login;

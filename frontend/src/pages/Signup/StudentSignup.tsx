@@ -29,7 +29,7 @@ const schema = yup.object().shape({
     .required('이메일은 필수입니다.'),
 });
 
-function StudentSignup(): JSX.Element {
+const StudentSignup = () => {
   const navigate = useNavigate();
   const {
     control,
@@ -172,6 +172,6 @@ function StudentSignup(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default StudentSignup;

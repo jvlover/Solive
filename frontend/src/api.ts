@@ -15,10 +15,9 @@ export const fetchArticles = async (
 
   try {
     const response = await axios.get<ArticlePage>(url);
-    console.log(response.data.data);
+    // @ts-ignore
     return response.data.data;
   } catch (error) {
-    console.error('Error fetching articles: ', error);
     return { content: [], number: 0, totalPages: 0 };
   }
 };
@@ -28,7 +27,7 @@ export const fetchArticleById = async (
 ): Promise<Article | null> => {
   try {
     const response = await axios.get<Article>(`${BOARD_BASE_URL}/${articleId}`);
-    console.log(response.data);
+    // @ts-ignore
     return response.data.data;
   } catch (error) {
     console.error(
@@ -67,13 +66,11 @@ export const registArticle = async (
     });
   }
 
-  const res = await axios.post(`${BOARD_BASE_URL}`, formData, {
+  await axios.post(`${BOARD_BASE_URL}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
-
-  console.log(res.data);
 };
 
 export const modifyArticle = async (
@@ -103,11 +100,9 @@ export const modifyArticle = async (
     });
   }
 
-  const res = await axios.put(`${BOARD_BASE_URL}`, formData, {
+  await axios.put(`${BOARD_BASE_URL}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
-
-  console.log(res.data);
 };

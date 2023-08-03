@@ -13,7 +13,7 @@ import {
   CardFooter,
   Typography,
 } from '@material-tailwind/react';
-function ArticleDetail(): JSX.Element {
+const ArticleDetail = () => {
   const { id } = useParams();
   const [article, setArticle] = useState<Article | null>();
 
@@ -21,6 +21,7 @@ function ArticleDetail(): JSX.Element {
 
   useEffect(() => {
     fetchArticle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchArticle = async () => {
@@ -79,6 +80,6 @@ function ArticleDetail(): JSX.Element {
       </Card>
     </div>
   );
-}
+};
 
 export default ArticleDetail;
