@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -19,7 +18,7 @@ interface LoginFormFields {
 }
 
 function Login() {
-  const navigate = useNavigate(); // useNavigate 훅을 사용
+  const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
   const {
     control,
@@ -31,13 +30,15 @@ function Login() {
 
   const onSubmit = async (data: LoginFormFields) => {
     try {
-      const response = await axios.post('YOUR_LOGIN_API_ENDPOINT', data);
+      const response = await axios.post('/user/login', data);
       const user: User = response.data;
       setUser(user);
-      if (user.masterCodeId === 2) {
-        navigate('/teacher');
-      } else if (user.masterCodeId === 1) {
-        navigate('/student');
+      if (response.data.success === true) {
+        if (user.masterCodeId === 2) {
+          navigate('/teacher');
+        } else if (user.masterCodeId === 1) {
+          navigate('/student');
+        }
       }
     } catch (error) {
       console.error(error);
