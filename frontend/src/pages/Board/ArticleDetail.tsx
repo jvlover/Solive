@@ -1,7 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { Article } from '../../recoil/atoms';
 import { useEffect, useState } from 'react';
-import { fetchArticleById } from '../../api';
+import { useRecoilValue } from 'recoil';
+import { Article } from '../../recoil/atoms';
+import { userState } from '../../recoil/user/userState';
+import { fetchArticleById, likeArticle } from '../../api';
 import { ReactComponent as FullHeart } from '../../assets/full_heart.svg';
 import { ReactComponent as EmptyHeart } from '../../assets/empty_heart.svg';
 import { ReactComponent as Eye } from '../../assets/eye.svg';
@@ -15,6 +17,7 @@ import {
 } from '@material-tailwind/react';
 const ArticleDetail = () => {
   const { id } = useParams();
+  const user = useRecoilValue(userState);
   const [article, setArticle] = useState<Article | null>();
 
   const navigate = useNavigate();
@@ -27,6 +30,15 @@ const ArticleDetail = () => {
   const fetchArticle = async () => {
     const article = await fetchArticleById(Number(id));
     setArticle(article);
+  };
+
+  const like = async () => {
+    const res = await likeArticle(user?.id, article?.id);
+    if (res) {
+      alert('게시글이 추천되었습니다.');
+    } else {
+      alert('이미 추천된 게시글입니다.');
+    }
   };
 
   return (
@@ -70,7 +82,7 @@ const ArticleDetail = () => {
             </div>
           </button>
           {/* 좋아요 누른 적 있으면 누른 적 있다고 alert 없으면 좋아요 api 호출 */}
-          <button className="btn-primary">
+          <button className="btn-primary" onClick={like}>
             <div className="flex justify-center items-center">
               <EmptyHeart className="w-4 h-4 mr-1 stroke-white" />
               좋아요

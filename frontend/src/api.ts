@@ -106,3 +106,22 @@ export const modifyArticle = async (
     },
   });
 };
+
+export const likeArticle = async (userId: number, articleId: number) => {
+  try {
+    const data = { userId: userId, articleId: articleId };
+
+    const response = await axios.post(
+      `${BOARD_BASE_URL}/like`,
+      JSON.stringify(data),
+      {
+        headers: {
+          'Content-Type': `application/json`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (error) {
+    return null;
+  }
+};
