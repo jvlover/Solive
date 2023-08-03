@@ -42,7 +42,7 @@ const ArticleDetail = () => {
   };
 
   return (
-    <div className="flex justify-center w-[60%] min-w-fit">
+    <div className="flex justify-center w-[60%] min-h-full min-w-fit">
       <Card className="flex mt-5 max-w-[60%]">
         <CardBody>
           <Typography variant="h2" className="mb-3">

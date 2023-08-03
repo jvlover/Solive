@@ -82,7 +82,7 @@ const ArticleList = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="w-[60%] min-w-fit">
+      <div className="w-[60%] min-w-fit min-h-[100vh]">
         <Typography variant="h2" className="m-5">
           공지사항
         </Typography>

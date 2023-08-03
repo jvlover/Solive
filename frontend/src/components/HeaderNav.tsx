@@ -8,6 +8,8 @@ import {
   Button,
   IconButton,
 } from '@material-tailwind/react';
+
+// 로그인 하면 로그인 했다고 표시
 const HeaderNav = () => {
   const [openNav, setOpenNav] = useState(false);
 
