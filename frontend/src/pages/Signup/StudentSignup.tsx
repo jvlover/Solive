@@ -6,7 +6,6 @@ import BackgroundImg from '../../assets/background.png';
 import { useNavigate } from 'react-router-dom';
 
 type FormData = {
-  name: string;
   nickname: string;
   loginId: string;
   loginPassword: string;
@@ -16,7 +15,6 @@ type FormData = {
 };
 
 const schema = yup.object().shape({
-  name: yup.string().required('이름은 필수입니다.'),
   nickname: yup.string().required('닉네임은 필수입니다.'),
   loginId: yup.string().required('아이디는 필수입니다.'),
   loginPassword: yup.string().required('비밀번호는 필수입니다.'),
@@ -40,7 +38,6 @@ function StudentSignup(): JSX.Element {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: '',
       nickname: '',
       loginId: '',
       loginPassword: '',
@@ -51,7 +48,6 @@ function StudentSignup(): JSX.Element {
 
   const onSubmit = async (data: FormData) => {
     const signupData = {
-      name: data.name,
       nickname: data.nickname,
       loginId: data.loginId,
       loginPassword: data.loginPassword,
@@ -86,19 +82,6 @@ function StudentSignup(): JSX.Element {
       <div className="bg-white rounded-lg shadow-lg w-1/4 h-3/5 py-12 px-10 right-1/2 fixed top-1/4">
         <h2 className="text-2xl font-bold mb-6 text-black">회원가입</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            control={control}
-            name="name"
-            render={({ field }) => (
-              <input
-                {...field}
-                placeholder="이름"
-                className="block w-full mb-2 border-2 border-gray-200 p-2 rounded-md"
-              />
-            )}
-          />
-          <p>{errors.name?.message}</p>
-
           <Controller
             control={control}
             name="nickname"

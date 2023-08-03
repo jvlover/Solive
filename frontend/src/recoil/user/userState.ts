@@ -16,6 +16,7 @@ interface CommonUserFields {
   experience: number;
   signinTime: Date;
   deletedAt: Date | null;
+  accessToken: string;
 }
 
 interface TeacherFields {
