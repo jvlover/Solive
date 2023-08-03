@@ -19,7 +19,7 @@ export const latestQuestionsSelector = selector<Question[] | null>({
   key: 'LatestQuestions',
   get: async () => {
     try {
-      const response = await axios.get(`YOUR_API_URL/latest`);
+      const response = await axios.get(`http://localhost:8080/latest`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -36,7 +36,7 @@ export const relatedQuestionsSelector = selector<Question[] | null>({
 
     try {
       const response = await axios.get(
-        `YOUR_API_URL/related?subjectId=${user.subjectId}`,
+        `http://localhost:8080/related?subjectId=${user.subjectId}`,
       );
       return response.data;
     } catch (error) {
@@ -53,7 +53,7 @@ export const allQuestionsSelector = selector<Question[] | null>({
     if (!user) return null;
 
     try {
-      const response = await axios.get(`YOUR_API_URL/allQuestions`);
+      const response = await axios.get(`http://localhost:8080/allQuestions`);
       return response.data;
     } catch (error) {
       console.error(error);
