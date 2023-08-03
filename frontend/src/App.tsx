@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Signup from './pages/Signup/Signup';
@@ -7,6 +6,8 @@ import StudentSignup from './pages/Signup/StudentSignup';
 import TeacherSignup from './pages/Signup/TeacherSignup';
 import Login from './pages/Login/Login';
 import NotFoundImage from './assets/404.png';
+import QuestionRegistration from './pages/Student/QuestionRegistration';
+import Profile from './pages/Student/mypage/Profile';
 
 function App(): JSX.Element {
   return (
@@ -31,6 +32,11 @@ function App(): JSX.Element {
             </div>
           }
         />
+        <Route
+          path="student/questionregistration"
+          element={<QuestionRegistration />}
+        />
+        <Route path="/student/mypage/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
