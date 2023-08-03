@@ -14,9 +14,6 @@ interface UserProfile {
 }
 
 const ProfilePage = () => {
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    pathName: '',
-    nickname: '',
     experience: 0,
     introduce: '',
   });
