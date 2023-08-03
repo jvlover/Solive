@@ -40,6 +40,7 @@ public class QApplyRepositoryImpl implements QApplyRepository {
 
         return queryFactory
             .select(Projections.constructor(ApplyFindRes.class,
+                apply.id.as("applyId"),
                 teacher.nickname.as("teacherNickname"),
                 teacher.pathName.as("teacherPathName"),
                 masterCode.id.as("teacherSubjectId"),
