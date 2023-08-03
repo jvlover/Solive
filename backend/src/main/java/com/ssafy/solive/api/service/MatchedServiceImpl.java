@@ -111,7 +111,7 @@ public class MatchedServiceImpl implements MatchedService {
         log.info("MatchedService_findMyMatching_start: " + findCondition.toString());
 
         // 학생이 자신의 문제 이력 검색하려는 경우
-        if (findCondition.getUserState() == 2) {
+        if (findCondition.getUserState() == 1) {
             // 문제 리스트 DB에서 얻어 오기
             List<MatchedFindMineRes> findConditionRes = questionRepository.findMyQuestion(
                 findCondition);
