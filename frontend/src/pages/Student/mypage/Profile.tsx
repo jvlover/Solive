@@ -34,7 +34,7 @@ function ProfilePage() {
   }
   useEffect(() => {
     axios
-      .get<ProfileResponse>('/user')
+      .get<ProfileResponse>('/profile')
       .then((response) => {
         if (response.data.success) {
           setUserProfile(response.data.data);
@@ -101,7 +101,7 @@ function ProfilePage() {
     }
 
     axios
-      .put<UpdateResponse>('/user', formData, {
+      .put<UpdateResponse>('/profile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
