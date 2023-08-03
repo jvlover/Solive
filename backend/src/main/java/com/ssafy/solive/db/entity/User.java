@@ -29,6 +29,16 @@ import org.hibernate.annotations.DynamicInsert;
 @Entity
 public class User extends BaseEntity {
 
+    // 유저 타입 : 학생(1), 선생님(2)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "master_code_id")
+    private MasterCode masterCodeId;
+
+    // 유저 상태 번호 : 로그아웃(11), 로그인(12), 강의중(13)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "state_id")
+    private MasterCode stateId;
+
     // 로그인 아이디
     @Column(nullable = false, columnDefinition = "VARCHAR(40)")
     private String loginId;
@@ -40,11 +50,6 @@ public class User extends BaseEntity {
     // 서버가 가지고 있는 클라이언트의 refreshToken
     @Column(columnDefinition = "VARCHAR(255)")
     private String refreshToken;
-
-    // 유저의 상태, 학생인지 선생님인지
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "master_code_id")
-    private MasterCode masterCodeId;
 
     // 웹에서 사용할 닉네임
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
@@ -90,11 +95,20 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Integer gender;
 
+    /**
+     * 로그인 시 사용자의 state를 로그인 상태(12)로 변경
+     *
+     * @param masterCode 로그인 상태(12)
+     */
+    public void setLoginState(MasterCode masterCode) {
+        this.stateId = masterCode;
+    }
+
     // 회원탈퇴 여부, 회원탈퇴시 탈퇴시간 부여
     private LocalDateTime deletedAt;
 
     /**
-     * @param userInfo
+     * @param userInfo userInfo
      */
     public void modifyUserProfile(UserModifyProfilePutReq userInfo) {
         this.pictureUrl = userInfo.getPictureUrl();
@@ -110,7 +124,7 @@ public class User extends BaseEntity {
     /**
      * 비밀번호 수정
      *
-     * @param newPassword
+     * @param newPassword newPassword
      */
     public void modifyUserPassword(String newPassword) {
         this.loginPassword = newPassword;
@@ -119,7 +133,7 @@ public class User extends BaseEntity {
     /**
      * refreshToken 갱신
      *
-     * @param refreshToken
+     * @param refreshToken refreshToken
      */
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
