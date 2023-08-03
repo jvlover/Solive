@@ -3,7 +3,7 @@ import { userState } from '../../recoil/user/userState';
 import { Article, ArticlePage } from '../../recoil/atoms';
 import { fetchArticles } from '../../api';
 import { useNavigate } from 'react-router-dom';
-import { ReactComponent as EmptyHeart } from '../../assets/empty_heart.svg';
+import { useRecoilValue } from 'recoil';
 import { ReactComponent as FullHeart } from '../../assets/full_heart.svg';
 import { ReactComponent as Pencil } from '../../assets/pencil.svg';
 import { ReactComponent as Eye } from '../../assets/eye.svg';
@@ -21,14 +21,13 @@ import {
 } from '@material-tailwind/react';
 
 const ArticleList = () => {
-  //const user = useRecoilValue(userState);
+  const user = useRecoilValue(userState);
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState<string>('');
   const [activePage, setActivePage] = useState<number>(1);
   const [articlePages, setArticlePages] = useState<ArticlePage>();
   const [firstNum, setFirstNum] = useState<number>(1);
   const [pageLength, setPageLength] = useState<number>(1);
-  //console.log(user);
 
   // API를 호출하여 게시글 목록을 가져오는 함수
   const fetchAndSetArticles = useCallback(
@@ -131,7 +130,9 @@ const ArticleList = () => {
             </Breadcrumbs>
             {/* 글 작성 페이지로 넘어가게(관리자만 보이게) */}
             <button
-              className="btn-primary m-3"
+              className={
+                user?.masterCodeId === 3 ? 'btn-primary m-3' : 'hidden'
+              }
               onClick={() => handleArticleRegistClick()}
             >
               <div className="flex justify-center items-center">
@@ -172,8 +173,7 @@ const ArticleList = () => {
                   ) : (
                     ''
                   )}
-                  {/* 내가 좋아요 했으면 FullHeart */}
-                  <EmptyHeart />
+                  <FullHeart />
                   <Typography className="m-1 mr-3 font-medium text-blue-gray-600">
                     {article.likeCount}
                   </Typography>
