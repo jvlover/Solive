@@ -1,0 +1,16 @@
+/* App.css */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.Router {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.Routes {
+  flex: 1;
+}
