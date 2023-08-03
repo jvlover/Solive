@@ -197,7 +197,7 @@ function ArticleList(): JSX.Element {
           </Button>
           <div className="flex items-center gap-2">
             {Array<number>(pageLength)
-              .fill()
+              .fill(0)
               .map((_, index: number) => (
                 <IconButton
                   key={index}
