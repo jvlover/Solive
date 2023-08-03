@@ -82,7 +82,13 @@ public class MatchedServiceImpl implements MatchedService {
             .build();
 
         matchedRepository.save(matched);
+
+        // 매칭이 시작되었으므로 apply에서는 row 삭제
         apply.deleteApply();
+
+        // 해당 question의 matching_state를 1에서 2로 바꿔야 함
+        question.modifyMatchingState(2);
+
         /*
          *  생성한 Matched Entity를 DB에 insert 완료
          */

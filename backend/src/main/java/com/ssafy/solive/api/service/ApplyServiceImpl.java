@@ -69,6 +69,10 @@ public class ApplyServiceImpl implements ApplyService {
             .build();
 
         applyRepository.save(apply);
+
+        // 해당 question의 matching_state를 0에서 1로 바꿔야 함
+        question.modifyMatchingState(1);
+
         /*
          *  생성한 Apply Entity를 DB에 insert 완료
          */
@@ -102,7 +106,7 @@ public class ApplyServiceImpl implements ApplyService {
         log.info("ApplyService_deleteApply_end: false");
         return false;
     }
-    
+
     /*
      *  유저(학생)가 자신이 등록한 문제에 어떤 강사들이 지원 신청했는지 검색하기 위한 API 서비스
      *  정렬 / 검색 기준 : 예상 풀이시간순, 가격순, 평점순 정렬, 강사의 선호 과목과 문제의 과목 일치 여부 선택
