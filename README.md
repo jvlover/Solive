@@ -1,159 +1,69 @@
-## 2023-07-17
+# A107 - 웹/모바일(웹 기술) 프로젝트
 
----
+<!-- 필수 항목 -->
 
-### 이효식
+## 카테고리
 
-- Git branch 설계
-- Git branch naming convention
-- Jira 에픽 이슈 생성
-- Jira 스토리 이슈 생성
+| Application | Domain | Language | Framework |
+| ---- | ---- | ---- | ---- |
+| :white_check_mark: Desktop Web | :black_square_button: AI | :white_check_mark: JavaScript | :black_square_button: Vue.js |
+| :white_check_mark: Mobile Web | :black_square_button: Big Data | :white_check_mark: TypeScript | :white_check_mark: React |
+| :white_check_mark: Responsive Web | :black_square_button: Blockchain | :black_square_button: C/C++ | :black_square_button: Angular |
+| :black_square_button: Android App | :black_square_button: IoT | :black_square_button: C# | :black_square_button: Node.js |
+| :black_square_button: iOS App | :black_square_button: AR/VR/Metaverse | :black_square_button: Python | :black_square_button: Flask/Django |
+| :black_square_button: Desktop App | :black_square_button: Game | :white_check_mark: Java | :white_check_mark: Spring/Springboot |
+| | | :black_square_button: Kotlin | |
 
----
+<!-- 필수 항목 -->
 
-### 노성호
+## 프로젝트 소개
 
-- Git commit message convention 합의
-- Jira 에픽 이슈 생성
-- Jira 스토리 이슈 생성
-- TIL : JPA
+* 프로젝트명: **Solive**
+* 서비스 특징: 문제 별 1 대 1 화상 풀이 매칭 프로젝트
+* 주요 기능
+  - 회원 관리
+  - 화상 문제 풀이 매칭
+  - 게시판
+* 주요 기술
+  - WebRTC
+  - WebSocket
+  - JWT Authentication
+  - REST API
+* 참조 리소스
+  * Tailwind CSS: 디자인 전반 적용
+  * Material Tailwind: 디자인 전반 적용
+  * OpenVidu: 오픈 소스 멀티 플랫폼 화상 회의 솔루션
+  * JPA: 객체와 데이터베이스의 관계를 매핑
+  * Querydsl: 쿼리 작성
+* 배포 환경
+  - URL: [https://i9a107.p.ssafy.io/](https://i9a107.p.ssafy.io/)
+  <!-- 웹 서비스, 랜딩 페이지, 프로젝트 소개 등의 배포 URL 기입 -->
+  - 테스트 계정: 현재 없음(추후 추가 예정)
+  <!-- 로그인이 필요한 경우, 사용 가능한 테스트 계정(ID/PW) 기입 -->
 
----
+<!-- 자유 양식 -->
 
-### 이용현
+## 팀 소개
+* 이효식: 팀장, 코드 리뷰 및 인프라 담당, CI/CD, HTTPS, Docker 구성
+* 박민혁: 부팀장, 백엔드 개발 및 프론트엔드 개발, 
+* 이용현: 부부팀장, 백엔드 개발
+* 노성호: 백엔드 개발 리더, 서기, UCC담당자
+* 정선재: 프론트엔드 개발 리더
+* 최주호: 기획 및 와이어프레임 작성, UI/UX 디자인, WebRTC, 발표자
 
-- Git branch naming convention
-- ERD Diagram 생성
-- ERD Diagram export
-- TIL : AWS배포 관련
+<!-- 자유 양식 -->
 
----
+## 프로젝트 상세 설명
+### 개발 환경
+| 분야 | 항목 | 버전 |
+| ---- | ---- | ---- |
+| 백엔드 | Java | 17 |
+| 백엔드 | Gradle | 8.0 |
+| 백엔드 |Spring boot | 3.1.1 |
+| 프론트엔드 | React | 18 |
+| 프론트엔드 | Node.js | 18.16.1 |
+| 데이터베이스 | MySql | 8.0.33 |
 
-### 최주호
-
-- Git branch naming convention
-- ERD Diagram 생성
-- ERD Diagram export
-- 회원탈퇴 목업 생성
-
----
-
-### 박민혁
-
-- DB naming convention
-- ERD Diagram 생성
-- ERD Diagram export
-- TIL : React
-
----
-
-### 정선재
-
-- Git commit message convention 합의
-- Jira 에픽 이슈 생성
-- Jira 스토리 이슈 생성
-- TIL : webrtc & react
-
----
-
-## 2023-07-18
-
----
-
-### 이효식
-
-- Backend package 설계
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 이용현
-
-- Backend package 설계
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 노성호
-
-- Backend package 설계
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 정선재
-
-- Frontend 코딩 컨벤션
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 박민혁
-
-- Frontend 코딩 컨벤션
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 최주호
-
-- Frontend 코딩 컨벤션
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의 발표
-- 명세서 수정 회의
-- 피그마 목업 수정 고민
-
----
-
-## 2023-07-19
-
----
-
-### 이효식
-
-- ERD 설계 확정
-- WebRTC 조사
-- 개발 환경 세팅
-- React 스터디
-
----
-
-### 박민혁
-
-- ERD 설계 확정
-- Recoil, Tailwind CSS 조사
-- JPA, React 스터디
-
----
-
-### 정선재
-
-- ERD 설계 확정
-- React 스터디
-- 프로젝트 페이지 구조 만들기
-
----
-
-### 이용현
-
-- ERD 설계 확정
-- JWT 토큰 개념 스터디
-    - skeleton, 이전 강의와 자료 참고
-- JPA 개념 스터디 시작
-
----
-
-### 최주호
-- ERD 설계 확정
-- 목업에 모달을 도입해 마이페이지와 회원탈퇴를 더욱 아름답게 꾸몄다.
-- 자치회 회의
+### ERD
+![ERD](./img/Solive_erd.png) 
+<!-- 개발 환경, 기술 스택, 시스템 구성도, ERD, 기능 상세 설명 등 -->
