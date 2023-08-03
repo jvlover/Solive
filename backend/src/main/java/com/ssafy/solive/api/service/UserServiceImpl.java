@@ -8,7 +8,9 @@ import com.ssafy.solive.api.request.UserRegistPostReq;
 import com.ssafy.solive.api.response.UserLoginPostRes;
 import com.ssafy.solive.api.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.response.UserProfilePostRes;
+import com.ssafy.solive.common.exception.InvalidMasterCodeException;
 import com.ssafy.solive.common.exception.PasswordMismatchException;
+import com.ssafy.solive.common.exception.UserNotFoundException;
 import com.ssafy.solive.config.JwtConfiguration;
 import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.Student;
@@ -20,7 +22,6 @@ import com.ssafy.solive.db.repository.TeacherRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,24 +178,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserProfilePostRes getUserProfileByUserId(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return UserProfilePostRes.builder()
-                .pictureUrl(user.getPictureUrl())
-                .pictureName(user.getPictureName())
-                .fileName(user.getFileName())
-                .pathName(user.getFileName())
-                .contentType(user.getContentType())
-                .nickname(user.getNickname())
-                .gender(user.getGender())
-                .experience(user.getExperience())
-                .introduce(user.getIntroduce())
-                .build();
-        } else {
-            // TODO: Exception
-            return null;
-        }
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return UserProfilePostRes.builder()
+            .pictureUrl(user.getPictureUrl())
+            .pictureName(user.getPictureName())
+            .fileName(user.getFileName())
+            .pathName(user.getFileName())
+            .contentType(user.getContentType())
+            .nickname(user.getNickname())
+            .gender(user.getGender())
+            .experience(user.getExperience())
+            .introduce(user.getIntroduce())
+            .build();
     }
 
     /**
@@ -205,17 +200,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserPrivacyPostRes getUserPrivacyByUserId(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return UserPrivacyPostRes.builder()
-                .email(user.getEmail())
-                .signinTime(user.getSigninTime())
-                .build();
-        } else {
-            // TODO: Exception
-            return null;
-        }
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return UserPrivacyPostRes.builder()
+            .email(user.getEmail())
+            .signinTime(user.getSigninTime())
+            .build();
     }
 
     /**
@@ -228,10 +217,10 @@ public class UserServiceImpl implements UserService {
     public void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo) {
         log.info("UserService_modifyUserProfile_start: \nuserId: " + userId + "\nuserInfo: "
             + userInfo.toString());
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         log.info("UserService_modifyUserProfile_mid: \nuser: " + user.toString());
-        user.modifyUserProfile(userInfo);
 
+        user.modifyUserProfile(userInfo);
         log.info("UserService_modifyUserProfile_mid: \nmodifiedUser: " + user.toString());
 
         userRepository.save(user);
@@ -248,7 +237,7 @@ public class UserServiceImpl implements UserService {
     public void modifyUserPassword(Long userId, UserModifyPasswordPutReq passwords) {
         log.info("UserService_modifyUserPrivacy_start: \nuserId: " + userId + "\npasswords: "
             + passwords.toString());
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         String oldPassword = passwords.getOldPassword();
         String newPassword = passwords.getNewPassword();
 
@@ -256,10 +245,11 @@ public class UserServiceImpl implements UserService {
         if (BCrypt.checkpw(oldPassword, user.getLoginPassword())) {
             String hashedNewPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             user.modifyUserPassword(hashedNewPassword);
+            log.info("UserService_modifyUserPassword_end: success");
         } else { // 비밀번호 불일치
-
+            log.info("UserService_modifyUserPassword_end: failed");
+            throw new PasswordMismatchException();
         }
-        log.info("UserService_modifyUserPassword_end");
     }
 
     /**
@@ -269,7 +259,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         user.addDeleteAt();
     }
 
@@ -281,8 +271,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void setCode(Long userId, Integer code) {
-        User user = userRepository.findById(userId).get();
-        MasterCode masterCode = masterCodeRepository.findById(code).get();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        MasterCode masterCode = masterCodeRepository.findById(code).orElseThrow(
+            InvalidMasterCodeException::new);
         user.setCode(masterCode);
     }
 
@@ -294,7 +285,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void chargeSolvePoint(Long userId, Integer solvePoint) {
-        Student student = studentRepository.findById(userId).get();
+        Student student = studentRepository.findById(userId)
+            .orElseThrow(UserNotFoundException::new);
         student.chargeSolvePoint(solvePoint);
     }
 
@@ -306,7 +298,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void cashOutSolvePoint(Long userId, Integer solvePoint) {
-        Teacher teacher = teacherRepository.findById(userId).get();
+        Teacher teacher = teacherRepository.findById(userId)
+            .orElseThrow(UserNotFoundException::new);
         teacher.cashOutSolvePoint(solvePoint);
     }
 
@@ -317,7 +310,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void rateTeacher(TeacherRatePostReq ratingInfo) {
-        Teacher teacher = teacherRepository.findById(ratingInfo.getUserId()).get();
+        Teacher teacher = teacherRepository.findById(ratingInfo.getUserId())
+            .orElseThrow(UserNotFoundException::new);
         teacher.addRating(ratingInfo.getRating());
     }
 }
