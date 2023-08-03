@@ -5,6 +5,8 @@ import axios from 'axios';
 import BackgroundImg from '../../assets/background.png';
 import { useNavigate } from 'react-router-dom';
 
+const BASE_URL = 'http://localhost:8080'
+
 type FormData = {
   nickname: string;
   loginId: string;
@@ -57,7 +59,7 @@ function TeacherSignup(): JSX.Element {
     };
 
     try {
-      const response = await axios.post('/user', signupData);
+      const response = await axios.post(BASE_URL + '/user', signupData);
       console.log(response.data);
 
       if (response.data.success === true) {
