@@ -52,9 +52,10 @@ public class QApplyRepositoryImpl implements QApplyRepository {
                 teacher.ratingSum.as("ratingSum"),
                 teacher.ratingCount.as("ratingCount")))
             .from(apply)
-            .leftJoin(apply.teacher).on(teacher.id.eq(apply.teacher.id))
-            .leftJoin(apply.question)
+            .leftJoin(teacher).on(teacher.id.eq(apply.teacher.id))
+            .leftJoin(question)
             .on(question.id.eq(apply.question.id))
+            .leftJoin(masterCode).on(teacher.masterCode.id.eq(masterCode.id))
             .where(questionIdEq(findCondition.getQuestionId()),
                 favoriteCodeMatch(findCondition.getIsFavorite()))
             .orderBy(applySort(findCondition.getSort()))

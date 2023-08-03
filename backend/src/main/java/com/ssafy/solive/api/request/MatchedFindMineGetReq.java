@@ -13,7 +13,7 @@ public class MatchedFindMineGetReq {
     // 검색하는 유저 아이디
     Long userId;
 
-    // 유저의 상태 (학생 = 2, 강사 = 3)
+    // 유저의 상태 (학생 = 1, 강사 = 2)
     Integer userState;
 
     // 마스터코드 중분류
