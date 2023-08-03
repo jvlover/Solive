@@ -9,7 +9,6 @@ public class UserLoginPostRes {
 
     String accessToken;
     String refreshToken;
-    String loginId;
-    String masterCodeName;
+    Integer masterCodeId;
     String nickname;
 }

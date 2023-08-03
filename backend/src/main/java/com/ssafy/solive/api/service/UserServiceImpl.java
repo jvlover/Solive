@@ -143,9 +143,7 @@ public class UserServiceImpl implements UserService {
             return UserLoginPostRes.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .loginId(userLoginId)
-                .masterCodeName(
-                    masterCodeRepository.findById(user.getMasterCodeId().getId()).get().getName())
+                .masterCodeId(user.getMasterCodeId().getId())
                 .nickname(user.getNickname())
                 .build();
         } else { // 로그인 실패
