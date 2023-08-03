@@ -1,10 +1,14 @@
 package com.ssafy.solive.api.controller;
 
+import com.ssafy.solive.api.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.request.MatchedRegistPostReq;
+import com.ssafy.solive.api.response.MatchedFindMineRes;
 import com.ssafy.solive.api.service.MatchedService;
 import com.ssafy.solive.common.model.CommonResponse;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,5 +48,24 @@ public class MatchedController {
 
         log.info("MatchedController_regist_end: success");
         return CommonResponse.success(SUCCESS);
+    }
+
+    /*
+     *  유저가 자신이 등록했던 문제(매칭 이력들)을 검색하기 위한 API
+     *  유저가 학생인지, 강사인지 상태 코드를 보내면, 확인 후 각자 다르게 서비스 처리
+     *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+     */
+    @GetMapping("/my")
+    public CommonResponse<?> findMyMatching(MatchedFindMineGetReq findCondition) {
+        /*
+         *  findCondition : 검색 조건
+         */
+
+        log.info("MatchedController_findMyMatching_start: " + findCondition.toString());
+
+        List<MatchedFindMineRes> findResList = matchedService.findMyMatching(findCondition);
+
+        log.info("MatchedController_findMyMatching_end: " + findResList.toString());
+        return CommonResponse.success(findResList);
     }
 }

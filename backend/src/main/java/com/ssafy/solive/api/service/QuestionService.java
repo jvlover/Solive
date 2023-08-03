@@ -2,12 +2,10 @@ package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
-import com.ssafy.solive.api.request.QuestionFindMineGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
-import com.ssafy.solive.api.response.QuestionFindMineRes;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +22,4 @@ public interface QuestionService {
 
     QuestionFindDetailRes findDetail(Long id);
 
-    List<QuestionFindMineRes> findMyQuestion(
-        QuestionFindMineGetReq findCondition);
 }

@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /*
- *  학생이 마이페이지에서 자신이 등록한 문제 검색 API Response
+ *  마이페이지에서 자신이 등록한 문제 검색 API Response
  */
 @Data
-public class QuestionFindMineRes {
+public class MatchedFindMineRes {
 
     // 각 Question들의 id(PK). 상세 조회할 때 api 요청하기 위해 필요
     Long questionId;
@@ -27,12 +27,12 @@ public class QuestionFindMineRes {
     // 문제 매칭 상태
     Integer matchingState;
 
-    public QuestionFindMineRes() {
+    public MatchedFindMineRes() {
 
     }
 
     // Querydsl을 위한 생성자
-    public QuestionFindMineRes(Long questionId, String title, LocalDateTime createTime,
+    public MatchedFindMineRes(Long questionId, String title, LocalDateTime createTime,
         String masterCodeName, Integer matchingState) {
         this.questionId = questionId;
         this.title = title;

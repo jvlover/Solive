@@ -1,7 +1,9 @@
 package com.ssafy.solive.db.repository;
 
 import com.ssafy.solive.api.request.ApplyFindGetReq;
+import com.ssafy.solive.api.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.response.ApplyFindRes;
+import com.ssafy.solive.api.response.MatchedFindMineRes;
 import java.util.List;
 
 /*
@@ -10,4 +12,6 @@ import java.util.List;
 public interface QApplyRepository {
 
     List<ApplyFindRes> findByCondition(ApplyFindGetReq findCondition);
+
+    List<MatchedFindMineRes> findMyApply(MatchedFindMineGetReq findCondition);
 }
