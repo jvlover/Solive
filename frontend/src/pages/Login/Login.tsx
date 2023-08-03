@@ -32,8 +32,10 @@ function Login() {
 
   const onSubmit = async (data: LoginFormFields) => {
     try {
+
       const response = await axios.post(BASE_URL + '/user/login', data);
-      const user: User = response.data;
+      const user: User = response.data.data;
+
       setUser(user);
       if (response.data.success === true) {
         if (user.masterCodeId === 2) {
