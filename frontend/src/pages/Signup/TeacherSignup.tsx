@@ -1,9 +1,19 @@
-import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from 'axios';
 import BackgroundImg from '../../assets/background.png';
+import { useNavigate } from 'react-router-dom';
+
+type FormData = {
+  name: string;
+  nickname: string;
+  loginId: string;
+  loginPassword: string;
+  passwordConfirm: string;
+  email: string;
+  university: string;
+};
 
 const schema = yup.object().shape({
   name: yup.string().required('이름은 필수입니다.'),
@@ -12,7 +22,7 @@ const schema = yup.object().shape({
   loginPassword: yup.string().required('비밀번호는 필수입니다.'),
   passwordConfirm: yup
     .string()
-    .oneOf([yup.ref('loginPassword'), null], '비밀번호가 일치하지 않습니다.')
+    .oneOf([yup.ref('loginPassword'), ''], '비밀번호가 일치하지 않습니다.')
     .required('비밀번호 확인은 필수입니다.'),
   email: yup
     .string()
@@ -22,6 +32,7 @@ const schema = yup.object().shape({
 });
 
 function TeacherSignup(): JSX.Element {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -30,7 +41,7 @@ function TeacherSignup(): JSX.Element {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     const signupData = {
       name: data.name,
       nickname: data.nickname,
@@ -41,10 +52,16 @@ function TeacherSignup(): JSX.Element {
     };
 
     try {
-      const response = await axios.post('YOUR_API_ENDPOINT', signupData);
+      const response = await axios.post('/user', signupData);
       console.log(response.data);
+
+      if (response.data.success === true) {
+        navigate('/login');
+      }
     } catch (error) {
       console.error(error);
+
+      alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   };
 
