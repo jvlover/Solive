@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
 import Signup from './pages/Signup/Signup';
 import Home from './pages/Home';
 import StudentSignup from './pages/Signup/StudentSignup';
@@ -26,10 +25,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="*" element={<Error404 />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
         <Route path="/board" element={<ArticleList />} />
-        <Route path="/board/:id" element={<ArticleDetail />} />
-        <Route path="/board/regist" element={<ArticleRegist />} />
         <Route path="/board/modify/:id" element={<ArticleModify />} />
         <Route path="/signup/StudentSignup" element={<StudentSignup />} />
         <Route path="/signup/TeacherSignup" element={<TeacherSignup />} />
