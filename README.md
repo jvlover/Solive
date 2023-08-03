@@ -1,351 +1,69 @@
-## 2023-07-17
-
----
-
-### 이효식
-
-- Git branch 설계
-- Git branch naming convention
-- Jira 에픽 이슈 생성
-- Jira 스토리 이슈 생성
-
----
-
-### 노성호
-
-- Git commit message convention 합의
-- Jira 에픽 이슈 생성
-- Jira 스토리 이슈 생성
-- TIL : JPA
-
----
-
-### 이용현
-
-- Git branch naming convention
-- ERD Diagram 생성
-- ERD Diagram export
-- TIL : AWS배포 관련
-
----
-
-### 최주호
-
-- Git branch naming convention
-- ERD Diagram 생성
-- ERD Diagram export
-- 회원탈퇴 목업 생성
-
----
-
-### 박민혁
-
-- DB naming convention
-- ERD Diagram 생성
-- ERD Diagram export
-- TIL : React
-
----
-
-### 정선재
-
-- Git commit message convention 합의
-- Jira 에픽 이슈 생성
-- Jira 스토리 이슈 생성
-- TIL : webrtc & react
-
----
-
-## 2023-07-18
-
----
-
-### 이효식
-
-- Backend package 설계
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 이용현
-
-- Backend package 설계
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 노성호
-
-- Backend package 설계
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 정선재
-
-- Frontend 코딩 컨벤션
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 박민혁
-
-- Frontend 코딩 컨벤션
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의
-- 명세서 수정 회의
-
----
-
-### 최주호
-
-- Frontend 코딩 컨벤션
-- 컨설턴트님 피드백 회의
-- ERD 설계 수정 회의 발표
-- 명세서 수정 회의
-- 피그마 목업 수정 고민
-
----
-
-## 2023-07-20
-
----
-
-### 이효식
-
-- Backend log 컨벤션 회의
-- 배포 관련 조사
-
----
-
-### 최주호
-
-- 목업 대대적 수정
-- 팀워크 성장 수업 시청
-
----
-
-### 박민혁
-
-- BackEnd log 컨벤션 회의
-- Spring Data JPA 스터디
-
----
-
-### 정선재
-
-- react 특강 강의 시청
-- 팀워크 성장 수업 시청
-
----
-
-### 노성호
-
-- Backend log 컨벤션 회의
-- CommonResponse Class 작성
-
----
-
-### 이용현
-
-- Backend log 컨벤션 회의
-- JWT 관련 조사
-
----
-
-## 2023-07-21
-
----
-
-### 이효식
-
-- 배포 관련 조사
-- 백엔드 코드 리뷰
-
----
-
-### 최주호
-
-- AWS 조사
-- 리액트 공부
-- 목업 수정(조금)
-
----
-
-## 2023-07-24
-
----
-
-### 이효식
-
-- Jira 이슈 작성
-- 코드 리뷰
-- 디버깅
-
----
-
-### 최주호
-
-- 에러페이지 목업 작성
-- 문제 목록 목업 작성
-- 자치회 회의 참석
-
----
-
-## 2023-07-25
-
----
-
-### 정선재
-
-- react의 recoil 학습하기
-- 로그인 페이지 수정하기
-- 선생님 메인페이지 만들기
-
----
-
-### 최주호
-
-- 문제등록 목업 작성
-- 영상확인 목업 작성
-- 학생 메인화면 목업 작성
-
----
-
-## 2023-07-25
-
----
-
-### 최주호
-
-- 발표용 PPT 만들기
-- 학생 문제등록 목업 작성
-- 강의 평가 목업 작성
-- yup 공부
-
----
-
-## 2023-07-27
-
----
-
-### 이효식
-
-- EC2에 데이터베이스 올리기
-- 배포 관련 공부
-- 코드 리뷰
-- 디버깅
-
----
-
-### 최주호
-
-- 발표용 PPT 만들기 위한 조사
-- 시스템 아키텍처 작성
-- 학생 강사 선택 목업 작성
-
----
-
-## 2023-07-28
-
----
-
-### 이효식
-
-- 프론트 코드 빌드
-- EC2 연결 확인
-
----
-
-### 최주호
-
-- 발표
-- 발표준비
-- 싸피데이 진행
-- 싸피데이 준비
-- 웹RTC 공부
-
----
-
-### 정선재
-
-- 선생님 문제 전체 페이지 만들기
-- 문제 상세 페이지 만들기
-
----
-
-## 2023-07-31
-
----
-
-### 최주호
-
-- WebRTC 기본 설정에 대해 확인했습니다.
-- 코드를 하나씩 변경해가며 어느 부분이 어떤 곳을 담당하는지 확인했습니다.
-- 학생 결제창 목업을 만들었습니다.
-
----
-
-### 정선재
-
-- 선생님 메인 페이지 수정하기
-- 학생 문제 등록 페이지 만들기
-- 선생님 문제 세부 페이지 만들기
-
----
-
-### 이효식
-
-- 4주차 Jira 이슈 작성 완료했습니다.
-- Front-end 코드 올리기에 성공했습니다.
-- Back-end 코드 빌드 문제 해결 중입니다.
-
----
-
-## 2023-08-01
-
----
-
-### 최주호
-
-- WebRTC 채팅창 관련해서 분석했습니다.
-- WebRTC 툴바 관련해서 분석했습니다.
-- 게시판 목업 만들었습니다.
-
----
-
-## 2023-08-02
-
----
-
-### 최주호
-
-- WebRTC 연결해주는 코드 분석하고 있습니다.
-- WebRTC 필요없는 코드들 (카메라 변경, 닉네임 변경...) 삭제했습니다.
-
----
-
-### 정선재
-
-- 개인정보 페이지 만들기
-- 회원탈퇴 팝업창 만들기
-- 개인 프로필 페이지 만들기
-
----
-
-## 2023-08-02
-
----
-
-### 최주호
-
-- WebRTC 코드 분석 거의 끝내고 수정하고 있습니다.
-- Typescript 공부했습니다.
+# A107 - 웹/모바일(웹 기술) 프로젝트
+
+<!-- 필수 항목 -->
+
+## 카테고리
+
+| Application | Domain | Language | Framework |
+| ---- | ---- | ---- | ---- |
+| :white_check_mark: Desktop Web | :black_square_button: AI | :white_check_mark: JavaScript | :black_square_button: Vue.js |
+| :white_check_mark: Mobile Web | :black_square_button: Big Data | :white_check_mark: TypeScript | :white_check_mark: React |
+| :white_check_mark: Responsive Web | :black_square_button: Blockchain | :black_square_button: C/C++ | :black_square_button: Angular |
+| :black_square_button: Android App | :black_square_button: IoT | :black_square_button: C# | :black_square_button: Node.js |
+| :black_square_button: iOS App | :black_square_button: AR/VR/Metaverse | :black_square_button: Python | :black_square_button: Flask/Django |
+| :black_square_button: Desktop App | :black_square_button: Game | :white_check_mark: Java | :white_check_mark: Spring/Springboot |
+| | | :black_square_button: Kotlin | |
+
+<!-- 필수 항목 -->
+
+## 프로젝트 소개
+
+* 프로젝트명: **Solive**
+* 서비스 특징: 문제 별 1 대 1 화상 풀이 매칭 프로젝트
+* 주요 기능
+  - 회원 관리
+  - 화상 문제 풀이 매칭
+  - 게시판
+* 주요 기술
+  - WebRTC
+  - WebSocket
+  - JWT Authentication
+  - REST API
+* 참조 리소스
+  * Tailwind CSS: 디자인 전반 적용
+  * Material Tailwind: 디자인 전반 적용
+  * OpenVidu: 오픈 소스 멀티 플랫폼 화상 회의 솔루션
+  * JPA: 객체와 데이터베이스의 관계를 매핑
+  * Querydsl: 쿼리 작성
+* 배포 환경
+  - URL: [https://i9a107.p.ssafy.io/](https://i9a107.p.ssafy.io/)
+  <!-- 웹 서비스, 랜딩 페이지, 프로젝트 소개 등의 배포 URL 기입 -->
+  - 테스트 계정: 현재 없음(추후 추가 예정)
+  <!-- 로그인이 필요한 경우, 사용 가능한 테스트 계정(ID/PW) 기입 -->
+
+<!-- 자유 양식 -->
+
+## 팀 소개
+* 이효식: 팀장, 코드 리뷰 및 인프라 담당, CI/CD, HTTPS, Docker 구성
+* 박민혁: 부팀장, 백엔드 개발 및 프론트엔드 개발, 
+* 이용현: 부부팀장, 백엔드 개발
+* 노성호: 백엔드 개발 리더, 서기, UCC담당자
+* 정선재: 프론트엔드 개발 리더
+* 최주호: 기획 및 와이어프레임 작성, UI/UX 디자인, WebRTC, 발표자
+
+<!-- 자유 양식 -->
+
+## 프로젝트 상세 설명
+### 개발 환경
+| 분야 | 항목 | 버전 |
+| ---- | ---- | ---- |
+| 백엔드 | Java | 17 |
+| 백엔드 | Gradle | 8.0 |
+| 백엔드 |Spring boot | 3.1.1 |
+| 프론트엔드 | React | 18 |
+| 프론트엔드 | Node.js | 18.16.1 |
+| 데이터베이스 | MySql | 8.0.33 |
+
+### ERD
+![ERD](./img/Solive_erd.png) 
+<!-- 개발 환경, 기술 스택, 시스템 구성도, ERD, 기능 상세 설명 등 -->
