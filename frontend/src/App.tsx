@@ -6,11 +6,13 @@ import TeacherSignup from './pages/Signup/TeacherSignup';
 import Login from './pages/Login/Login';
 import NotFoundImage from './assets/404.png';
 import QuestionRegistration from './pages/Student/QuestionRegistration';
+import Profile from './pages/Student/mypage/Profile';
 import ArticleList from './pages/Board/ArticleList';
 import HeaderNav from './components/HeaderNav';
 import ArticleDetail from './pages/Board/ArticleDetail';
 import ArticleRegist from './pages/Board/ArticleRegist';
 import ArticleModify from './pages/Board/ArticleModify';
+
 
 function App(): JSX.Element {
   return (
@@ -43,6 +45,7 @@ function App(): JSX.Element {
           path="student/questionregistration"
           element={<QuestionRegistration />}
         />
+        <Route path="/student/mypage/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
