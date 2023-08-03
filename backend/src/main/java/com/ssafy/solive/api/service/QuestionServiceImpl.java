@@ -37,10 +37,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class QuestionServiceImpl implements QuestionService {
 
     // Spring Data Jpa 사용을 위한 Repository들
-    QuestionRepository questionRepository;
-    QuestionPictureRepository questionPictureRepository;
-    StudentRepository studentRepository;
-    MasterCodeRepository masterCodeRepository;
+    private final QuestionRepository questionRepository;
+    private final QuestionPictureRepository questionPictureRepository;
+    private final StudentRepository studentRepository;
+    private final MasterCodeRepository masterCodeRepository;
 
     @Autowired
     public QuestionServiceImpl(QuestionRepository questionRepository,

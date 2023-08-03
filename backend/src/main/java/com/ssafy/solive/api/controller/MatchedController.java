@@ -25,7 +25,7 @@ public class MatchedController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
 
-    MatchedService matchedService;
+    private final MatchedService matchedService;
 
     @Autowired
     public MatchedController(MatchedService matchedService) {

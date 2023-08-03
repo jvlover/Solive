@@ -49,12 +49,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class ArticleServiceImpl implements ArticleService {
 
     // Spring Data Jpa 사용을 위한 Repository들
-    UserRepository userRepository;
-    MasterCodeRepository masterCodeRepository;
-    ArticleRepository articleRepository;
-    ArticlePictureRepository articlePictureRepository;
-    ArticleLikeRepsitory articleLikeRepsitory;
-    ArticleReportRepository articleReportRepository;
+    private final UserRepository userRepository;
+    private final MasterCodeRepository masterCodeRepository;
+    private final ArticleRepository articleRepository;
+    private final ArticlePictureRepository articlePictureRepository;
+    private final ArticleLikeRepsitory articleLikeRepsitory;
+    private final ArticleReportRepository articleReportRepository;
 
     @Autowired
     public ArticleServiceImpl(UserRepository userRepository,

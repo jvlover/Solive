@@ -35,7 +35,7 @@ public class QuestionController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
 
-    QuestionService questionService;
+    private final QuestionService questionService;
 
     @Autowired
     public QuestionController(QuestionService questionService) {

@@ -28,7 +28,7 @@ public class ApplyController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
 
-    ApplyService applyService;
+    private final ApplyService applyService;
 
     @Autowired
     public ApplyController(ApplyService applyService) {
@@ -75,7 +75,7 @@ public class ApplyController {
             throw new ApplyPossessionFailException();
         }
     }
-    
+
     /*
      *  유저(학생)가 자신이 등록한 문제에 어떤 강사들이 지원 신청했는지 검색하기 위한 API
      *  정렬 / 검색 기준 : 예상 풀이시간순, 가격순, 평점순 정렬, 강사의 선호 과목과 문제의 과목 일치 여부 선택

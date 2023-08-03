@@ -26,9 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApplyServiceImpl implements ApplyService {
 
     // Spring Data Jpa 사용을 위한 Repository들
-    ApplyRepository applyRepository;
-    TeacherRepository teacherRepository;
-    QuestionRepository questionRepository;
+    private final ApplyRepository applyRepository;
+    private final TeacherRepository teacherRepository;
+    private final QuestionRepository questionRepository;
 
     @Autowired
     public ApplyServiceImpl(ApplyRepository applyRepository, TeacherRepository teacherRepository,

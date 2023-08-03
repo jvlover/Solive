@@ -31,11 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class MatchedServiceImpl implements MatchedService {
 
     // Spring Data Jpa 사용을 위한 Repository들
-    ApplyRepository applyRepository;
-    TeacherRepository teacherRepository;
-    QuestionRepository questionRepository;
-    StudentRepository studentRepository;
-    MatchedRepository matchedRepository;
+    private final ApplyRepository applyRepository;
+    private final TeacherRepository teacherRepository;
+    private final QuestionRepository questionRepository;
+    private final StudentRepository studentRepository;
+    private final MatchedRepository matchedRepository;
 
     @Autowired
     public MatchedServiceImpl(ApplyRepository applyRepository, TeacherRepository teacherRepository,
