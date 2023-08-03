@@ -55,6 +55,7 @@ const ArticleList = () => {
       setFirstNum(firstNum);
       setPageLength(pageLength);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
