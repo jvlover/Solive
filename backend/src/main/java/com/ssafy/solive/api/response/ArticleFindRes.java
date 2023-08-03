@@ -10,7 +10,8 @@ import lombok.Data;
 public class ArticleFindRes {
 
     private Long id; // 게시글 id
-    private String author; // 글쓴이
+    private Long userId; // 유저 id
+    private String author; // 유저 nickname
     private String title;
     private String content;
     private Long viewCount;

@@ -5,7 +5,6 @@ import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.request.ArticleReportPostReq;
-import com.ssafy.solive.api.response.ArticleFindAllRes;
 import com.ssafy.solive.api.response.ArticleFindRes;
 import com.ssafy.solive.common.exception.FileIOException;
 import com.ssafy.solive.db.entity.Article;
@@ -403,6 +402,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         ArticleFindRes articleFindRes = ArticleFindRes.builder()
             .id(articleId)
+            .userId(article.getUser().getId())
             .author(article.getUser().getNickname())
             .title(article.getTitle())
             .content(article.getContent())
@@ -424,7 +424,7 @@ public class ArticleServiceImpl implements ArticleService {
      *  keyword를 공백으로 보내면 전체 검색
      */
     @Override
-    public Page<ArticleFindAllRes> findAllArticle(String keyword, Pageable pageable) {
+    public Page<ArticleFindRes> findAllArticle(String keyword, Pageable pageable) {
         /*
          *  keyword : 검색어
          *  pageable : Spring Data JPA의 페이징 기능
@@ -432,10 +432,11 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("ArticleService_findAllArticle_start: " + keyword + ", "
             + pageable.toString());
 
-        Page<ArticleFindAllRes> articleFindAllRes = articleRepository.findByTitleContaining(keyword,
+        Page<ArticleFindRes> articleFindRes = articleRepository.findByTitleContaining(keyword,
                 pageable)
-            .map(m -> ArticleFindAllRes.builder()
+            .map(m -> ArticleFindRes.builder()
                 .id(m.getId())
+                .userId(m.getUser().getId())
                 .author(m.getUser().getNickname())
                 .title(m.getTitle())
                 .content(m.getContent())
@@ -448,8 +449,8 @@ public class ArticleServiceImpl implements ArticleService {
                     m.getId()))
                 .build());
 
-        log.info("ArticleService_findAllArticle_end: " + articleFindAllRes.toString());
+        log.info("ArticleService_findAllArticle_end: " + articleFindRes.toString());
 
-        return articleFindAllRes;
+        return articleFindRes;
     }
 }

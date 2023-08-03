@@ -5,7 +5,6 @@ import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.request.ArticleReportPostReq;
-import com.ssafy.solive.api.response.ArticleFindAllRes;
 import com.ssafy.solive.api.response.ArticleFindRes;
 import com.ssafy.solive.api.service.ArticleService;
 import com.ssafy.solive.common.exception.ArticleNotFoundException;
@@ -203,7 +202,7 @@ public class ArticleController {
         log.info("ArticleController_findAll_start: " + keyword + ", "
             + pageable.toString());
 
-        Page<ArticleFindAllRes> findAllInfo = articleService.findAllArticle(keyword, pageable);
+        Page<ArticleFindRes> findAllInfo = articleService.findAllArticle(keyword, pageable);
 
         if (findAllInfo != null) {
             log.info("ArticleController_findAll_end: " + findAllInfo.toString());
