@@ -5,7 +5,6 @@ import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.request.ArticleReportPostReq;
-import com.ssafy.solive.api.response.ArticleFindAllRes;
 import com.ssafy.solive.api.response.ArticleFindRes;
 import com.ssafy.solive.db.entity.Article;
 import java.util.List;
@@ -27,5 +26,5 @@ public interface ArticleService {
 
     ArticleFindRes findArticle(Long articleId);
 
-    Page<ArticleFindAllRes> findAllArticle(String keyword, Pageable pageable);
+    Page<ArticleFindRes> findAllArticle(String keyword, Pageable pageable);
 }

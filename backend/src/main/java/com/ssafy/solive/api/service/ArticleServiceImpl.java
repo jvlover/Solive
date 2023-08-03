@@ -5,7 +5,6 @@ import com.ssafy.solive.api.request.ArticleLikePostReq;
 import com.ssafy.solive.api.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.request.ArticleReportPostReq;
-import com.ssafy.solive.api.response.ArticleFindAllRes;
 import com.ssafy.solive.api.response.ArticleFindRes;
 import com.ssafy.solive.common.exception.FileIOException;
 import com.ssafy.solive.db.entity.Article;
@@ -80,9 +79,12 @@ public class ArticleServiceImpl implements ArticleService {
          *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  registInfo : 게시글 등록할 때 입력한 정보
          */
-        log.info("ArticleService_registArticle_start: " + registInfo.toString() + ", "
-            + files.toString());
-
+        if (files != null) {
+            log.info("ArticleService_registArticle_start: " + registInfo.toString() + ", "
+                + files.toString());
+        } else {
+            log.info("ArticleService_registArticle_start: " + registInfo.toString());
+        }
         // user가 null일 수 있으므로 controller로 exception throw
         // TODO: IllegalArgumentExeption 말고 custom exception 만들기
         User user = userRepository.findById(registInfo.getUserId())
@@ -172,9 +174,12 @@ public class ArticleServiceImpl implements ArticleService {
          *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  modifyInfo : 게시글 수정할 때 입력한 정보
          */
-        log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString() + ", "
-            + files.toString());
-
+        if (files != null) {
+            log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString() + ", "
+                + files.toString());
+        } else {
+            log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString());
+        }
         Article article = articleRepository.findById(modifyInfo.getArticleId())
             .orElseThrow(IllegalArgumentException::new);
         // 현재 로그인 유저의 id와 글쓴이의 id가 일치할 때
@@ -396,8 +401,9 @@ public class ArticleServiceImpl implements ArticleService {
             articleId);
 
         ArticleFindRes articleFindRes = ArticleFindRes.builder()
-            .masterCodeId(article.getMasterCode().getId())
+            .id(articleId)
             .userId(article.getUser().getId())
+            .author(article.getUser().getNickname())
             .title(article.getTitle())
             .content(article.getContent())
             .viewCount(article.getViewCount())
@@ -418,7 +424,7 @@ public class ArticleServiceImpl implements ArticleService {
      *  keyword를 공백으로 보내면 전체 검색
      */
     @Override
-    public Page<ArticleFindAllRes> findAllArticle(String keyword, Pageable pageable) {
+    public Page<ArticleFindRes> findAllArticle(String keyword, Pageable pageable) {
         /*
          *  keyword : 검색어
          *  pageable : Spring Data JPA의 페이징 기능
@@ -426,19 +432,25 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("ArticleService_findAllArticle_start: " + keyword + ", "
             + pageable.toString());
 
-        Page<ArticleFindAllRes> articleFindAllRes = articleRepository.findByTitleContaining(keyword,
+        Page<ArticleFindRes> articleFindRes = articleRepository.findByTitleContaining(keyword,
                 pageable)
-            .map(m -> ArticleFindAllRes.builder()
+            .map(m -> ArticleFindRes.builder()
+                .id(m.getId())
                 .userId(m.getUser().getId())
+                .author(m.getUser().getNickname())
                 .title(m.getTitle())
+                .content(m.getContent())
                 .viewCount(m.getViewCount())
                 .likeCount(m.getLikeCount())
+                .reportCount(m.getReportCount())
                 .time(m.getTime().toString())
-                .hasPicture(articlePictureRepository.existsByArticle(m))
+                .lastUpdateTime(m.getLastUpdateTime().toString())
+                .articlePicturePathNames(articlePictureRepository.findPathNameByArticle(
+                    m.getId()))
                 .build());
 
-        log.info("ArticleService_findAllArticle_end: " + articleFindAllRes.toString());
+        log.info("ArticleService_findAllArticle_end: " + articleFindRes.toString());
 
-        return articleFindAllRes;
+        return articleFindRes;
     }
 }
