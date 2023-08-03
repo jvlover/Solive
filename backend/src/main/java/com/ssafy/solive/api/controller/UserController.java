@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {

@@ -9,11 +9,11 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.solive.api.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
-import com.ssafy.solive.api.request.QuestionFindMineGetReq;
+import com.ssafy.solive.api.response.MatchedFindMineRes;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
-import com.ssafy.solive.api.response.QuestionFindMineRes;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -89,8 +89,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
      *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @Override
-    public List<QuestionFindMineRes> findMyQuestion(
-        QuestionFindMineGetReq findCondition) {
+    public List<MatchedFindMineRes> findMyQuestion(MatchedFindMineGetReq findCondition) {
 
         log.info("QQuestionRepository_findMyQuestion_start: " + findCondition.toString());
 
@@ -98,7 +97,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
         int code = 1000 + findCondition.getMasterCodeMiddle() + findCondition.getMasterCodeLow();
 
         return queryFactory
-            .select(Projections.constructor(QuestionFindMineRes.class,
+            .select(Projections.constructor(MatchedFindMineRes.class,
                 question.id.as("questionId"),
                 question.title.as("title"),
                 question.time.as("createTime"),
@@ -106,7 +105,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 question.matchingState.as("matchingState")))
             .from(question)
             .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
-            .where(studentIdEq(findCondition.getStudentId()), mastercodeBetween(code),
+            .where(studentIdEq(findCondition.getUserId()), mastercodeBetween(code),
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
             .orderBy(timeSort(findCondition.getSort()))

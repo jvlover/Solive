@@ -75,4 +75,8 @@ public class Question extends BaseEntity {
         // 마지막 수정 시간을 현재 시간으로 설정
         this.lastUpdateTime = LocalDateTime.now();
     }
+
+    public void modifyMatchingState(int state) {
+        this.matchingState = state;
+    }
 }

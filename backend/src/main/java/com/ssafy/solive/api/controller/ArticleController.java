@@ -43,7 +43,7 @@ public class ArticleController {
 
     private static final String SUCCESS = "success"; // API 성공 시 return
 
-    ArticleService articleService;
+    private final ArticleService articleService;
 
     @Autowired
     public ArticleController(ArticleService articleService) {

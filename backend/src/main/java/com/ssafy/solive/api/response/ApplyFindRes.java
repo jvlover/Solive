@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 public class ApplyFindRes {
 
+    // 지원 요청 식별
+    Long applyId;
+
     // 강사 이름
     String teacherNickname;
 
@@ -34,8 +37,10 @@ public class ApplyFindRes {
     }
 
     // Querydsl을 위한 생성자
-    public ApplyFindRes(String teacherNickname, String teacherPathName, Integer teacherSubjectId,
+    public ApplyFindRes(Long applyId, String teacherNickname, String teacherPathName,
+        Integer teacherSubjectId,
         Integer solvePoint, Integer estimatedTime, Integer ratingSum, Integer ratingCount) {
+        this.applyId = applyId;
         this.teacherNickname = teacherNickname;
         this.teacherPathName = teacherPathName;
         this.teacherSubjectId = teacherSubjectId;

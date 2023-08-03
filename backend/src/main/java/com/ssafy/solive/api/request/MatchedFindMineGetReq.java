@@ -3,15 +3,18 @@ package com.ssafy.solive.api.request;
 import lombok.Data;
 
 /*
- *  학생이 마이페이지에서 자신이 등록한 문제 검색 API 조건 Request
+ *  마이페이지에서 자신의 매칭 검색 API 조건 Request
  */
 @Data
-public class QuestionFindMineGetReq {
+public class MatchedFindMineGetReq {
 
     // TODO: 검색 조건에 관해서 프론트와 협의 필요. 무엇을 어떤 형식으로 주고 받을 것인지
 
     // 검색하는 유저 아이디
-    Long studentId;
+    Long userId;
+
+    // 유저의 상태 (학생 = 2, 강사 = 3)
+    Integer userState;
 
     // 마스터코드 중분류
     Integer masterCodeMiddle;

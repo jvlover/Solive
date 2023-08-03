@@ -2,12 +2,10 @@ package com.ssafy.solive.api.service;
 
 import com.ssafy.solive.api.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
-import com.ssafy.solive.api.request.QuestionFindMineGetReq;
 import com.ssafy.solive.api.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.response.QuestionFindDetailRes;
-import com.ssafy.solive.api.response.QuestionFindMineRes;
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.NoImageException;
 import com.ssafy.solive.common.exception.QuestionNotFoundException;
@@ -39,10 +37,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class QuestionServiceImpl implements QuestionService {
 
     // Spring Data Jpa 사용을 위한 Repository들
-    QuestionRepository questionRepository;
-    QuestionPictureRepository questionPictureRepository;
-    StudentRepository studentRepository;
-    MasterCodeRepository masterCodeRepository;
+    private final QuestionRepository questionRepository;
+    private final QuestionPictureRepository questionPictureRepository;
+    private final StudentRepository studentRepository;
+    private final MasterCodeRepository masterCodeRepository;
 
     @Autowired
     public QuestionServiceImpl(QuestionRepository questionRepository,
@@ -260,35 +258,6 @@ public class QuestionServiceImpl implements QuestionService {
 
         log.info("QuestionService_findDetail_end: " + findDetailRes.toString());
         return findDetailRes;
-    }
-
-    /*
-     *  유저(학생)가 자신이 등록했던 문제를 검색하기 위한 API
-     *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
-     */
-    @Override
-    public List<QuestionFindMineRes> findMyQuestion(
-        QuestionFindMineGetReq findCondition) {
-        /*
-         *  findCondition : 검색 조건
-         */
-
-        log.info("QuestionService_findMyQuestion_start: " + findCondition.toString());
-
-        // 문제 리스트 DB에서 얻어 오기
-        List<QuestionFindMineRes> findConditionRes = questionRepository.findMyQuestion(
-            findCondition);
-
-        // 문제 리스트의 각 문제에 썸네일 이미지 Setting
-        for (int i = 0; i < findConditionRes.size(); i++) {
-            String questionImage = questionRepository.findQuestionImage(
-                findConditionRes.get(i).getQuestionId());
-            findConditionRes.get(i).setImagePathName(questionImage);
-        }
-
-        log.info("QuestionService_findMyQuestion_end: " + findConditionRes.toString());
-
-        return findConditionRes;
     }
 
 }
