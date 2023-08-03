@@ -8,7 +8,9 @@ import {
   Button,
   IconButton,
 } from '@material-tailwind/react';
-function HeaderNav(): JSX.Element {
+
+// 로그인 하면 로그인 했다고 표시
+const HeaderNav = () => {
   const [openNav, setOpenNav] = useState(false);
 
   useEffect(() => {
@@ -143,6 +145,6 @@ function HeaderNav(): JSX.Element {
   //     </div>
   //   </nav>
   // );
-}
+};
 
 export default HeaderNav;

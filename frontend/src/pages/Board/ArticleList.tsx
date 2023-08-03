@@ -3,7 +3,7 @@ import { userState } from '../../recoil/user/userState';
 import { Article, ArticlePage } from '../../recoil/atoms';
 import { fetchArticles } from '../../api';
 import { useNavigate } from 'react-router-dom';
-import { ReactComponent as EmptyHeart } from '../../assets/empty_heart.svg';
+import { useRecoilValue } from 'recoil';
 import { ReactComponent as FullHeart } from '../../assets/full_heart.svg';
 import { ReactComponent as Pencil } from '../../assets/pencil.svg';
 import { ReactComponent as Eye } from '../../assets/eye.svg';
@@ -20,15 +20,14 @@ import {
   Typography,
 } from '@material-tailwind/react';
 
-function ArticleList(): JSX.Element {
-  //const user = useRecoilValue(userState);
+const ArticleList = () => {
+  const user = useRecoilValue(userState);
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState<string>('');
   const [activePage, setActivePage] = useState<number>(1);
   const [articlePages, setArticlePages] = useState<ArticlePage>();
   const [firstNum, setFirstNum] = useState<number>(1);
   const [pageLength, setPageLength] = useState<number>(1);
-  //console.log(user);
 
   // API를 호출하여 게시글 목록을 가져오는 함수
   const fetchAndSetArticles = useCallback(
@@ -41,6 +40,7 @@ function ArticleList(): JSX.Element {
       setFirstNum(firstNum);
       setPageLength(pageLength);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -82,7 +82,7 @@ function ArticleList(): JSX.Element {
 
   return (
     <div className="flex justify-center">
-      <div className="w-[60%] min-w-fit">
+      <div className="w-[60%] min-w-fit min-h-[100vh]">
         <Typography variant="h2" className="m-5">
           공지사항
         </Typography>
@@ -130,7 +130,9 @@ function ArticleList(): JSX.Element {
             </Breadcrumbs>
             {/* 글 작성 페이지로 넘어가게(관리자만 보이게) */}
             <button
-              className="btn-primary m-3"
+              className={
+                user?.masterCodeId === 3 ? 'btn-primary m-3' : 'hidden'
+              }
               onClick={() => handleArticleRegistClick()}
             >
               <div className="flex justify-center items-center">
@@ -171,8 +173,7 @@ function ArticleList(): JSX.Element {
                   ) : (
                     ''
                   )}
-                  {/* 내가 좋아요 했으면 FullHeart */}
-                  <EmptyHeart />
+                  <FullHeart />
                   <Typography className="m-1 mr-3 font-medium text-blue-gray-600">
                     {article.likeCount}
                   </Typography>
@@ -197,7 +198,7 @@ function ArticleList(): JSX.Element {
           </Button>
           <div className="flex items-center gap-2">
             {Array<number>(pageLength)
-              .fill()
+              .fill(0)
               .map((_, index: number) => (
                 <IconButton
                   key={index}
@@ -222,6 +223,6 @@ function ArticleList(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default ArticleList;
