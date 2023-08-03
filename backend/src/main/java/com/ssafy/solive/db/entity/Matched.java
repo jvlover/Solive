@@ -62,6 +62,6 @@ public class Matched extends BaseEntity {
     private LocalDateTime reportedAt;
 
     // 매칭 끝나고 영상 저장 시 비디오 url
-    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String videoUrl;
 }
