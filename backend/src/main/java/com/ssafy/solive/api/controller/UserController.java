@@ -61,7 +61,7 @@ public class UserController {
     /**
      * 유저 프로필 정보
      *
-     * @param request access-token이 들어있는 request
+     * @param request access-token 이 들어있는 request
      * @return UserProfilePostRes
      */
     @GetMapping()
@@ -102,8 +102,8 @@ public class UserController {
     /**
      * 로그인
      *
-     * @param loginInfo 로그인id, password
-     * @return 토큰 및 상단바에 필요한 nickname등 제공
+     * @param loginInfo 로그인 id, password
+     * @return 토큰 및 상단바에 필요한 nickname 등 제공
      */
     @PostMapping("/login")
     public CommonResponse<?> login(@RequestBody UserLoginPostReq loginInfo) {
@@ -126,7 +126,7 @@ public class UserController {
      * 유저 프로필 수정
      *
      * @param userInfo UserModifyProfilePutReq
-     * @param request  access-token이 들어있는 request
+     * @param request  access-token 이 들어있는 request
      */
     @PutMapping()
     public CommonResponse<?> modifyProfile(@RequestBody UserModifyProfilePutReq userInfo,
@@ -147,8 +147,7 @@ public class UserController {
      * 비밀번호 수정
      *
      * @param passwords 현재비밀번호, 바꿀비밀번호 정보
-     * @param request   access-token이 들어있는 request
-     * @return
+     * @param request   access-token 이 들어있는 request
      */
     @PutMapping("/password")
     public CommonResponse<?> modifyPassword(@RequestBody UserModifyPasswordPutReq passwords,
@@ -168,7 +167,7 @@ public class UserController {
     /**
      * 회원 탈퇴, User DB에 deletedAt 값 추가
      *
-     * @param request accessToken의 userId를 받기 위한 request
+     * @param request accessToken 의 userId를 받기 위한 request
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(HttpServletRequest request) {
@@ -189,8 +188,8 @@ public class UserController {
     /**
      * 임시라서 없어질 듯
      *
-     * @param code
-     * @param request
+     * @param code    code
+     * @param request request
      * @return
      */
     @PutMapping("/setcode")
@@ -208,7 +207,7 @@ public class UserController {
      * 학생 Solve Point 충전
      *
      * @param solvePoint 충전 금액
-     * @param request    access-token이 들어있는 request
+     * @param request    access-token 이 들어있는 request
      */
     @PutMapping("/charge")
     public CommonResponse<?> chargeSolvePoint(Integer solvePoint, HttpServletRequest request) {
@@ -225,7 +224,7 @@ public class UserController {
      * 강사 Solve Point 출금
      *
      * @param solvePoint 출금 금액
-     * @param request    access-token이 들어있는 request
+     * @param request    access-token 이 들어있는 request
      */
     @PutMapping("/cashout")
     public CommonResponse<?> cashoutSolvePoint(Integer solvePoint, HttpServletRequest request) {

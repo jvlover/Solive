@@ -31,11 +31,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private StudentRepository studentRepository;
-    private TeacherRepository teacherRepository;
-    private MasterCodeRepository masterCodeRepository;
-    private JwtConfiguration jwtConfiguration;
+    private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
+    private final MasterCodeRepository masterCodeRepository;
+    private final JwtConfiguration jwtConfiguration;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository,
@@ -49,8 +49,8 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @param registInfo
-     * @return
+     * @param registInfo 회원가입 정보
+     * @return User
      */
     @Override
     public User registUser(UserRegistPostReq registInfo) {
@@ -58,20 +58,23 @@ public class UserServiceImpl implements UserService {
         // 비밀번호에 Bcrypt 적용
         String hashedPassword = BCrypt.hashpw(registInfo.getLoginPassword(), BCrypt.gensalt());
         // 마스터 코드 객체 생성
-        MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId()).get();
+        MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId())
+            .get();
+        MasterCode logoutState = masterCodeRepository.findById(11).get(); // 로그아웃 상태로 초기화
 
         // 학생으로 회원가입 요청한 경우
-        if (registInfo.getMasterCodeId() == 2) {
+        if (registInfo.getMasterCodeId() == 1) {
             Student student = Student.builder()
+                .masterCodeId(masterCode)
+                .stateId(logoutState)
                 .loginId(registInfo.getLoginId())
                 .loginPassword(hashedPassword)
-                .masterCodeId(masterCode)
                 .nickname(registInfo.getNickname())
                 .email(registInfo.getEmail())
                 .gender(registInfo.getGender())
                 .build();
 
-            log.info("UserService_registUser_end: " + student.toString());
+            log.info("UserService_registUser_mid: " + student.toString());
 
             try {
                 studentRepository.save(student);
@@ -85,9 +88,10 @@ public class UserServiceImpl implements UserService {
             }
         } else {  // 임시로 나머지 경우 다 강사가 회원가입 요청한 경우로 처리함
             Teacher teacher = Teacher.builder()
+                .masterCodeId(masterCode)
+                .stateId(logoutState)
                 .loginId(registInfo.getLoginId())
                 .loginPassword(hashedPassword)
-                .masterCodeId(masterCode)
                 .nickname(registInfo.getNickname())
                 .email(registInfo.getEmail())
                 .gender(registInfo.getGender())
@@ -128,6 +132,7 @@ public class UserServiceImpl implements UserService {
             String accessToken = jwtConfiguration.createAccessToken("userid", userId);
             String refreshToken = jwtConfiguration.createRefreshToken("userid", userId);
 
+            user.setLoginState(masterCodeRepository.findById(12).get()); // 로그인 상태로 변경
             // RefreshToken을 user DB에 저장
             user.updateRefreshToken(refreshToken);
 
@@ -149,9 +154,9 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * accessTokendmfh userId를 조회
+     * accessToken으로 userId를 조회
      *
-     * @param accessToken
+     * @param accessToken accessToken
      * @return userId
      */
     @Override
@@ -169,7 +174,7 @@ public class UserServiceImpl implements UserService {
     /**
      * userId로 프로필 정보 조회
      *
-     * @param userId
+     * @param userId userId
      * @return UserProfilePostRes
      */
     @Override
@@ -197,7 +202,7 @@ public class UserServiceImpl implements UserService {
     /**
      * userId로 개인정보 조회
      *
-     * @param userId
+     * @param userId userId
      * @return UserPrivacyPostRes
      */
     @Override
@@ -218,7 +223,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 유저 프로필 수정
      *
-     * @param userId
+     * @param userId   userId
      * @param userInfo 바꿀 정보들
      */
     @Override
@@ -238,7 +243,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 비밀번호 변경
      *
-     * @param userId
+     * @param userId    userId
      * @param passwords 기존비밀번호, 새로운비밀번호
      */
     @Override
@@ -262,7 +267,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 회원 탈퇴
      *
-     * @param userId
+     * @param userId userId
      */
     @Override
     public void deleteUser(Long userId) {
@@ -273,8 +278,8 @@ public class UserServiceImpl implements UserService {
     /**
      * 임시함수여서 지울듯
      *
-     * @param userId
-     * @param code
+     * @param userId userId
+     * @param code   code
      */
     @Override
     public void setCode(Long userId, Integer code) {
@@ -286,7 +291,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 학생의 Solve Point 충전
      *
-     * @param userId
+     * @param userId     userId
      * @param solvePoint 충전금액
      */
     @Override
@@ -298,7 +303,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 강사의 Solve Point 출금
      *
-     * @param userId
+     * @param userId     userId
      * @param solvePoint 출금금액
      */
     @Override

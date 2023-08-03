@@ -10,7 +10,7 @@ public class UserRegistPostReq {
 
     String loginId;
     String loginPassword;
-    Integer masterCodeId;
+    Integer masterCodeId; // 1: 학생, 2: 강사
     String nickname;
     String email;
     Integer gender;

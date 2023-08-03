@@ -31,6 +31,7 @@ public class JwtConfiguration {
         log.info("JwtConfiguration_create_start: " + "\nkey: " + key + "\ndata: " + data.toString()
             + "\nsubject: " + subject + "\nexpire: " + expire);
 
+        // PayLoad에 저장할 Claims 객체
         Claims claims = Jwts.claims()
             .setSubject(subject) // 토큰 제목
             .setIssuedAt(new Date()) // 생성일
