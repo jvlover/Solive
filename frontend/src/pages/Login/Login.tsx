@@ -7,6 +7,8 @@ import { userState, User } from '../../recoil/user/userState';
 import { useNavigate } from 'react-router-dom';
 import BackgroundImg from '../../assets/background.png';
 
+const BASE_URL = 'http://localhost:8080'
+
 const schema = yup.object().shape({
   loginId: yup.string().required('아이디는 필수입니다.'),
   loginPassword: yup.string().required('비밀번호는 필수입니다.'),
@@ -30,8 +32,10 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormFields) => {
     try {
-      const response = await axios.post('/user/login', data);
-      const user: User = response.data;
+
+      const response = await axios.post(BASE_URL + '/user/login', data);
+      const user: User = response.data.data;
+
       setUser(user);
       if (response.data.success === true) {
         if (user.masterCodeId === 2) {

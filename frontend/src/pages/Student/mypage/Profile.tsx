@@ -4,6 +4,8 @@ import experience from '../../../assets/experience.png';
 // import { userState } from '../../../recoil/user/userState';
 // import { useRecoilValue } from 'recoil';
 
+const BASE_URL = 'http://localhost:8080'
+
 interface UserProfile {
   pathName: string;
   nickname: string;
@@ -34,7 +36,7 @@ const ProfilePage = () => {
   }
   useEffect(() => {
     axios
-      .get<ProfileResponse>('/profile')
+      .get<ProfileResponse>(BASE_URL + '/profile')
       .then((response) => {
         if (response.data.success) {
           setUserProfile(response.data.data);
@@ -101,7 +103,7 @@ const ProfilePage = () => {
     }
 
     axios
-      .put<UpdateResponse>('/profile', formData, {
+      .put<UpdateResponse>(BASE_URL + '/profile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

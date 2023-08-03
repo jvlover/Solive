@@ -1,7 +1,10 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 
+const BASE_URL = 'http://localhost:8080'
+
 const PersonalInfoPage = () => {
+
   //   const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -15,7 +18,7 @@ const PersonalInfoPage = () => {
 
   useEffect(() => {
     axios
-      .get('/user/privacy')
+      .get(BASE_URL + '/user/privacy')
       .then((response) => {
         if (response.data.success) {
           setEmail(response.data.data.email);
@@ -67,7 +70,7 @@ const PersonalInfoPage = () => {
     });
 
     axios
-      .post('/user/privacy', blobData, {
+      .post(BASE_URL + '/user/privacy', blobData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -91,7 +94,7 @@ const PersonalInfoPage = () => {
 
   const handleWithdrawal = () => {
     axios
-      .post('/user/privacy', { password: withdrawalPassword })
+      .post(BASE_URL + '/user/privacy', { password: withdrawalPassword })
       .then((response) => {
         if (response.data.success) {
           alert('회원 탈퇴가 성공적으로 완료되었습니다.');

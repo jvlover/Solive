@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
 
-const BOARD_BASE_URL = 'http://localhost:8080/board';
+const BASE_URL = 'http://localhost:8080'
+const BOARD_BASE_URL =  `${BASE_URL}/board`;
 
 export const fetchArticles = async (
   keyword: string,

@@ -5,17 +5,18 @@ import axios from 'axios';
 import BackgroundImg from '../../assets/background.png';
 import { useNavigate } from 'react-router-dom';
 
+const BASE_URL = 'http://localhost:8080'
+
 type FormData = {
-  name: string;
   nickname: string;
   loginId: string;
   loginPassword: string;
   passwordConfirm: string;
   email: string;
+  gender: string;
 };
 
 const schema = yup.object().shape({
-  name: yup.string().required('이름은 필수입니다.'),
   nickname: yup.string().required('닉네임은 필수입니다.'),
   loginId: yup.string().required('아이디는 필수입니다.'),
   loginPassword: yup.string().required('비밀번호는 필수입니다.'),
@@ -27,6 +28,7 @@ const schema = yup.object().shape({
     .string()
     .email('유효한 이메일이 아닙니다.')
     .required('이메일은 필수입니다.'),
+  gender: yup.string().required('성별을 선택해주세요.'),
 });
 
 const StudentSignup = () => {
@@ -38,7 +40,6 @@ const StudentSignup = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: '',
       nickname: '',
       loginId: '',
       loginPassword: '',
@@ -49,15 +50,16 @@ const StudentSignup = () => {
 
   const onSubmit = async (data: FormData) => {
     const signupData = {
-      name: data.name,
       nickname: data.nickname,
       loginId: data.loginId,
       loginPassword: data.loginPassword,
       email: data.email,
+      masterCodeId: 1,
+      gender: data.gender === 'male' ? 1 : 2,
     };
 
     try {
-      const response = await axios.post('/user', signupData);
+      const response = await axios.post(BASE_URL + '/user', signupData);
       console.log(response.data);
 
       if (response.data.success === true) {
@@ -82,19 +84,6 @@ const StudentSignup = () => {
       <div className="bg-white rounded-lg shadow-lg w-1/4 h-3/5 py-12 px-10 right-1/2 fixed top-1/4">
         <h2 className="text-2xl font-bold mb-6 text-black">회원가입</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            control={control}
-            name="name"
-            render={({ field }) => (
-              <input
-                {...field}
-                placeholder="이름"
-                className="block w-full mb-2 border-2 border-gray-200 p-2 rounded-md"
-              />
-            )}
-          />
-          <p>{errors.name?.message}</p>
-
           <Controller
             control={control}
             name="nickname"
@@ -161,10 +150,38 @@ const StudentSignup = () => {
             )}
           />
           <p>{errors.email?.message}</p>
-
+          <Controller
+            control={control}
+            name="gender"
+            render={({ field }) => (
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="male"
+                    checked={field.value === 'male'}
+                    onChange={() => field.onChange('male')}
+                    className="mr-2"
+                  />
+                  남자
+                </label>
+                <label className="ml-4">
+                  <input
+                    type="radio"
+                    value="female"
+                    checked={field.value === 'female'}
+                    onChange={() => field.onChange('female')}
+                    className="mr-2"
+                  />
+                  여자
+                </label>
+              </div>
+            )}
+          />
+          <p>{errors.gender?.message}</p>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-md"
+            className="mt-8 w-full bg-blue-500 text-white p-2 rounded-md"
           >
             회원가입
           </button>

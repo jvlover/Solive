@@ -3,6 +3,8 @@ import axios from 'axios';
 import { userState } from '../../recoil/user/userState';
 import { useRecoilValue } from 'recoil';
 
+const BASE_URL = 'http://localhost:8080'
+
 type Subject = {
   label: string;
   value: number;
@@ -133,7 +135,7 @@ const QuestionRegistration = () => {
     });
 
     try {
-      const response = await axios.post('/question', formData, {
+      const response = await axios.post(BASE_URL + '/question', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

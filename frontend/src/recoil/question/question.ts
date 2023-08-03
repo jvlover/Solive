@@ -1,8 +1,8 @@
 import { selector } from 'recoil';
-import { userState } from '../user/userState';
 import axios from 'axios';
+import { userState } from '../user/userState';
 
-interface Problem {
+export interface Question {
   id: number;
   studentId: number;
   masterCodeId: number;
@@ -12,17 +12,31 @@ interface Problem {
   isMatched: boolean;
   lastUpdateTime: Date;
   deletedAt: Date | null;
+  path_name: string;
 }
 
-export const latestProblemsSelector = selector<Problem[] | null>({
-  key: 'LatestProblems',
+export const latestQuestionsSelector = selector<Question[] | null>({
+  key: 'LatestQuestions',
+  get: async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/latest`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+});
+
+export const relatedQuestionsSelector = selector<Question[] | null>({
+  key: 'RelatedQuestions',
   get: async ({ get }) => {
     const user = get(userState);
     if (!user) return null;
 
     try {
       const response = await axios.get(
-        `YOUR_API_URL/latest?teacherId=${user.id}`,
+        `http://localhost:8080/related?subjectId=${user.subjectId}`,
       );
       return response.data;
     } catch (error) {
@@ -32,34 +46,14 @@ export const latestProblemsSelector = selector<Problem[] | null>({
   },
 });
 
-export const relatedProblemsSelector = selector<Problem[] | null>({
-  key: 'RelatedProblems',
+export const allQuestionsSelector = selector<Question[] | null>({
+  key: 'AllQuestions',
   get: async ({ get }) => {
     const user = get(userState);
     if (!user) return null;
 
     try {
-      const response = await axios.get(
-        `YOUR_API_URL/related?teacherId=${user.id}`,
-      );
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  },
-});
-
-export const allProblemsSelector = selector<Problem[] | null>({
-  key: 'AllProblems',
-  get: async ({ get }) => {
-    const user = get(userState);
-    if (!user) return null;
-
-    try {
-      const response = await axios.get(
-        `YOUR_API_URL/allProblems?teacherId=${user.id}`,
-      );
+      const response = await axios.get(`http://localhost:8080/allQuestions`);
       return response.data;
     } catch (error) {
       console.error(error);
