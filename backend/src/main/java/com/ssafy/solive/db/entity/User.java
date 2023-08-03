@@ -29,7 +29,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Entity
 public class User extends BaseEntity {
 
-    // 유저 타입 : 학생(2), 선생님(3)
+    // 유저 타입 : 학생(1), 선생님(2)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "master_code_id")
     private MasterCode masterCodeId;
