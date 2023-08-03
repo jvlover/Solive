@@ -23,12 +23,14 @@ public enum ErrorCode {
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "문제를 찾을 수 없습니다."),
 
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."),
-    
+
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "중복된 이메일 입니다."),
 
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임 입니다."),
 
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+
+    MASTER_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "부적절한 분류입니다."),
 
     NO_IMAGE(HttpStatus.BAD_REQUEST, "요청에 이미지가 없습니다."),
 
