@@ -1,10 +1,10 @@
 package com.ssafy.solive.db.repository;
 
-import com.ssafy.solive.api.request.MatchedFindMineGetReq;
-import com.ssafy.solive.api.request.QuestionFindConditionGetReq;
-import com.ssafy.solive.api.response.MatchedFindMineRes;
-import com.ssafy.solive.api.response.QuestionFindConditionRes;
-import com.ssafy.solive.api.response.QuestionFindDetailRes;
+import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
+import com.ssafy.solive.api.matching.request.QuestionFindConditionGetReq;
+import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
+import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
+import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
 import java.util.List;
 
 /*

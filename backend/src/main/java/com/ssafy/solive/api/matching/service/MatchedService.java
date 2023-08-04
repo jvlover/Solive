@@ -1,13 +1,14 @@
-package com.ssafy.solive.db.repository;
+package com.ssafy.solive.api.matching.service;
 
 import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
+import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import java.util.List;
 
-/*
- *  Querydsl을 위한 Matched Repository interface
- */
-public interface QMatchedRepository {
+public interface MatchedService {
+
+    void registMatched(MatchedRegistPostReq registInfo);
 
     List<MatchedFindMineRes> findMyMatching(MatchedFindMineGetReq findCondition);
+
 }
