@@ -110,8 +110,7 @@ public class QuestionServiceImpl implements QuestionService {
         for (MultipartFile file : files) {
             // 파일 확장자 명
             String suffix = file.getOriginalFilename()
-                .substring(file.getOriginalFilename().lastIndexOf(".") + 1,
-                    file.getOriginalFilename().length());
+                .substring(file.getOriginalFilename().lastIndexOf(".") + 1);
             // 랜덤한 파일 이름 생성
             String fileName = UUID.randomUUID().toString() + "." + suffix;
 

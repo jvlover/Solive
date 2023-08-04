@@ -8,6 +8,7 @@ import com.ssafy.solive.api.user.request.UserRegistPostReq;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
+import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.InvalidMasterCodeException;
 import com.ssafy.solive.common.exception.user.PasswordMismatchException;
 import com.ssafy.solive.common.exception.user.UserNotFoundException;
@@ -21,16 +22,23 @@ import com.ssafy.solive.db.repository.StudentRepository;
 import com.ssafy.solive.db.repository.TeacherRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
+
+    // 파일 업로드 경로
+    private final String uploadFilePath = "C:/solive/image/";
 
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
@@ -60,8 +68,9 @@ public class UserServiceImpl implements UserService {
         String hashedPassword = BCrypt.hashpw(registInfo.getLoginPassword(), BCrypt.gensalt());
         // 마스터 코드 객체 생성
         MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId())
-            .get();
-        MasterCode logoutState = masterCodeRepository.findById(11).get(); // 로그아웃 상태로 초기화
+            .orElseThrow(InvalidMasterCodeException::new);
+        MasterCode logoutState = masterCodeRepository.findById(11)
+            .orElseThrow(InvalidMasterCodeException::new); // 로그아웃 상태로 초기화
 
         // 학생으로 회원가입 요청한 경우
         if (registInfo.getMasterCodeId() == 1) {
@@ -133,7 +142,8 @@ public class UserServiceImpl implements UserService {
             String accessToken = jwtConfiguration.createAccessToken("userid", userId);
             String refreshToken = jwtConfiguration.createRefreshToken("userid", userId);
 
-            user.setLoginState(masterCodeRepository.findById(12).get()); // 로그인 상태로 변경
+            user.setLoginState(masterCodeRepository.findById(12)
+                .orElseThrow(InvalidMasterCodeException::new)); // 로그인 상태로 변경
             // RefreshToken을 user DB에 저장
             user.updateRefreshToken(refreshToken);
 
@@ -210,18 +220,44 @@ public class UserServiceImpl implements UserService {
     /**
      * 유저 프로필 수정
      *
-     * @param userId   userId
-     * @param userInfo 바꿀 정보들
+     * @param userId         userId
+     * @param userInfo       바꿀 정보들
+     * @param profilePicture 변경할 프로필 사진
      */
     @Override
-    public void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo) {
+    public void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo,
+        MultipartFile profilePicture) {
         log.info("UserService_modifyUserProfile_start: \nuserId: " + userId + "\nuserInfo: "
             + userInfo.toString());
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        log.info("UserService_modifyUserProfile_mid: \nuser: " + user.toString());
+        log.info(
+            "UserService_modifyUserProfile_mid: \nuser: " + user.toString() + "\nprofilePicture: "
+                + profilePicture);
 
         user.modifyUserProfile(userInfo);
         log.info("UserService_modifyUserProfile_mid: \nmodifiedUser: " + user.toString());
+
+        // 파일 확장자 명
+        String suffix = profilePicture.getOriginalFilename()
+            .substring(profilePicture.getOriginalFilename().lastIndexOf(".") + 1);
+        // 랜덤한 파일 이름 생성
+        String fileName = UUID.randomUUID().toString() + "." + suffix;
+
+        // 파일 업로드 경로 디렉토리가 만약 존재하지 않으면 생성
+        File folder = new File(uploadFilePath);
+        if (!folder.isDirectory()) {
+            folder.mkdirs();
+        }
+
+        String pathName = uploadFilePath + fileName;    // 파일 절대 경로
+        String resourcePathName = "/image/" + fileName; // url
+        File dest = new File(pathName);
+        try {
+            profilePicture.transferTo(dest);
+            user.modifyProfilePicture(fileName, pathName, resourcePathName, profilePicture);
+        } catch (IllegalStateException | IOException e) {
+            throw new ImageUploadFailException(); // 이미지 등록 실패 시 Exception
+        }
 
         userRepository.save(user);
         log.info("UserService_modifyUserProfiler_end");

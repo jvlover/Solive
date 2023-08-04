@@ -15,13 +15,16 @@ import com.ssafy.solive.db.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 유저 관련 API 요청 처리를 위한 컨트롤러 정의.
@@ -130,14 +133,15 @@ public class UserController {
      * @param userInfo UserModifyProfilePutReq
      * @param request  access-token 이 들어있는 request
      */
-    @PutMapping()
-    public CommonResponse<?> modifyProfile(@RequestBody UserModifyProfilePutReq userInfo,
+    @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public CommonResponse<?> modifyProfile(@RequestPart UserModifyProfilePutReq userInfo,
+        @RequestPart MultipartFile profilePicture,
         HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByAccessToken(accessToken);
 
         try {
-            userService.modifyUserProfile(userId, userInfo);
+            userService.modifyUserProfile(userId, userInfo, profilePicture);
             return CommonResponse.success(SUCCESS);
         } catch (Exception e) {
             // TODO: Exception 처리
@@ -192,7 +196,6 @@ public class UserController {
      *
      * @param code    code
      * @param request request
-     * @return
      */
     @PutMapping("/setcode")
     public CommonResponse<?> setCode(Integer code, HttpServletRequest request) {
