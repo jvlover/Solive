@@ -30,8 +30,8 @@ const PointChargePage = () => {
     setShowModal(true);
   };
 
+  // 화면 보려면 아래 주석
   const handleCharge = async () => {
-    // 화면 보려면 바로 아래 한줄 주석
     if (!user || !user.accessToken) return;
 
     const result = await chargeSolvePoint(selectedAmount, user.accessToken);
@@ -56,15 +56,7 @@ const PointChargePage = () => {
       <hr className="mt-4 mx-auto w-7/10 border-none h-1 bg-blue-200" />
 
       <div className="flex justify-center mt-20 items-start">
-        <div
-          className="border-4 border-blue-200 p-4 flex flex-wrap justify-center"
-          style={{
-            width: '800px',
-            height: '500px',
-            gap: '20px',
-            paddingTop: '20px',
-          }}
-        >
+        <div className="border-4 border-blue-200 p-4 flex flex-wrap justify-center gap-5 w-1/2 h-96">
           {amounts.map((amount, index) => (
             <button
               key={index}
@@ -84,19 +76,11 @@ const PointChargePage = () => {
         <div>
           <div className="ml-4 border-4 border-blue-200 w-96 h-72 p-4">
             <div>
-              <p className="mb-2" style={{ fontSize: '28px' }}>
+              <p className="mb-2 text-3xl">
                 {user?.nickname} 님의 SolvePoint는 {user?.solvePoint}
               </p>
             </div>
-            <div
-              className="text-lg border-4 border-blue-200"
-              style={{
-                width: '340px',
-                height: '180px',
-                gap: '20px',
-                paddingTop: '20px',
-              }}
-            >
+            <div className="text-lg border-4 border-blue-200 w-80 h-48 gap-5 pt-5">
               <p>현재 보유 SP: {user?.solvePoint}</p>
               <p className="mt-4">충전 금액: {selectedAmount}</p>
               <p className="mt-4">
@@ -104,7 +88,7 @@ const PointChargePage = () => {
               </p>
             </div>
           </div>
-          <div className="ml-4 border-4 border-blue-200 w-96 h-44 p-4 mt-8 text-mg">
+          <div className="ml-4 border-4 border-blue-200 w-96 h-44 p-4 mt-8 text-lg">
             <label className="flex items-center">
               <input
                 type="checkbox"
