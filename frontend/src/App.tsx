@@ -14,7 +14,9 @@ import ArticleList from './pages/Board/ArticleList';
 import ArticleDetail from './pages/Board/ArticleDetail';
 import ArticleRegist from './pages/Board/ArticleRegist';
 import ArticleModify from './pages/Board/ArticleModify';
+import SolvePoint from './pages/Student/mypage/SolvePoint';
 import Error404 from './pages/Error404';
+
 
 const App = () => {
   return (
@@ -38,6 +40,7 @@ const App = () => {
         />
         <Route path="/student/mypage/profile" element={<Profile />} />
         <Route path="/student/mypage/privacy" element={<Privacy />} />
+        <Route path="/student/mypage/solvepoint" element={<SolvePoint />} />
       </Routes>
       <FooterNav />
     </Router>
