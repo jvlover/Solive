@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class S3Uploader {
 
-    @Value("${cloud.aws.cloudfront.domain")
+    @Value("${cloud.aws.cloudfront.domain}")
     public String CLOUD_FRONT_DOMAIN_NAME;
 
     @Value("${cloud.aws.s3.bucket}")

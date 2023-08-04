@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @ToString
@@ -111,11 +112,6 @@ public class User extends BaseEntity {
      * @param userInfo userInfo
      */
     public void modifyUserProfile(UserModifyProfilePutReq userInfo) {
-        this.pictureUrl = userInfo.getPictureUrl();
-        this.pictureName = userInfo.getPictureName();
-        this.fileName = userInfo.getFileName();
-        this.pathName = userInfo.getPathName();
-        this.contentType = userInfo.getContentType();
         this.nickname = userInfo.getNickname();
         this.gender = userInfo.getGender();
         this.introduce = userInfo.getIntroduce();
@@ -153,5 +149,14 @@ public class User extends BaseEntity {
      */
     public void setCode(MasterCode code) {
         this.masterCodeId = code;
+    }
+
+    public void modifyProfilePicture(String fileName, String pathName, String resourcePathName,
+        MultipartFile profilePicture) {
+        this.pictureUrl = resourcePathName;
+        this.pictureName = profilePicture.getOriginalFilename();
+        this.fileName = fileName;
+        this.pathName = pathName;
+        this.contentType = profilePicture.getContentType();
     }
 }

@@ -9,6 +9,7 @@ import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
 import com.ssafy.solive.db.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -22,7 +23,8 @@ public interface UserService {
 
     UserPrivacyPostRes getUserPrivacyByUserId(Long userId);
 
-    void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo);
+    void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo,
+        MultipartFile profilePicture);
 
     void modifyUserPassword(Long userId, UserModifyPasswordPutReq userInfo);
 
