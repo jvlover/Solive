@@ -159,4 +159,8 @@ public class User extends BaseEntity {
         this.pathName = pathName;
         this.contentType = profilePicture.getContentType();
     }
+
+    public void logout(MasterCode stateId) {
+        this.stateId = stateId;
+    }
 }

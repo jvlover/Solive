@@ -17,6 +17,8 @@ public interface UserService {
 
     public UserLoginPostRes loginAndGetTokens(UserLoginPostReq loginInfo);
 
+    void logout(Long userId);
+
     public Long getUserIdByAccessToken(String token);
 
     public UserProfilePostRes getUserProfileByUserId(Long userId);

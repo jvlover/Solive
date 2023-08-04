@@ -162,6 +162,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void logout(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        MasterCode stateId = masterCodeRepository.findById(11)
+            .orElseThrow(InvalidMasterCodeException::new);
+        user.logout(stateId);
+    }
+
     /**
      * accessToken으로 userId를 조회
      *

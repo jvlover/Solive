@@ -127,6 +127,16 @@ public class UserController {
         }
     }
 
+    @PutMapping("/logout")
+    public CommonResponse<?> logout(HttpServletRequest request) {
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByAccessToken(accessToken);
+
+        // TODO: Token 관련 처리해야함!!!
+        userService.logout(userId);
+        return CommonResponse.success(SUCCESS);
+    }
+
     /**
      * 유저 프로필 수정
      *
