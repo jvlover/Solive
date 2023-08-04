@@ -13,6 +13,7 @@ import HeaderNav from './components/HeaderNav';
 import ArticleDetail from './pages/Board/ArticleDetail';
 import ArticleRegist from './pages/Board/ArticleRegist';
 import ArticleModify from './pages/Board/ArticleModify';
+import SolvePoint from './pages/Student/mypage/SolvePoint';
 
 function App(): JSX.Element {
   return (
@@ -47,6 +48,7 @@ function App(): JSX.Element {
         />
         <Route path="/student/mypage/profile" element={<Profile />} />
         <Route path="/student/mypage/privacy" element={<Privacy />} />
+        <Route path="/student/mypage/solvepoint" element={<SolvePoint />} />
       </Routes>
     </Router>
   );

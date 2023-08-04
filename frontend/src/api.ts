@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
 
-const BASE_URL = 'http://localhost:8080'
-const BOARD_BASE_URL =  `${BASE_URL}/board`;
+const BASE_URL = 'http://localhost:8080';
+const BOARD_BASE_URL = `${BASE_URL}/board`;
+const CHARGE_URL = `${BASE_URL}/charge`;
 
 export const fetchArticles = async (
   keyword: string,
@@ -111,4 +112,24 @@ export const modifyArticle = async (
   });
 
   console.log(res.data);
+};
+
+export const chargeSolvePoint = async (
+  amount: number,
+  token: string,
+): Promise<{ success: boolean; solvePoint?: number }> => {
+  try {
+    const response = await axios.put(
+      `${CHARGE_URL}`,
+      { amount },
+      { headers: { 'access-token': token } },
+    );
+    return {
+      success: response.data.success,
+      solvePoint: response.data.data.solvePoint,
+    };
+  } catch (error) {
+    console.error('Error charging: ', error);
+    return { success: false };
+  }
 };
