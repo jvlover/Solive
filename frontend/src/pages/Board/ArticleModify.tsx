@@ -14,17 +14,18 @@ import {
   Typography,
 } from '@material-tailwind/react';
 
-function ArticleModify(): JSX.Element {
+const ArticleModify = () => {
   const { id } = useParams();
   const [article, setArticle] = useState<Article | null>(null);
   const [files, setFiles] = useState<FileList>();
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const imageInput = useRef();
+  const imageInput = useRef<HTMLInputElement>();
 
   useEffect(() => {
     fetchArticle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchArticle = async () => {
@@ -144,5 +145,5 @@ function ArticleModify(): JSX.Element {
       </Card>
     </div>
   );
-}
+};
 export default ArticleModify;

@@ -1,7 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { Article } from '../../recoil/atoms';
 import { useEffect, useState } from 'react';
-import { fetchArticleById } from '../../api';
+import { useRecoilValue } from 'recoil';
+import { Article } from '../../recoil/atoms';
+import { userState } from '../../recoil/user/userState';
+import { fetchArticleById, likeArticle } from '../../api';
 import { ReactComponent as FullHeart } from '../../assets/full_heart.svg';
 import { ReactComponent as EmptyHeart } from '../../assets/empty_heart.svg';
 import { ReactComponent as Eye } from '../../assets/eye.svg';
@@ -13,14 +15,16 @@ import {
   CardFooter,
   Typography,
 } from '@material-tailwind/react';
-function ArticleDetail(): JSX.Element {
+const ArticleDetail = () => {
   const { id } = useParams();
+  const user = useRecoilValue(userState);
   const [article, setArticle] = useState<Article | null>();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchArticle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchArticle = async () => {
@@ -28,8 +32,17 @@ function ArticleDetail(): JSX.Element {
     setArticle(article);
   };
 
+  const like = async () => {
+    const res = await likeArticle(user?.id, article?.id);
+    if (res) {
+      alert('게시글이 추천되었습니다.');
+    } else {
+      alert('이미 추천된 게시글입니다.');
+    }
+  };
+
   return (
-    <div className="flex justify-center w-[60%] min-w-fit">
+    <div className="flex justify-center w-[60%] min-h-full min-w-fit">
       <Card className="flex mt-5 max-w-[60%]">
         <CardBody>
           <Typography variant="h2" className="mb-3">
@@ -69,7 +82,7 @@ function ArticleDetail(): JSX.Element {
             </div>
           </button>
           {/* 좋아요 누른 적 있으면 누른 적 있다고 alert 없으면 좋아요 api 호출 */}
-          <button className="btn-primary">
+          <button className="btn-primary" onClick={like}>
             <div className="flex justify-center items-center">
               <EmptyHeart className="w-4 h-4 mr-1 stroke-white" />
               좋아요
@@ -79,6 +92,6 @@ function ArticleDetail(): JSX.Element {
       </Card>
     </div>
   );
-}
+};
 
 export default ArticleDetail;

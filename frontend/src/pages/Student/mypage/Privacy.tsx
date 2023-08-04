@@ -1,9 +1,10 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8080';
 
-function PersonalInfoPage() {
+const PersonalInfoPage = () => {
+
   //   const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -49,7 +50,7 @@ function PersonalInfoPage() {
     setIsModified(true);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     if (newPassword !== confirmNewPassword) {
@@ -87,9 +88,7 @@ function PersonalInfoPage() {
       });
   };
 
-  const handleWithdrawalPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleWithdrawalPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setWithdrawalPassword(e.target.value);
   };
 
@@ -225,6 +224,6 @@ function PersonalInfoPage() {
       )}
     </div>
   );
-}
+};
 
 export default PersonalInfoPage;

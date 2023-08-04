@@ -31,7 +31,7 @@ const schema = yup.object().shape({
   gender: yup.string().required('성별을 선택해주세요.'),
 });
 
-function TeacherSignup(): JSX.Element {
+const TeacherSignup = () => {
   const navigate = useNavigate();
   const {
     control,
@@ -189,6 +189,6 @@ function TeacherSignup(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default TeacherSignup;

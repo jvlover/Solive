@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import axios from 'axios';
 import { userState } from '../../recoil/user/userState';
 import { useRecoilValue } from 'recoil';
@@ -97,7 +97,7 @@ const subjects: Subject[] = [
   },
 ];
 
-function QuestionRegistration(): JSX.Element {
+const QuestionRegistration = () => {
   const [title, setTitle] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [nickname, setNickname] = useState('');
@@ -109,7 +109,7 @@ function QuestionRegistration(): JSX.Element {
 
   const user = useRecoilValue(userState);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!user) {
@@ -155,7 +155,7 @@ function QuestionRegistration(): JSX.Element {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       if (e.target.files.length > 5) {
         alert('파일은 최대 5개까지 업로드 할 수 있습니다.');
@@ -302,6 +302,6 @@ function QuestionRegistration(): JSX.Element {
       </div>
     </div>
   );
-}
+};
 
 export default QuestionRegistration;
