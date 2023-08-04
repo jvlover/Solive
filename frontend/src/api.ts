@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
 
-const BASE_URL = 'http://localhost:8080'
-const BOARD_BASE_URL =  `${BASE_URL}/board`;
+const BASE_URL = 'http://localhost:8080';
+const BOARD_BASE_URL = `${BASE_URL}/board`;
+const CHARGE_URL = `${BASE_URL}/charge`;
 
 export const fetchArticles = async (
   keyword: string,
@@ -109,7 +110,6 @@ export const modifyArticle = async (
 };
 
 export const likeArticle = async (userId: number, articleId: number) => {
-  try {
     const data = { userId: userId, articleId: articleId };
 
     const response = await axios.post(
@@ -125,4 +125,3 @@ export const likeArticle = async (userId: number, articleId: number) => {
   } catch (error) {
     return null;
   }
-};
