@@ -9,8 +9,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.ssafy.solive.api.request.MatchedFindMineGetReq;
-import com.ssafy.solive.api.response.MatchedFindMineRes;
+import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
+import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,7 +38,7 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
     public List<MatchedFindMineRes> findMyMatching(MatchedFindMineGetReq findCondition) {
 
         log.info("QMatchedRepository_findMyApply_start: " + findCondition.toString());
-        
+
         // masterCode 값 합치기
         int code = 1000 + findCondition.getMasterCodeMiddle() + findCondition.getMasterCodeLow();
 

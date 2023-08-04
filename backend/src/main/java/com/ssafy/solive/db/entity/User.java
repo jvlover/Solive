@@ -1,6 +1,6 @@
 package com.ssafy.solive.db.entity;
 
-import com.ssafy.solive.api.request.UserModifyProfilePutReq;
+import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
