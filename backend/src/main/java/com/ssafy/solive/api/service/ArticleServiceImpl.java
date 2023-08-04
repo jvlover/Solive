@@ -7,6 +7,7 @@ import com.ssafy.solive.api.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.request.ArticleReportPostReq;
 import com.ssafy.solive.api.response.ArticleFindRes;
 import com.ssafy.solive.common.exception.FileIOException;
+import com.ssafy.solive.common.util.S3Uploader;
 import com.ssafy.solive.db.entity.Article;
 import com.ssafy.solive.db.entity.ArticleLike;
 import com.ssafy.solive.db.entity.ArticleLikeId;
@@ -54,19 +55,22 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticlePictureRepository articlePictureRepository;
     private final ArticleLikeRepsitory articleLikeRepsitory;
     private final ArticleReportRepository articleReportRepository;
+    private final S3Uploader s3Uploader;
 
     @Autowired
     public ArticleServiceImpl(UserRepository userRepository,
         MasterCodeRepository masterCodeRepository,
         ArticleRepository articleRepository, ArticlePictureRepository articlePictureRepository,
         ArticleLikeRepsitory articleLikeRepsitory,
-        ArticleReportRepository articleReportRepository) {
+        ArticleReportRepository articleReportRepository,
+        S3Uploader s3Uploader) {
         this.userRepository = userRepository;
         this.masterCodeRepository = masterCodeRepository;
         this.articleRepository = articleRepository;
         this.articlePictureRepository = articlePictureRepository;
         this.articleLikeRepsitory = articleLikeRepsitory;
         this.articleReportRepository = articleReportRepository;
+        this.s3Uploader = s3Uploader;
     }
 
     /*
@@ -108,7 +112,7 @@ public class ArticleServiceImpl implements ArticleService {
          */
 
         // 파일 업로드 경로
-        String uploadFilePath = "C:/solive/image/";
+//        String uploadFilePath = "/image/";
 
         if (!Objects.isNull(files) && files.get(0).getSize() > 0) {
             for (MultipartFile file : files) {
@@ -123,18 +127,16 @@ public class ArticleServiceImpl implements ArticleService {
                 String fileName = UUID.randomUUID().toString() + "." + suffix;
 
                 // 파일 업로드 경로 디렉토리가 만약 존재하지 않으면 생성
-                File folder = new File(uploadFilePath);
-                if (!folder.isDirectory()) {
-                    folder.mkdirs();
-                }
+//                File folder = new File(uploadFilePath);
+//                if (!folder.isDirectory()) {
+//                    folder.mkdirs();
+//                }
 
-                String pathName = uploadFilePath + fileName; // 파일 절대 경로
-                String resourcePathName = "/image/" + fileName; // url
-
-                File dest = new File(pathName);
+//                String pathName = uploadFilePath + fileName; // 파일 절대 경로
+                String resourcePathName = "image/" + fileName; // url
 
                 try {
-                    file.transferTo(dest);
+                    String result = s3Uploader.upload(file, resourcePathName);
 
                     String contentType = file.getContentType();
                     int size = (int) file.getSize();
@@ -144,7 +146,7 @@ public class ArticleServiceImpl implements ArticleService {
                         .contentType(contentType)
                         .imageName(originalFileName)
                         .fileName(fileName)
-                        .pathName(pathName)
+                        .pathName(resourcePathName)
                         .size(size)
                         .url(resourcePathName)
                         .build();
