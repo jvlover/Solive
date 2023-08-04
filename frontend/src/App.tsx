@@ -35,6 +35,7 @@ const App = () => {
         />
         <Route path="/student/mypage/profile" element={<Profile />} />
         <Route path="/student/mypage/privacy" element={<Privacy />} />
+        <Route path="/student/mypage/solvepoint" element={<SolvePoint />} />
       </Routes>
       <FooterNav />
     </Router>

@@ -1,26 +1,10 @@
 import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
 
-const BASE_URL = 'http://localhost:8080'
-const BOARD_BASE_URL =  `${BASE_URL}/board`;
+const BASE_URL = 'http://localhost:8080';
+const BOARD_BASE_URL = `${BASE_URL}/board`;
+const CHARGE_URL = `${BASE_URL}/charge`;
 
-export const fetchArticles = async (
-  keyword: string,
-  pageNum: number,
-  orderBy?: string,
-): Promise<ArticlePage> => {
-  let url = `${BOARD_BASE_URL}?keyword=${keyword}&page=${pageNum - 1}&size=5`;
-  if (orderBy !== undefined) {
-    url += `&sort=${orderBy},desc`;
-  }
-
-<<<<<<< HEAD
-  try {
-    const response = await axios.get<ArticlePage>(url);
-    // @ts-ignore
-    return response.data.data;
-  } catch (error) {
-=======
 export const fetchArticles = async (
   keyword: string,
   pageNum: number,
@@ -33,11 +17,9 @@ export const fetchArticles = async (
 
   try {
     const response = await axios.get<ArticlePage>(url);
-    console.log(response.data.data);
+    // @ts-ignore
     return response.data.data;
   } catch (error) {
-    console.error('Error fetching articles: ', error);
->>>>>>> 6d7f287 (Feat: 게시판 등록, 수정 페이지 생성)
     return { content: [], number: 0, totalPages: 0 };
   }
 };
@@ -86,20 +68,11 @@ export const registArticle = async (
     });
   }
 
-<<<<<<< HEAD
   await axios.post(`${BOARD_BASE_URL}`, formData, {
-=======
-  const res = await axios.post(`${BOARD_BASE_URL}`, formData, {
->>>>>>> 6d7f287 (Feat: 게시판 등록, 수정 페이지 생성)
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
-<<<<<<< HEAD
-=======
-
-  console.log(res.data);
->>>>>>> 6d7f287 (Feat: 게시판 등록, 수정 페이지 생성)
 };
 
 export const modifyArticle = async (
