@@ -5,11 +5,14 @@ import com.ssafy.solive.api.matching.request.ApplyFindGetReq;
 import com.ssafy.solive.api.matching.request.ApplyRegistPostReq;
 import com.ssafy.solive.api.matching.response.ApplyFindRes;
 import com.ssafy.solive.api.matching.service.ApplyService;
+import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.common.exception.matching.ApplyPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
+import com.ssafy.solive.db.entity.User;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,15 +34,18 @@ public class ApplyController {
     private static final String SUCCESS = "success";  // API 성공 시 return
 
     private final ApplyService applyService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public ApplyController(ApplyService applyService) {
+    public ApplyController(ApplyService applyService, NotificationService notificationService) {
         this.applyService = applyService;
+        this.notificationService = notificationService;
     }
 
     /*
      *  유저(강사)가 학생이 등록한 문제에 풀이 지원 신청하기 위한 API
      */
+    @Transactional
     @PostMapping()
     public CommonResponse<?> regist(@RequestBody ApplyRegistPostReq registInfo) {
         /*
@@ -49,7 +55,13 @@ public class ApplyController {
 
         log.info("ApplyController_regist_start: " + registInfo.toString());
 
-        applyService.registApply(registInfo);
+        // user : 알림을 받는 학생
+        User user = applyService.registApply(registInfo);
+
+        // 학생에게 알림 전송 코드. title과 content의 내용은 일단 임시입니다
+        String title = "풀이 요청 도착";
+        String content = user.getNickname() + "님, 등록하신 문제에 새로운 풀이 요청이 도착했습니다.";
+        notificationService.send(user, title, content);
 
         log.info("ApplyController_regist_end: success");
         return CommonResponse.success(SUCCESS);

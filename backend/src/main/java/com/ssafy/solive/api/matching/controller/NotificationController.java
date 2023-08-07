@@ -2,7 +2,6 @@ package com.ssafy.solive.api.matching.controller;
 
 import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
-import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +39,10 @@ public class NotificationController {
      * 클라이언트가 알림을 구독하기 위한 기능
      *
      * @param request : userID를 access-token에서 가져와야 함
-     * @return
+     * @return sseEmitter : Emitter
      */
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public CommonResponse<?> subscribe(HttpServletRequest request,
+    public SseEmitter subscribe(HttpServletRequest request,
         @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
         log.info("NotificationController_subscribe_start: " + request.toString());
@@ -56,6 +55,6 @@ public class NotificationController {
         log.info("NotificationController_subscribe_end: " + userId.toString() + ", "
             + lastEventId);
 
-        return CommonResponse.success(sseEmitter);
+        return sseEmitter;
     }
 }

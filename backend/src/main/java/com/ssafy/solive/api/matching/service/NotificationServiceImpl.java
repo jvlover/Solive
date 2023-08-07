@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.matching.service;
 
+import com.ssafy.solive.api.matching.response.NotificationRes;
 import com.ssafy.solive.db.entity.Notification;
 import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.EmitterRepository;
@@ -148,7 +149,11 @@ public class NotificationServiceImpl implements NotificationService {
         emitters.forEach(
             (key, emitter) -> {
                 emitterRepository.saveEventCache(key, notification);
-                sendNotification(emitter, eventId, key, notification);
+                sendNotification(emitter, eventId, key,
+                    NotificationRes.builder()
+                        .title(title)
+                        .content(content)
+                        .build());
             }
         );
     }

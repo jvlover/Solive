@@ -4,11 +4,12 @@ import com.ssafy.solive.api.matching.request.ApplyDeletePutReq;
 import com.ssafy.solive.api.matching.request.ApplyFindGetReq;
 import com.ssafy.solive.api.matching.request.ApplyRegistPostReq;
 import com.ssafy.solive.api.matching.response.ApplyFindRes;
+import com.ssafy.solive.db.entity.User;
 import java.util.List;
 
 public interface ApplyService {
 
-    void registApply(ApplyRegistPostReq registInfo);
+    User registApply(ApplyRegistPostReq registInfo);
 
     boolean deleteApply(ApplyDeletePutReq deleteInfo);
 

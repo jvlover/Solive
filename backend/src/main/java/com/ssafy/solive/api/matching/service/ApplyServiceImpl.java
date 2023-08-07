@@ -7,6 +7,7 @@ import com.ssafy.solive.api.matching.response.ApplyFindRes;
 import com.ssafy.solive.db.entity.Apply;
 import com.ssafy.solive.db.entity.Question;
 import com.ssafy.solive.db.entity.Teacher;
+import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.ApplyRepository;
 import com.ssafy.solive.db.repository.QuestionRepository;
 import com.ssafy.solive.db.repository.TeacherRepository;
@@ -38,14 +39,14 @@ public class ApplyServiceImpl implements ApplyService {
         this.questionRepository = questionRepository;
     }
 
-    /*
-     *  Regist API에 대한 서비스
+    /**
+     * 강사가 학생이 등록한 문제에 대해서 풀이 지원 요청 Regist API에 대한 서비스
+     *
+     * @param registInfo : 문제 지원 신청할 때에 입력한 정보
+     * @return user : 요청을 받는 학생의 정보
      */
     @Override
-    public void registApply(ApplyRegistPostReq registInfo) {
-        /*
-         *  registInfo : 문제 지원 신청할 때에 입력한 정보
-         */
+    public User registApply(ApplyRegistPostReq registInfo) {
 
         log.info("ApplyService_registApply_start: " + registInfo.toString());
 
@@ -73,12 +74,16 @@ public class ApplyServiceImpl implements ApplyService {
         // 해당 question의 matching_state를 0에서 1로 바꿔야 함
         question.modifyMatchingState(1);
 
+        // 요청을 받는 학생에게 알림을 전송하기 위해 요청 받게 되는 학생의 정보 return
+        User user = question.getStudent();
+
         /*
          *  생성한 Apply Entity를 DB에 insert 완료
          */
-        // TODO: JpaRepository의 save에서 Exception이 발생할 경우가 있는지 확인 필요
 
-        log.info("ApplyService_registApply_end: success");
+        log.info("ApplyService_registApply_end: " + user.toString());
+
+        return user;
     }
 
     /*
