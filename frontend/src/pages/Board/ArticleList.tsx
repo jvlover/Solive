@@ -96,6 +96,11 @@ const ArticleList = () => {
             type="text"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                fetchAndSetArticles(1);
+              }
+            }}
             className="pr-20 h-max"
             containerProps={{
               className: 'min-w-0',

@@ -17,10 +17,10 @@ const Home = () => {
       <div className=" flex flex-col justify-evenly min-h-screen text-center">
         <div>
           <p className="text-white text-5xl mt-5 font-bold">
-            원하는 선생님 너가 고른다.
+            원하는 선생님 너가 고른다
           </p>
           <p className="text-white text-5xl mt-5 font-bold">
-            우리가 <span className="text-solive-100">빠르게</span> 끝내준다.
+            우리가 <span className="text-solive-100">빠르게</span> 끝내준다
           </p>
         </div>
         <div>
@@ -30,7 +30,7 @@ const Home = () => {
             className="ml-20 h-[55vh] w-[60vh]"
           ></img>
           <button
-            className="w-[80vh] mb-16 py-2 px-4 bg-solive-100 text-white text-lg font-bold rounded"
+            className="w-[80vh] mb-16 py-2 px-4 bg-solive-100 text-white text-lg font-bold rounded shadow-2xl"
             onClick={() => navigate('/signup')}
           >
             지금 회원가입 하고 문제 등록하러 가기
