@@ -6,23 +6,24 @@ import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.InvalidMasterCodeException;
-import com.ssafy.solive.common.exception.user.FavoriteNotFoundException;
+import com.ssafy.solive.common.exception.user.InvalidJwtRefreshTokenException;
+import com.ssafy.solive.common.exception.user.JwtTokenExpiredException;
 import com.ssafy.solive.common.exception.user.PasswordMismatchException;
 import com.ssafy.solive.common.exception.user.UserNotFoundException;
 import com.ssafy.solive.config.JwtConfiguration;
-import com.ssafy.solive.db.entity.*;
-import com.ssafy.solive.db.repository.*;
-import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
+import com.ssafy.solive.common.exception.user.FavoriteNotFoundException;
+import com.ssafy.solive.db.entity.*;
+import com.ssafy.solive.db.repository.*;
+import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Transactional
@@ -165,20 +166,37 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * accessToken으로 userId를 조회
+     * accessToken 으로 userId를 조회
      *
      * @param accessToken accessToken
      * @return userId
      */
     @Override
-    public Long getUserIdByAccessToken(String accessToken) {
-        try {
+    public Long getUserIdByToken(String accessToken) {
+        if (jwtConfiguration.checkToken(accessToken)) { // accessToken 이 유효할 때
             Long userId = jwtConfiguration.getUserId(accessToken);
-            log.info("UserService_getUserIdByAccessToken_end: " + userId);
+            log.info("UserService_getUserIdByToken_end: " + userId);
             return userId;
-        } catch (UnsupportedEncodingException e) {
-            // TODO: Exception처리
-            throw new RuntimeException(e);
+        } else {
+            throw new JwtTokenExpiredException();
+        }
+    }
+
+    @Override
+    public String recreateAccessToken(Long userId, String refreshToken) {
+        if (jwtConfiguration.checkToken(refreshToken)) { // refreshToken 유효
+            String dbRefreshToken = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new).getRefreshToken();
+
+            if (dbRefreshToken.equals(refreshToken)) { // refreshToken, DB의 refreshToken 일치
+                String accessToken = jwtConfiguration.createAccessToken("userid", userId);
+                log.info("UserService_recreateAccessToken_end: accessToken: " + accessToken);
+                return accessToken;
+            } else { // 받은 refreshToken, db의 refreshToken 정보가 다를 때
+                throw new InvalidJwtRefreshTokenException();
+            }
+        } else { // refreshToken 만료
+            throw new JwtTokenExpiredException();
         }
     }
 

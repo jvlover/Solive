@@ -1,8 +1,12 @@
 package com.ssafy.solive.config;
 
+import com.ssafy.solive.common.exception.user.JwtTokenExpiredException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -65,10 +69,33 @@ public class JwtConfiguration {
         return key;
     }
 
-    public Long getUserId(String accessToken) throws UnsupportedEncodingException {
-        return Long.valueOf(
-            Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(accessToken)
-                .getBody()
-                .get("userid").toString());
+    public boolean checkToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(token);
+            return true; // token 이 유효하면 exception 발생을 안함
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        } catch (MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) { // 우리 프로젝트에서는 이 경우만 고려
+            log.info("만료된 JWT 토큰입니다.");
+            throw new JwtTokenExpiredException();
+        } catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+        }
+        return false;
+    }
+
+    public Long getUserId(String accessToken) {
+        try {
+            return Long.valueOf(
+                Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(accessToken)
+                    .getBody()
+                    .get("userid").toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

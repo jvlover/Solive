@@ -19,7 +19,9 @@ public interface UserService {
 
     void logout(Long userId);
 
-    public Long getUserIdByAccessToken(String token);
+    public Long getUserIdByToken(String token);
+
+    public String recreateAccessToken(Long userId, String refreshToken);
 
     public UserProfilePostRes getUserProfileByUserId(Long userId);
 

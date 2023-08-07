@@ -37,12 +37,12 @@ public final class CommonResponse<T> {
         this.error = error;
     }
 
-    // API 요청 성공 시 컨트롤러에서 success 함수에 적절한 data를 넣어 리턴하면 됩니다.
+    // API 요청 성공 시 컨트롤러에서 success 함수에 적절한 data 를 넣어 리턴하면 됩니다.
     public static <T> CommonResponse<T> success(T data) {
         return new CommonResponse<>(true, data, null);
     }
 
-    // API 요청 실패 시 fail 함수에 ErrorCode를 직접 넣을 수 있습니다.
+    // API 요청 실패 시 fail 함수에 ErrorCode 를 직접 넣을 수 있습니다.
     public static <T> CommonResponse<T> fail(ErrorCode errorCode) {
         return new CommonResponse<T>(
             false, null, new Error(errorCode.name(), errorCode.getMessage())
@@ -54,7 +54,8 @@ public final class CommonResponse<T> {
         return new CommonResponse<>(false, null, new Error(code, message));
     }
 
-    // Response에 넣기 위한 Error 클래스입니다.
+    // Response 에 넣기 위한 Error 클래스입니다.
+    @Getter
     static class Error {
 
         //에러 타입
@@ -67,13 +68,13 @@ public final class CommonResponse<T> {
             this.message = message;
         }
 
-        public String getCode() {
-            return code;
-        }
-
-        public String getMessage() {
-            return message;
-        }
+//        public String getCode() {
+//            return code;
+//        }
+//
+//        public String getMessage() {
+//            return message;
+//        }
     }
 
 }
