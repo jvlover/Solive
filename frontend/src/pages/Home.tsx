@@ -7,7 +7,7 @@ const Home = () => {
 
   return (
     <div
-      className="flex items-center justify-center h-[100%] w-[100%] "
+      className="flex items-center justify-center h-[90vh] w-[100%] "
       style={{
         backgroundImage: `url(${BackgroundImg})`,
         backgroundSize: 'cover',
@@ -27,10 +27,10 @@ const Home = () => {
           <img
             src={homeTeacher}
             alt="teacher"
-            className="ml-20 h-[55vh] w-[60vh]"
+            className="-mt-10 ml-20 h-[55vh] w-[60vh]"
           ></img>
           <button
-            className="w-[80vh] mb-16 py-2 px-4 bg-solive-100 text-white text-lg font-bold rounded shadow-2xl"
+            className="w-[80vh] mb-3 py-2 px-4 bg-solive-100 text-white text-lg font-bold rounded shadow-2xl"
             onClick={() => navigate('/signup')}
           >
             지금 회원가입 하고 문제 등록하러 가기

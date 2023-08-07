@@ -4,12 +4,14 @@ import * as yup from 'yup';
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import { useNavigate } from 'react-router-dom';
-import BackgroundImg from '../../assets/background.png';
 import { loginUser } from '../../api';
+import BackgroundImg from '../../assets/background.png';
+import logo from '../../assets/logo.png';
+import { Input } from '@material-tailwind/react';
 
 const schema = yup.object().shape({
-  loginId: yup.string().required('아이디는 필수입니다.'),
-  loginPassword: yup.string().required('비밀번호는 필수입니다.'),
+  loginId: yup.string().required('아이디를 입력해주세요.'),
+  loginPassword: yup.string().required('비밀번호를 입력해주세요.'),
 });
 
 interface LoginFormFields {
@@ -20,6 +22,7 @@ interface LoginFormFields {
 const Login = () => {
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
+
   const {
     control,
     handleSubmit,
@@ -32,10 +35,10 @@ const Login = () => {
     try {
       const user = await loginUser(data);
       setUser(user);
-      if (user.masterCodeId === 2) {
-        navigate('/teacher');
-      } else if (user.masterCodeId === 1) {
+      if (user.masterCodeId === 1) {
         navigate('/student');
+      } else if (user.masterCodeId === 2) {
+        navigate('/teacher');
       }
     } catch (error) {
       console.error(error);
@@ -45,48 +48,71 @@ const Login = () => {
 
   return (
     <div
-      className="flex items-center justify-center h-screen"
+      className="flex items-center justify-center h-[90vh] min-h-[400px]"
       style={{
         backgroundImage: `url(${BackgroundImg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div className="bg-white rounded-lg shadow-lg w-1/3 h-1/2 py-12 px-10 right-1/3 fixed top-1/4">
-        <h2 className="text-2xl font-bold mb-12 text-black">로그인</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="bg-white rounded-lg shadow-lg w-[30%] h-[60%] min-w-[500px] min-h-[400px] pt-6 pb-10 px-10 mt-0">
+        <div className="flex justify-center">
+          <img src={logo} alt="solive" className="w-40 h-auto mt-1 mb-8"></img>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="mb-10">
           <Controller
             control={control}
             name="loginId"
             defaultValue=""
             render={({ field }) => (
-              <input
+              <Input
                 {...field}
-                placeholder="아이디"
-                className="block w-full mb-8 border-2 border-gray-200 p-2 rounded-md"
+                variant="standard"
+                label="아이디"
+                labelProps={{
+                  className:
+                    'peer-focus:text-solive-200 after:border-solive-200 peer-focus:after:border-solive-200',
+                }}
+                className="focus:border-solive-200"
               />
             )}
           />
-          <p>{errors.loginId?.message}</p>
+          {errors.loginId?.message ? (
+            <p className="mt-2 mb-4 text-xs text-blue-gray-400">
+              {errors.loginId?.message}
+            </p>
+          ) : (
+            <div className="my-10"></div>
+          )}
 
           <Controller
             control={control}
             name="loginPassword"
             defaultValue=""
             render={({ field }) => (
-              <input
+              <Input
                 {...field}
                 type="password"
-                placeholder="비밀번호"
-                className="block w-full mb-8 border-2 border-gray-200 p-2 rounded-md"
+                variant="standard"
+                label="비밀번호"
+                labelProps={{
+                  className:
+                    'peer-focus:text-solive-200 after:border-solive-200 peer-focus:after:border-solive-200',
+                }}
+                className="focus:border-solive-200"
               />
             )}
           />
-          <p>{errors.loginPassword?.message}</p>
-
+          {errors.loginPassword?.message ? (
+            <p className="mt-2 mb-4 text-xs text-blue-gray-400">
+              {errors.loginPassword?.message}
+            </p>
+          ) : (
+            <div className="my-10"></div>
+          )}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-md"
+            className="w-full bg-solive-200 text-white font-semibold mt-3 p-2 rounded-md"
           >
             로그인
           </button>
