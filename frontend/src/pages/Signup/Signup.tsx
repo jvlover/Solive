@@ -16,17 +16,35 @@ export type SignupFormData = {
 };
 
 const schema = yup.object().shape({
-  nickname: yup.string().required('닉네임은 필수입니다.'),
-  loginId: yup.string().required('아이디는 필수입니다.'),
-  loginPassword: yup.string().required('비밀번호는 필수입니다.'),
+  nickname: yup
+    .string()
+    .required('닉네임은 필수입니다.')
+    .matches(
+      /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]{1,10}$/,
+      '1~10자의 한글, 영문 대/소문자, 숫자를 사용해주세요.',
+    )
+    .max(10, '10글자 이하로 입력해주세요.'),
+  loginId: yup
+    .string()
+    .required('아이디는 필수입니다.')
+    .matches(/^[a-z0-9]{2,16}$/, '2~16자의 영문 소문자, 숫자를 사용해주세요.')
+    .min(2, '2글자 이상 16자 이하로 입력해주세요.')
+    .max(16, '2글자 이상 16자 이하로 입력해주세요.'),
+  loginPassword: yup
+    .string()
+    .required('비밀번호는 필수입니다.')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&]).{8,16}$/,
+      '8~16자의 영문 대/소문자, 숫자, 특수문자 각 1자 이상 사용해주세요.',
+    ),
   passwordConfirm: yup
     .string()
     .oneOf([yup.ref('loginPassword'), ''], '비밀번호가 일치하지 않습니다.')
     .required('비밀번호 확인은 필수입니다.'),
   email: yup
     .string()
-    .email('유효한 이메일이 아닙니다.')
-    .required('이메일은 필수입니다.'),
+    .required('이메일은 필수입니다.')
+    .email('유효한 이메일이 아닙니다.'),
   gender: yup.number().required('성별을 선택해주세요.'),
 });
 
@@ -39,6 +57,7 @@ const Signup = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       nickname: '',
       loginId: '',
@@ -77,7 +96,7 @@ const Signup = () => {
     >
       <div className="bg-white rounded-lg shadow-lg w-[30%] h-[90%] min-w-[500px] pt-6 pb-10 px-10">
         <h2 className="my-3 text-2xl text-center font-bold text-black">
-          회원가입
+          {`${userType === 'student' ? '학생' : '선생님'} 회원가입`}
         </h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
@@ -207,26 +226,6 @@ const Signup = () => {
             name="gender"
             render={({ field }) => (
               <div className="flex items-center justify-between">
-                {/* <label>
-                  <input
-                    type="radio"
-                    value="1"
-                    checked={field.value === 1}
-                    onChange={() => field.onChange(1)}
-                    className="mr-2"
-                  />
-                  남자
-                </label>
-                <label className="ml-4">
-                  <input
-                    type="radio"
-                    value="2"
-                    checked={field.value === 2}
-                    onChange={() => field.onChange(2)}
-                    className="mr-2"
-                  />
-                  여자
-                </label> */}
                 <div className="text-sm text-blue-gray-500">성별</div>
                 <div className="flex gap-5">
                   <Radio

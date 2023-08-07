@@ -10,7 +10,10 @@ import logo from '../../assets/logo.png';
 import { Input } from '@material-tailwind/react';
 
 const schema = yup.object().shape({
-  loginId: yup.string().required('아이디를 입력해주세요.'),
+  loginId: yup
+    .string()
+    .matches(/^[a-z0-9]{1,16}$/, '2~16자의 영문 소문자, 숫자를 사용해주세요.')
+    .required('아이디를 입력해주세요.'),
   loginPassword: yup.string().required('비밀번호를 입력해주세요.'),
 });
 
@@ -29,6 +32,7 @@ const Login = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    mode: 'onChange',
   });
 
   const onSubmit = async (data: LoginFormFields) => {
