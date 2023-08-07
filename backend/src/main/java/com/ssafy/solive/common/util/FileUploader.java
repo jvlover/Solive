@@ -9,15 +9,21 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class FileUploader {
+
+    private final S3Uploader s3Uploader;
+
+    @Autowired
+    public FileUploader(S3Uploader s3Uploader) {
+        this.s3Uploader = s3Uploader;
+    }
 
     public List<FileDto> fileUpload(List<MultipartFile> fileList, String subFolderName) {
 
@@ -49,6 +55,8 @@ public class FileUploader {
                     .path(path)
                     .contentType(file.getContentType())
                     .build());
+
+                s3Uploader.upload(file, fileName);
             } catch (IllegalStateException | IOException e) {
                 throw new ImageUploadFailException(); // 이미지 등록 실패 시 Exception
             }
