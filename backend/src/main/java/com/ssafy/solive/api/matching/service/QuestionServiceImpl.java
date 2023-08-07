@@ -6,9 +6,10 @@ import com.ssafy.solive.api.matching.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.matching.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
-import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.matching.QuestionNoImageException;
 import com.ssafy.solive.common.exception.matching.QuestionNotFoundException;
+import com.ssafy.solive.common.model.FileDto;
+import com.ssafy.solive.common.util.FileUploader;
 import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.Question;
 import com.ssafy.solive.db.entity.QuestionPicture;
@@ -17,10 +18,7 @@ import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.QuestionPictureRepository;
 import com.ssafy.solive.db.repository.QuestionRepository;
 import com.ssafy.solive.db.repository.StudentRepository;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,15 +39,17 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionPictureRepository questionPictureRepository;
     private final StudentRepository studentRepository;
     private final MasterCodeRepository masterCodeRepository;
+    private final FileUploader fileUploader;
 
     @Autowired
     public QuestionServiceImpl(QuestionRepository questionRepository,
         QuestionPictureRepository questionPictureRepository, StudentRepository studentRepository,
-        MasterCodeRepository masterCodeRepository) {
+        MasterCodeRepository masterCodeRepository, FileUploader fileUploader) {
         this.questionRepository = questionRepository;
         this.questionPictureRepository = questionPictureRepository;
         this.studentRepository = studentRepository;
         this.masterCodeRepository = masterCodeRepository;
+        this.fileUploader = fileUploader;
     }
 
     /*
@@ -57,17 +57,17 @@ public class QuestionServiceImpl implements QuestionService {
      */
     @Override
     public void registQuestion(QuestionRegistPostReq registInfo,
-        List<MultipartFile> files) {
+        List<MultipartFile> fileList) {
         /*
-         *  files : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 null일 수 없음
+         *  fileList : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 null일 수 없음
          *  registInfo : 문제 등록할 때 입력한 정보
          */
 
         log.info("QuestionService_registQuestion_start: " + registInfo.toString() + ", "
-            + files.toString());
+            + fileList.toString());
 
         // 문제는 반드시 이미지가 필요하므로, 이미지가 없으면 QuestionNoImageException 처리
-        if (files.get(0).getSize() == 0) {
+        if (fileList.get(0).getSize() == 0) {
             throw new QuestionNoImageException();
         }
 
@@ -104,43 +104,17 @@ public class QuestionServiceImpl implements QuestionService {
          */
         // TODO: 파일 업로드 관련 DB에 추가한 여러 컬럼들 나중에 전부 필요한 지 확인 필요
 
-        // 파일 업로드 경로
-        String uploadFilePath = "C:/solive/image/";
+        List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "/question");
 
-        for (MultipartFile file : files) {
-            // 파일 확장자 명
-            String suffix = file.getOriginalFilename()
-                .substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-            // 랜덤한 파일 이름 생성
-            String fileName = UUID.randomUUID().toString() + "." + suffix;
-
-            // 파일 업로드 경로 디렉토리가 만약 존재하지 않으면 생성
-            File folder = new File(uploadFilePath);
-            if (!folder.isDirectory()) {
-                folder.mkdirs();
-            }
-
-            String pathName = uploadFilePath + fileName;    // 파일 절대 경로
-            String resourcePathName = "/image/" + fileName; // url
-            File dest = new File(pathName);
-            try {
-                file.transferTo(dest);
-                QuestionPicture questionPicture = QuestionPicture.builder()
-                    .question(question)
-                    .contentType(file.getContentType())
-                    .imageName(file.getOriginalFilename())
-                    .fileName(fileName)
-                    .pathName(pathName)
-                    .size((int) file.getSize())
-                    .url(resourcePathName)
-                    .build();
-                questionPictureRepository.save(questionPicture);
-            } catch (IllegalStateException | IOException e) {
-                throw new ImageUploadFailException(); // 이미지 등록 실패 시 Exception
-            }
-            /*
-             *  생성한 Question Picture Entity를 DB에 insert 완료
-             */
+        for (FileDto fileDto : fileDtoList) {
+            QuestionPicture questionPicture = QuestionPicture.builder()
+                .question(question)
+                .fileName(fileDto.getFileName())
+                .originalName(fileDto.getOriginalName())
+                .path(fileDto.getPath())
+                .contentType(fileDto.getContentType())
+                .build();
+            questionPictureRepository.save(questionPicture);
         }
 
         log.info("QuestionService_registQuestion_end: success");

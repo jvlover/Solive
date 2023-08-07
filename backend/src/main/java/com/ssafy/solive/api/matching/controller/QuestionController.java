@@ -49,17 +49,17 @@ public class QuestionController {
      */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> regist(@RequestPart QuestionRegistPostReq registInfo,
-        @RequestPart("files") List<MultipartFile> files) {
+        @RequestPart("fileList") List<MultipartFile> fileList) {
         /*
-         *  files : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 null일 수 없음
+         *  fileList : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 null일 수 없음
          *  registInfo : 문제 등록할 때 입력한 정보
          */
         // TODO: 인증 된 사용자인지 확인하는 과정 필요
 
         log.info("QuestionController_regist_start: " + registInfo.toString() + ", "
-            + files.toString());
+            + fileList.toString());
 
-        questionService.registQuestion(registInfo, files);
+        questionService.registQuestion(registInfo, fileList);
 
         log.info("QuestionController_regist_end: success");
         return CommonResponse.success(SUCCESS);
