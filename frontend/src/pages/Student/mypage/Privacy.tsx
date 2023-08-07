@@ -4,7 +4,6 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:8080';
 
 const PersonalInfoPage = () => {
-
   //   const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -15,6 +14,7 @@ const PersonalInfoPage = () => {
   const [signinTime, setsigninTime] = useState('2022.01.25');
   const [showPopup, setShowPopup] = useState(false);
   const [withdrawalPassword, setWithdrawalPassword] = useState('');
+  const [gender, setGender] = useState(0);
 
   useEffect(() => {
     axios
@@ -64,6 +64,7 @@ const PersonalInfoPage = () => {
     const dataObject = {
       oldPassword: oldPassword,
       newPassword: newPassword,
+      gender: gender,
     };
     const blobData = new Blob([JSON.stringify(dataObject)], {
       type: 'application/json',
@@ -107,6 +108,10 @@ const PersonalInfoPage = () => {
       });
   };
 
+  const handleGenderChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setGender(Number(event.target.value));
+  };
+
   return (
     <div className="pt-20">
       <div>
@@ -114,7 +119,7 @@ const PersonalInfoPage = () => {
       </div>
       <hr className="mt-4 mx-auto w-7/10 border-none h-1 bg-blue-200" />
       <div
-        className="mx-auto mt-8 h-[550px] w-[600px] p-6"
+        className="mx-auto mt-8 h-[650px] w-[600px] p-6"
         style={{ border: '2px solid #646CFF' }}
       >
         <div className="mt-4 w-full flex justify-between items-center font-bold">
@@ -159,6 +164,43 @@ const PersonalInfoPage = () => {
             {signinTime}
           </div>
         </div>
+
+        <div className="mt-4 w-full flex justify-between items-center font-bold">
+          <div className="flex items-center">성별</div>
+        </div>
+        <div className="mt-4">
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value={0}
+              checked={gender === 0}
+              onChange={handleGenderChange}
+            />
+            비공개
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value={1}
+              checked={gender === 1}
+              onChange={handleGenderChange}
+            />
+            남성
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              value={2}
+              checked={gender === 2}
+              onChange={handleGenderChange}
+            />
+            여성
+          </label>
+        </div>
+
         <form onSubmit={handleSubmit} className="flex justify-center">
           <button
             className={`mt-8 px-4 py-2 rounded w-64 h-12 ${
