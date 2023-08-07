@@ -1,13 +1,20 @@
 package com.ssafy.solive.api.matching.controller;
 
+import com.ssafy.solive.api.matching.request.NotificationDeletePutReq;
+import com.ssafy.solive.api.matching.request.NotificationModifyPutReq;
+import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
+import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
+import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +55,7 @@ public class NotificationController {
         log.info("NotificationController_subscribe_start: " + request.toString());
 
         String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByAccessToken(accessToken);
+        Long userId = userService.getUserIdByToken(accessToken);
 
         SseEmitter sseEmitter = notificationService.subscribe(userId, lastEventId);
 
@@ -56,5 +63,71 @@ public class NotificationController {
             + lastEventId);
 
         return sseEmitter;
+    }
+
+    /**
+     * 유저 별 알림 목록을 조회
+     *
+     * @param request : 헤더에 access-token
+     * @return findResList : 알림 조회 결과 리스트
+     */
+    @GetMapping()
+    public CommonResponse<?> find(HttpServletRequest request) {
+
+        log.info("NotificationController_find_start: ");
+
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+
+        List<NotificationFindRes> findResList = notificationService.findNotification(userId);
+
+        log.info("NotificationController_find_end: " + findResList.toString());
+        return CommonResponse.success(findResList);
+    }
+
+    /**
+     * 유저 알림 읽음 처리
+     *
+     * @param modifyInfo : 수정할 알림 id
+     * @return success : 성공
+     */
+    @PutMapping()
+    public CommonResponse<?> modify(NotificationModifyPutReq modifyInfo) {
+
+        log.info("NotificationController_modify_start: " + modifyInfo.toString());
+
+        notificationService.modifyNotification(modifyInfo);
+
+        log.info("NotificationController_modify_end: success");
+        return CommonResponse.success(SUCCESS);
+    }
+
+    /**
+     * 알림 삭제
+     *
+     * @param deleteInfo : 수정할 알림 id
+     * @return success : 성공
+     */
+    @PutMapping("/delete")
+    public CommonResponse<?> delete(NotificationDeletePutReq deleteInfo,
+        HttpServletRequest request) {
+
+        log.info("NotificationController_delete_start: " + deleteInfo.toString());
+
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+
+        // http 헤더에서 유저 아이디 꺼내서 setting
+        deleteInfo.setUserId(userId);
+
+        boolean isDeleted = notificationService.deleteNotification(deleteInfo); // 삭제 실패하면 false
+        if (isDeleted) {
+            log.info("NotificationController_delete_end: success");
+            return CommonResponse.success(SUCCESS);
+        } else {
+            // 유저가 자신의 소유가 아닌 알림을 삭제하려고 하는 경우
+            log.info("NotificationController_delete_end: QuestionPossessionFailException");
+            throw new MatchingPossessionFailException();
+        }
     }
 }

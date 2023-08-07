@@ -48,4 +48,18 @@ public class Notification extends BaseEntity {
     // 알림이 삭제 되었으면 삭제된 시간, 아니면 null
     @Column
     private LocalDateTime deletedAt;
+
+    /**
+     * 알림 읽음 처리 시 readAt을 현재 시간으로 설정하기 위한 Method
+     */
+    public void modifyReadAt() {
+        this.readAt = LocalDateTime.now();
+    }
+
+    /**
+     * 알림 삭제 시 deletedAt을 현재 시간으로 설정하기 위한 method
+     */
+    public void deleteNotification() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

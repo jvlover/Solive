@@ -7,7 +7,7 @@ import com.ssafy.solive.api.matching.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
 import com.ssafy.solive.api.matching.service.QuestionService;
-import com.ssafy.solive.common.exception.matching.QuestionPossessionFailException;
+import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -73,7 +73,6 @@ public class QuestionController {
         /*
          *  deleteInfo : 문제 삭제하기 위해 필요한 정보
          */
-        // TODO: 인증 된 사용자인지 확인하는 과정 필요
 
         log.info("QuestionController_delete_start: " + deleteInfo.toString());
 
@@ -84,7 +83,7 @@ public class QuestionController {
         } else {
             // 유저가 작성하지 않은 문제를 삭제하려고 하는 경우
             log.info("QuestionController_delete_end: QuestionPossessionFailException");
-            throw new QuestionPossessionFailException();
+            throw new MatchingPossessionFailException();
         }
     }
 
@@ -106,7 +105,7 @@ public class QuestionController {
             return CommonResponse.success(SUCCESS);
         } else {
             log.info("QuestionController_modify_end: QuestionPossessionFailException");
-            throw new QuestionPossessionFailException();
+            throw new MatchingPossessionFailException();
         }
     }
 
