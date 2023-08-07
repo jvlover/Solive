@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
+import { StudentFormData } from './pages/Signup/StudentSignup';
+import { TeacherFormData } from './pages/Signup/TeacherSignup';
+import { User } from './recoil/user/userState';
 
 const BASE_URL = 'http://localhost:8080';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
@@ -145,5 +148,44 @@ export const chargeSolvePoint = async (
   } catch (error) {
     console.error('Error charging: ', error);
     return { success: false };
+  }
+};
+
+export const studentSignup = async (
+  signupData: StudentFormData,
+  onSuccess: () => void,
+): Promise<void> => {
+  const response = await axios.post(BASE_URL + '/user', signupData);
+  if (response.data.success === true) {
+    onSuccess();
+  } else {
+    throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+  }
+};
+
+export const teacherSignup = async (
+  signupData: TeacherFormData,
+  onSuccess: () => void,
+): Promise<void> => {
+  const response = await axios.post(BASE_URL + '/user', signupData);
+  if (response.data.success === true) {
+    onSuccess();
+  } else {
+    throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+  }
+};
+
+export const loginUser = async (loginData: {
+  loginId: string;
+  loginPassword: string;
+}): Promise<User> => {
+  const response = await axios.post(BASE_URL + '/user/login', loginData);
+
+  if (response.data.success === true) {
+    return response.data.data;
+  } else {
+    throw new Error(
+      '로그인에 실패하였습니다. 아이디 또는 비밀번호를 확인해주세요.',
+    );
   }
 };

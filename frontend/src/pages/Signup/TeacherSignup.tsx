@@ -1,19 +1,17 @@
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import axios from 'axios';
 import BackgroundImg from '../../assets/background.png';
 import { useNavigate } from 'react-router-dom';
+import { teacherSignup } from '../../api';
 
-const BASE_URL = 'http://localhost:8080'
-
-type FormData = {
+export type TeacherFormData = {
   nickname: string;
   loginId: string;
   loginPassword: string;
   passwordConfirm: string;
   email: string;
-  gender: string;
+  gender: number;
 };
 
 const schema = yup.object().shape({
@@ -28,7 +26,7 @@ const schema = yup.object().shape({
     .string()
     .email('유효한 이메일이 아닙니다.')
     .required('이메일은 필수입니다.'),
-  gender: yup.string().required('성별을 선택해주세요.'),
+  gender: yup.number().required('성별을 선택해주세요.'),
 });
 
 const TeacherSignup = () => {
@@ -48,27 +46,21 @@ const TeacherSignup = () => {
     },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: TeacherFormData) => {
     const signupData = {
       nickname: data.nickname,
       loginId: data.loginId,
       loginPassword: data.loginPassword,
+      passwordConfirm: data.passwordConfirm,
       email: data.email,
       masterCodeId: 2,
-      gender: data.gender === 'male' ? 1 : 2,
+      gender: data.gender,
     };
 
     try {
-      const response = await axios.post(BASE_URL + '/user', signupData);
-      console.log(response.data);
-
-      if (response.data.success === true) {
-        navigate('/login');
-      }
+      await teacherSignup(signupData, () => navigate('/login'));
     } catch (error) {
-      console.error(error);
-
-      alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+      alert(error.message);
     }
   };
 
@@ -158,9 +150,9 @@ const TeacherSignup = () => {
                 <label>
                   <input
                     type="radio"
-                    value="male"
-                    checked={field.value === 'male'}
-                    onChange={() => field.onChange('male')}
+                    value="1"
+                    checked={field.value === 1}
+                    onChange={() => field.onChange(1)}
                     className="mr-2"
                   />
                   남자
@@ -168,9 +160,9 @@ const TeacherSignup = () => {
                 <label className="ml-4">
                   <input
                     type="radio"
-                    value="female"
-                    checked={field.value === 'female'}
-                    onChange={() => field.onChange('female')}
+                    value="2"
+                    checked={field.value === 2}
+                    onChange={() => field.onChange(2)}
                     className="mr-2"
                   />
                   여자

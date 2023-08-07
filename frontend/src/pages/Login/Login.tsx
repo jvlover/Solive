@@ -1,13 +1,11 @@
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
-import { userState, User } from '../../recoil/user/userState';
+import { userState } from '../../recoil/user/userState';
 import { useNavigate } from 'react-router-dom';
 import BackgroundImg from '../../assets/background.png';
-
-const BASE_URL = 'http://localhost:8080'
+import { loginUser } from '../../api';
 
 const schema = yup.object().shape({
   loginId: yup.string().required('아이디는 필수입니다.'),
@@ -32,21 +30,16 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormFields) => {
     try {
-
-      const response = await axios.post(BASE_URL + '/user/login', data);
-      const user: User = response.data.data;
-
+      const user = await loginUser(data);
       setUser(user);
-      if (response.data.success === true) {
-        if (user.masterCodeId === 2) {
-          navigate('/teacher');
-        } else if (user.masterCodeId === 1) {
-          navigate('/student');
-        }
+      if (user.masterCodeId === 2) {
+        navigate('/teacher');
+      } else if (user.masterCodeId === 1) {
+        navigate('/student');
       }
     } catch (error) {
       console.error(error);
-      alert('로그인에 실패하였습니다. 아이디 또는 비밀번호를 확인해주세요.');
+      alert(error.message);
     }
   };
 
