@@ -8,6 +8,7 @@ export default withMT({
         solive: {
           0: '#AA57FF',
           100: '#646CFF',
+          200: '#9399FF',
         },
       },
     },
