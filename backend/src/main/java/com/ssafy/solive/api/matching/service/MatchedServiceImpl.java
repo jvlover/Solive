@@ -8,6 +8,7 @@ import com.ssafy.solive.db.entity.Matched;
 import com.ssafy.solive.db.entity.Question;
 import com.ssafy.solive.db.entity.Student;
 import com.ssafy.solive.db.entity.Teacher;
+import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.ApplyRepository;
 import com.ssafy.solive.db.repository.MatchedRepository;
 import com.ssafy.solive.db.repository.QuestionRepository;
@@ -48,14 +49,14 @@ public class MatchedServiceImpl implements MatchedService {
         this.matchedRepository = matchedRepository;
     }
 
-    /*
-     *  학생이 강사 요청 수락하는 Regist API에 대한 서비스
+    /**
+     * 학생이 강사 요청 수락하는 Regist API에 대한 서비스
+     *
+     * @param registInfo : 어떤 학생이 어떤 apply를 수락했는가
+     * @return teacher : 학생이 강사 요청을 수락했을 때, 해당 사항ㅇ 대
      */
     @Override
-    public void registMatched(MatchedRegistPostReq registInfo) {
-        /*
-         *  registInfo : 어떤 학생이 어떤 apply를 수락했는가
-         */
+    public User registMatched(MatchedRegistPostReq registInfo) {
 
         log.info("MatchedService_registMatched_start: " + registInfo.toString());
 
@@ -92,9 +93,11 @@ public class MatchedServiceImpl implements MatchedService {
         /*
          *  생성한 Matched Entity를 DB에 insert 완료
          */
-        // TODO: JpaRepository의 save에서 Exception이 발생할 경우가 있는지 확인 필요
 
-        log.info("MatchedService_registMatched_end: success");
+        log.info("MatchedService_registMatched_end: " + teacher.toString());
+
+        // 매칭이 성사되었음을 강사에게 알림을 보내야 함
+        return teacher;
     }
 
     /*

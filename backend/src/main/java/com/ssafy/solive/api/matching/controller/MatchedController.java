@@ -4,10 +4,13 @@ import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import com.ssafy.solive.api.matching.service.MatchedService;
+import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.common.model.CommonResponse;
+import com.ssafy.solive.db.entity.User;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,15 +31,19 @@ public class MatchedController {
     private static final String SUCCESS = "success";  // API 성공 시 return
 
     private final MatchedService matchedService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public MatchedController(MatchedService matchedService) {
+    public MatchedController(MatchedService matchedService,
+        NotificationService notificationService) {
         this.matchedService = matchedService;
+        this.notificationService = notificationService;
     }
 
     /*
      *  학생이 강사의 문제 풀이 지원 요청에 수락하여 매칭을 생성하는 API
      */
+    @Transactional
     @PostMapping()
     public CommonResponse<?> regist(@RequestBody MatchedRegistPostReq registInfo) {
         /*
@@ -46,7 +53,12 @@ public class MatchedController {
 
         log.info("MatchedController_regist_start: " + registInfo.toString());
 
-        matchedService.registMatched(registInfo);
+        User user = matchedService.registMatched(registInfo);
+
+        // 깅시에게 알림 전송 코드. title과 content의 내용은 일단 임시입니다
+        String title = "매칭 성사";
+        String content = user.getNickname() + "님, 지원하신 요청이 승낙되어 매칭이 성사되었습니다.";
+        notificationService.send(user, title, content);
 
         log.info("MatchedController_regist_end: success");
         return CommonResponse.success(SUCCESS);
