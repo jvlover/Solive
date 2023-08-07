@@ -19,7 +19,7 @@ interface CommonUserFields {
   accessToken: string;
 }
 
-interface TeacherFields {
+export interface TeacherFields {
   userId: number;
   subjectId: number | null;
   solvedCount: number;

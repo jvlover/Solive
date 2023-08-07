@@ -32,12 +32,12 @@ export const relatedQuestionsSelector = selector<Question[] | null>({
   key: 'RelatedQuestions',
   get: async ({ get }) => {
     const user = get(userState);
-    if (!user) return null;
+    if (!user || user.masterCodeId !== 2) return null;
 
     try {
-      const response = await axios.get(
-        `http://localhost:8080/related?subjectId=${user.subjectId}`,
-      );
+      const response = await axios.get(`http://localhost:8080/related`, {
+        headers: { 'access-token': user.accessToken },
+      });
       return response.data;
     } catch (error) {
       console.error(error);
