@@ -1,6 +1,10 @@
 package com.ssafy.solive.api.user.controller;
 
-import com.ssafy.solive.api.user.request.*;
+import com.ssafy.solive.api.user.request.TeacherRatePostReq;
+import com.ssafy.solive.api.user.request.UserLoginPostReq;
+import com.ssafy.solive.api.user.request.UserModifyPasswordPutReq;
+import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
+import com.ssafy.solive.api.user.request.UserRegistPostReq;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
@@ -9,10 +13,18 @@ import com.ssafy.solive.common.exception.user.UserNotFoundException;
 import com.ssafy.solive.common.model.CommonResponse;
 import com.ssafy.solive.db.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -134,8 +146,8 @@ public class UserController {
      */
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> modifyProfile(@RequestPart UserModifyProfilePutReq userInfo,
-                                           @RequestPart MultipartFile profilePicture,
-                                           HttpServletRequest request) {
+        @RequestPart("files") List<MultipartFile> profilePicture,
+        HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
 
@@ -156,7 +168,7 @@ public class UserController {
      */
     @PutMapping("/password")
     public CommonResponse<?> modifyPassword(@RequestBody UserModifyPasswordPutReq passwords,
-                                            HttpServletRequest request) {
+        HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
 
@@ -270,9 +282,9 @@ public class UserController {
 
     @PostMapping("/favorite/add")
     public CommonResponse<?> addFavorite(@RequestBody Long teacherId,
-                                        HttpServletRequest request) {
+        HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
-        Long studentId = userService.getUserIdByAccessToken(accessToken);
+        Long studentId = userService.getUserIdByToken(accessToken);
 
         userService.addFavorite(studentId, teacherId);
 
@@ -281,9 +293,9 @@ public class UserController {
 
     @PutMapping("/favorite/delete")
     public CommonResponse<?> deleteFavorite(@RequestBody Long teacherId,
-                                            HttpServletRequest request) {
+        HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
-        Long studentId = userService.getUserIdByAccessToken(accessToken);
+        Long studentId = userService.getUserIdByToken(accessToken);
 
         userService.deleteFavorite(studentId, teacherId);
         return CommonResponse.success(SUCCESS);

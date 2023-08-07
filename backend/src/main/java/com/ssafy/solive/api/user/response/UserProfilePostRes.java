@@ -7,10 +7,9 @@ import lombok.Data;
 @Builder
 public class UserProfilePostRes {
 
-    String pictureUrl;
-    String pictureName;
     String fileName;
-    String pathName;
+    String originalName;
+    String path;
     String contentType;
     String nickname;
     Integer gender;
