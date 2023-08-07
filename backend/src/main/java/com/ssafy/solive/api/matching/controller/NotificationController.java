@@ -1,8 +1,11 @@
 package com.ssafy.solive.api.matching.controller;
 
+import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
+import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -48,7 +51,7 @@ public class NotificationController {
         log.info("NotificationController_subscribe_start: " + request.toString());
 
         String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByAccessToken(accessToken);
+        Long userId = userService.getUserIdByToken(accessToken);
 
         SseEmitter sseEmitter = notificationService.subscribe(userId, lastEventId);
 
@@ -56,5 +59,25 @@ public class NotificationController {
             + lastEventId);
 
         return sseEmitter;
+    }
+
+    /**
+     * 유저 별 알림 목록을 조회
+     *
+     * @param request : 헤더에 access-token
+     * @return findResList : 알림 조회 결과 리스트
+     */
+    @GetMapping()
+    public CommonResponse<?> find(HttpServletRequest request) {
+
+        log.info("NotificationController_find_start: ");
+
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+
+        List<NotificationFindRes> findResList = notificationService.findNotification(userId);
+
+        log.info("NotificationController_find_end: " + findResList.toString());
+        return CommonResponse.success(findResList);
     }
 }

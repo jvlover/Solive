@@ -1,11 +1,13 @@
 package com.ssafy.solive.api.matching.service;
 
+import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.api.matching.response.NotificationRes;
 import com.ssafy.solive.db.entity.Notification;
 import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.EmitterRepository;
 import com.ssafy.solive.db.repository.NotificationRepository;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-/*
- *  매칭 과정 중 알림 API 서비스
+/**
+ * 매칭 과정 중 알림 API 서비스
  */
 
 @Slf4j
@@ -156,5 +158,19 @@ public class NotificationServiceImpl implements NotificationService {
                         .build());
             }
         );
+    }
+
+    /**
+     * 유저 별 알림 목록 검색 API 서비스
+     *
+     * @param userId : 유저 식별자 PK
+     * @return findResList : 유저 별 검색 결과 notification 리스트
+     */
+    @Override
+    public List<NotificationFindRes> findNotification(Long userId) {
+
+        List<NotificationFindRes> findResList = notificationRepository.findNotification(userId);
+
+        return findResList;
     }
 }
