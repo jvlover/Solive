@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-const ProfilePage = () => {
+const QuestionManagement = () => {
   const [problems, setProblems] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   // const problems = [
@@ -160,4 +160,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default QuestionManagement;
