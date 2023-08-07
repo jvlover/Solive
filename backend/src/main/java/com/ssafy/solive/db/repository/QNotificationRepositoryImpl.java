@@ -37,6 +37,7 @@ public class QNotificationRepositoryImpl implements QNotificationRepository {
 
         return queryFactory
             .select(Projections.constructor(NotificationFindRes.class,
+                notification.id.as("id"),
                 notification.title.as("title"),
                 notification.content.as("content"),
                 notification.title.as("time"),

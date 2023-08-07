@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.matching.service;
 
+import com.ssafy.solive.api.matching.request.NotificationModifyPutReq;
 import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.api.matching.response.NotificationRes;
 import com.ssafy.solive.db.entity.Notification;
@@ -172,5 +173,19 @@ public class NotificationServiceImpl implements NotificationService {
         List<NotificationFindRes> findResList = notificationRepository.findNotification(userId);
 
         return findResList;
+    }
+
+    /**
+     * 유저가 알림 읽음 처리 API 서비스
+     *
+     * @param modifyInfo : 수정할 알림 id
+     */
+    @Override
+    public void modifyNotification(NotificationModifyPutReq modifyInfo) {
+
+        Notification notification = notificationRepository.findById(modifyInfo.getId())
+            .orElseThrow(IllegalArgumentException::new);
+
+        notification.modifyReadAt();
     }
 }

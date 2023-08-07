@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.matching.service;
 
+import com.ssafy.solive.api.matching.request.NotificationModifyPutReq;
 import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.db.entity.User;
 import java.util.List;
@@ -20,4 +21,6 @@ public interface NotificationService {
     void send(User user, String title, String content);
 
     List<NotificationFindRes> findNotification(Long userId);
+
+    void modifyNotification(NotificationModifyPutReq modifyInfo);
 }

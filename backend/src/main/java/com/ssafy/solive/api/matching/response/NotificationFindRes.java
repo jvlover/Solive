@@ -1,6 +1,5 @@
 package com.ssafy.solive.api.matching.response;
 
-import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -8,6 +7,9 @@ import lombok.Data;
  */
 @Data
 public class NotificationFindRes {
+
+    // 알림 Id
+    Long id;
 
     // 알림 제목
     String title;
@@ -25,11 +27,12 @@ public class NotificationFindRes {
     }
 
     // Querydsl을 위한 생성자
-    public NotificationFindRes(String title, String content, LocalDateTime time,
-        LocalDateTime readAt) {
+    public NotificationFindRes(Long id, String title, String content, String time,
+        String readAt) {
+        this.id = id;
         this.title = title;
         this.content = content;
-        this.time = time.toString();
-        this.readAt = readAt.toString();
+        this.time = time;
+        this.readAt = readAt;
     }
 }

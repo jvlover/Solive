@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.matching.controller;
 
+import com.ssafy.solive.api.matching.request.NotificationModifyPutReq;
 import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,5 +81,22 @@ public class NotificationController {
 
         log.info("NotificationController_find_end: " + findResList.toString());
         return CommonResponse.success(findResList);
+    }
+
+    /**
+     * 유저 알림 읽음 처리
+     *
+     * @param modifyInfo : 수정할 알림 id
+     * @return findResList : 알림 조회 결과 리스트
+     */
+    @PutMapping()
+    public CommonResponse<?> modify(NotificationModifyPutReq modifyInfo) {
+
+        log.info("NotificationController_modify_start: " + modifyInfo.toString());
+
+        notificationService.modifyNotification(modifyInfo);
+
+        log.info("NotificationController_modify_end: success");
+        return CommonResponse.success(SUCCESS);
     }
 }
