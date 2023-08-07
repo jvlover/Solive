@@ -41,4 +41,8 @@ public interface UserService {
     void cashOutSolvePoint(Long userId, Integer solvePoint);
 
     void rateTeacher(TeacherRatePostReq ratingInfo);
+
+    void addFavorite(Long studentId, Long teacherId);
+
+    void deleteFavorite(Long studentId, Long teacherId);
 }
