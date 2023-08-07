@@ -55,19 +55,19 @@ public class ArticleController {
      */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> regist(@RequestPart ArticleRegistPostReq registInfo,
-        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
         /*
-         *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
+         *  fileList : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  registInfo : 게시글 등록할 때 입력한 정보
          */
-        if (files != null) {
+        if (fileList != null) { // 게시물에 파일 있으면
             log.info("ArticleController_regist_start: " + registInfo.toString() + ", "
-                + files.toString());
+                + fileList.toString());
         } else {
             log.info("ArticleController_regist_start: " + registInfo.toString());
         }
-        Article article = articleService.registArticle(registInfo, files);
 
+        Article article = articleService.registArticle(registInfo, fileList);
         if (article != null) {
             log.info("ArticleController_regist_end: success");
             return CommonResponse.success(SUCCESS);

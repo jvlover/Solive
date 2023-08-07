@@ -6,8 +6,8 @@ import com.ssafy.solive.api.article.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.article.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.article.request.ArticleReportPostReq;
 import com.ssafy.solive.api.article.response.ArticleFindRes;
-import com.ssafy.solive.common.exception.FileIOException;
-import com.ssafy.solive.common.util.S3Uploader;
+import com.ssafy.solive.common.model.FileDto;
+import com.ssafy.solive.common.util.FileUploader;
 import com.ssafy.solive.db.entity.Article;
 import com.ssafy.solive.db.entity.ArticleLike;
 import com.ssafy.solive.db.entity.ArticleLikeId;
@@ -22,15 +22,9 @@ import com.ssafy.solive.db.repository.ArticleReportRepository;
 import com.ssafy.solive.db.repository.ArticleRepository;
 import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.UserRepository;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,22 +49,21 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticlePictureRepository articlePictureRepository;
     private final ArticleLikeRepsitory articleLikeRepsitory;
     private final ArticleReportRepository articleReportRepository;
-    private final S3Uploader s3Uploader;
+    private final FileUploader fileUploader;
 
     @Autowired
     public ArticleServiceImpl(UserRepository userRepository,
         MasterCodeRepository masterCodeRepository,
         ArticleRepository articleRepository, ArticlePictureRepository articlePictureRepository,
-        ArticleLikeRepsitory articleLikeRepsitory,
-        ArticleReportRepository articleReportRepository,
-        S3Uploader s3Uploader) {
+        ArticleLikeRepsitory articleLikeRepsitory, ArticleReportRepository articleReportRepository,
+        FileUploader fileUploader) {
         this.userRepository = userRepository;
         this.masterCodeRepository = masterCodeRepository;
         this.articleRepository = articleRepository;
         this.articlePictureRepository = articlePictureRepository;
         this.articleLikeRepsitory = articleLikeRepsitory;
         this.articleReportRepository = articleReportRepository;
-        this.s3Uploader = s3Uploader;
+        this.fileUploader = fileUploader;
     }
 
     /*
@@ -78,14 +71,14 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public Article registArticle(ArticleRegistPostReq registInfo,
-        List<MultipartFile> files) {
+        List<MultipartFile> fileList) {
         /*
-         *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
+         *  fileList : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  registInfo : 게시글 등록할 때 입력한 정보
          */
-        if (files != null) {
+        if (fileList != null) {
             log.info("ArticleService_registArticle_start: " + registInfo.toString() + ", "
-                + files.toString());
+                + fileList.toString());
         } else {
             log.info("ArticleService_registArticle_start: " + registInfo.toString());
         }
@@ -108,57 +101,21 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.save(article);
 
         /*
-         *  files를 바탕으로 ArticlePicture Entity 생성 시작
+         *  files 를 바탕으로 ArticlePicture Entity 생성 시작
          */
 
-        // 파일 업로드 경로
-//        String uploadFilePath = "/image/";
+        if (!Objects.isNull(fileList) && fileList.get(0).getSize() > 0) {
+            List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "/article");
+            for (FileDto fileDto : fileDtoList) {
+                ArticlePicture articlePicture = ArticlePicture.builder()
+                    .article(article)
+                    .fileName(fileDto.getFileName())
+                    .originalName(fileDto.getOriginalName())
+                    .contentType(fileDto.getContentType())
+                    .path(fileDto.getPath())
+                    .build();
 
-        if (!Objects.isNull(files) && files.get(0).getSize() > 0) {
-            for (MultipartFile file : files) {
-                String originalFileName = file.getOriginalFilename();
-
-                // 파일 확장자 명
-                String suffix = originalFileName
-                    .substring(originalFileName.lastIndexOf(".") + 1,
-                        originalFileName.length());
-
-                // 랜덤한 파일 이름 생성
-                String fileName = UUID.randomUUID().toString() + "." + suffix;
-
-                // 파일 업로드 경로 디렉토리가 만약 존재하지 않으면 생성
-//                File folder = new File(uploadFilePath);
-//                if (!folder.isDirectory()) {
-//                    folder.mkdirs();
-//                }
-
-//                String pathName = uploadFilePath + fileName; // 파일 절대 경로
-                String resourcePathName = "image/" + fileName; // url
-
-                try {
-                    String result = s3Uploader.upload(file, resourcePathName);
-
-                    String contentType = file.getContentType();
-                    int size = (int) file.getSize();
-
-                    ArticlePicture articlePicture = ArticlePicture.builder()
-                        .article(article)
-                        .contentType(contentType)
-                        .imageName(originalFileName)
-                        .fileName(fileName)
-                        .pathName(resourcePathName)
-                        .size(size)
-                        .url(resourcePathName)
-                        .build();
-
-                    articlePictureRepository.save(articlePicture);
-
-                } catch (IOException e) {
-                    throw new FileIOException();
-                }
-                /*
-                 *  생성한 ArticlePicture Entity를 DB에 insert 완료
-                 */
+                articlePictureRepository.save(articlePicture);
             }
         }
 
@@ -167,23 +124,24 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /*
-     *  modify API에 대한 서비스
+     *  modify API 에 대한 서비스
      */
     // TODO: 게시판 사진 수정 사진 삭제 관련 로직 변경 필요
     @Override
-    public boolean modifyArticle(ArticleModifyPutReq modifyInfo, List<MultipartFile> files) {
+    public boolean modifyArticle(ArticleModifyPutReq modifyInfo, List<MultipartFile> fileList) {
         /*
-         *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
+         *  fileList : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  modifyInfo : 게시글 수정할 때 입력한 정보
          */
-        if (files != null) {
+        if (fileList != null) {
             log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString() + ", "
-                + files.toString());
+                + fileList.toString());
         } else {
             log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString());
         }
         Article article = articleRepository.findById(modifyInfo.getArticleId())
             .orElseThrow(IllegalArgumentException::new);
+
         // 현재 로그인 유저의 id와 글쓴이의 id가 일치할 때
         if (article.getUser().getId().equals(modifyInfo.getUserId())) {
 
@@ -195,67 +153,29 @@ public class ArticleServiceImpl implements ArticleService {
             article.modifyArticle(masterCode, title, content);
 
             // 게시글 기존 사진 전부 삭제
-            List<ArticlePicture> articlePictures = articlePictureRepository.findByArticle(article);
-            // 실제 사진 삭제 및 DB에서도 삭제
-            for (ArticlePicture articlePicture : articlePictures) {
-                try {
-                    Path deleteFilePath = Paths.get(articlePicture.getPathName());
-                    Files.deleteIfExists(deleteFilePath);
-                    articlePictureRepository.delete(articlePicture);
-                } catch (IOException e) {
-                    throw new FileIOException();
-                }
+            List<ArticlePicture> articlePictureList = articlePictureRepository.findByArticle(
+                article);
+            // DB 에서 사진 삭제 처리
+            for (ArticlePicture articlePicture : articlePictureList) {
+                articlePicture.deleteArticlePicture();
             }
 
             // 게시글 사진 다시 업로드
-            String uploadFilePath = "C:/solive/image/";
-            if (!Objects.isNull(files) && files.get(0).getSize() > 0) {
-                for (MultipartFile file : files) {
-                    String originalFileName = file.getOriginalFilename();
+            if (!Objects.isNull(fileList) && fileList.get(0).getSize() > 0) {
+                List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "/article");
+                for (FileDto fileDto : fileDtoList) {
+                    ArticlePicture articlePicture = ArticlePicture.builder()
+                        .article(article)
+                        .fileName(fileDto.getFileName())
+                        .originalName(fileDto.getOriginalName())
+                        .path(fileDto.getPath())
+                        .contentType(fileDto.getContentType())
+                        .build();
 
-                    String prefix = originalFileName
-                        .substring(originalFileName.lastIndexOf(".") + 1,
-                            originalFileName.length());
-
-                    String fileName = UUID.randomUUID().toString() + "." + prefix;
-
-                    File folder = new File(uploadFilePath);
-
-                    if (!folder.isDirectory()) {
-                        folder.mkdirs();
-                    }
-
-                    String pathName = uploadFilePath + fileName;
-                    String resourcePathName = "/image/" + fileName;
-
-                    File dest = new File(pathName);
-
-                    try {
-                        file.transferTo(dest);
-
-                        String contentType = file.getContentType();
-                        int size = (int) file.getSize();
-
-                        ArticlePicture articlePicture = ArticlePicture.builder()
-                            .article(article)
-                            .contentType(contentType)
-                            .imageName(originalFileName)
-                            .fileName(fileName)
-                            .pathName(pathName)
-                            .size(size)
-                            .url(resourcePathName)
-                            .build();
-
-                        articlePictureRepository.save(articlePicture);
-
-                    } catch (IOException e) {
-                        throw new FileIOException();
-                    }
-                    /*
-                     *  생성한 ArticlePicture Entity를 DB에 insert 완료
-                     */
+                    articlePictureRepository.save(articlePicture);
                 }
             }
+
             log.info("ArticleService_modifyArticle_end: true");
             return true;
         }
