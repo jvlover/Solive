@@ -48,7 +48,7 @@ const Dial = () => {
         <SpeedDialHandler>
           <IconButton
             size="lg"
-            className="rounded-full bg-solive-100 focus:outline-none "
+            className="rounded-full bg-solive-200 focus:outline-none active:shadow-md shadow-blue-gray-700 hover:shadow-blue-gray-700 focus:shadow-md focus:shadow-blue-gray-700"
           >
             <PlusIcon className="h-5 w-5 transition-transform group-hover:rotate-45" />
           </IconButton>
@@ -57,7 +57,7 @@ const Dial = () => {
           {/* 홈으로 */}
           <SpeedDialAction className="relative focus:outline-none">
             <HomeIcon className="h-5 w-5" onClick={() => navigate('/')} />
-            <Typography {...labelProps}>홈</Typography>
+            <Typography {...labelProps}>홈으로</Typography>
           </SpeedDialAction>
           {/* 학생이면 학생 마이페이지, 선생이면 선생 마이페이지 */}
           <SpeedDialAction className="relative focus:outline-none">

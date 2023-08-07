@@ -3,9 +3,9 @@ import logo from '../assets/logo.png';
 import { useState, useEffect } from 'react';
 import {
   Navbar,
-  MobileNav,
   Typography,
   IconButton,
+  Collapse,
 } from '@material-tailwind/react';
 
 // 로그인 하면 로그인 했다고 표시
@@ -99,12 +99,12 @@ const HeaderNav = () => {
           </IconButton>
         </div>
       </div>
-      <MobileNav open={openNav}>
+      <Collapse open={openNav}>
         {navList}
         {/* <Button variant="gradient" size="sm" fullWidth className="mb-2">
           <span>Buy Now</span>
         </Button> */}
-      </MobileNav>
+      </Collapse>
     </Navbar>
   );
 
