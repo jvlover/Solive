@@ -5,7 +5,6 @@ import {
   Navbar,
   MobileNav,
   Typography,
-  Button,
   IconButton,
 } from '@material-tailwind/react';
 
@@ -20,24 +19,25 @@ const HeaderNav = () => {
     );
   }, []);
 
+  const labelProps = {
+    as: 'li',
+    variant: 'small',
+    className: 'p-1 font-normal font-[Pretendard]',
+  };
+
   const navList = (
     <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography as="li" variant="small" className="p-1 font-normal">
-        <Link to="/" className="flex items-center text-black">
-          홈
-        </Link>
-      </Typography>
-      <Typography as="li" variant="small" className="p-1 font-normal">
+      <Typography {...labelProps}>
         <Link to="/board" className="flex items-center text-black">
           공지사항
         </Link>
       </Typography>
-      <Typography as="li" variant="small" className="p-1 font-normal">
+      <Typography {...labelProps}>
         <Link to="/signup" className="flex items-center text-black">
           회원가입
         </Link>
       </Typography>
-      <Typography as="li" variant="small" className="p-1 font-normal">
+      <Typography {...labelProps}>
         <Link to="/login" className="flex items-center text-black">
           로그인
         </Link>

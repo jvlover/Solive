@@ -129,6 +129,7 @@ const QuestionManagement = () => {
       <div
         className="mx-auto mt-8 mb-8 h-[650px] w-[800px] p-6"
         style={{ border: '2px solid #646CFF' }}
+<<<<<<< frontend/src/pages/Student/mypage/QuestionManagement.tsx
       >
         <p className="text-[18px] font-bold">내가 등록한 문제</p>
         <p className="text-[12px] mt-4">
