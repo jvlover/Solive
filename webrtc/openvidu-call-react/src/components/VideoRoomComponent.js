@@ -28,21 +28,19 @@ class VideoRoomComponent extends Component {
         let userName = this.props.userName
             ? this.props.userName
             : null;
-        this.remote = undefined;
+        this.remotes = [];
         this.localUserAccessAllowed = false;
+        this.recording = false;
+        this.publisher = undefined;
         this.state = {
-            mySessionId: sessionName,
+            sessionId: sessionName,
             myUserName: userName,
             session: undefined,
             localUser: undefined,
-            subscriber: undefined,
+            subscribers: [],
             chatDisplay: "none",
             currentVideoDevice: undefined,
-            // 다른사람 코드 보고 넣은건데 말했을 때 활성화되는거 아니면 지울 예정
-            isMike: true,
-            isCamera: true,
-            isSpeaker: true,
-            isChat: false,
+            recordingId: "",
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -58,6 +56,7 @@ class VideoRoomComponent extends Component {
         this.toggleChat = this.toggleChat.bind(this);
         this.checkNotification = this.checkNotification.bind(this);
         this.checkSize = this.checkSize.bind(this);
+        this.startRecording = this.startRecording.bind(this);
     }
 
     // 컴포넌트가 마운트될 때 초기화 작업을 수행합니다.
@@ -135,7 +134,7 @@ class VideoRoomComponent extends Component {
                 if (this.props.error) {
                     this.props.error({
                         error: error.error,
-                        messgae: error.message,
+                        message: error.message,
                         code: error.code,
                         status: error.status
                     });
@@ -159,12 +158,12 @@ class VideoRoomComponent extends Component {
             if (this.props.error) {
                 this.props.error({
                     error: error.error,
-                    messgae: error.message,
+                    message: error.message,
                     code: error.code,
                     status: error.status
                 });
             }
-            alert('There was an error connecting to the session:',
+            alert('세션 연결 중에 오류 발생!' +
                 error.message);
         });
     }
@@ -181,7 +180,7 @@ class VideoRoomComponent extends Component {
 // 오디오 장치는 안가져와도 되는지?
 // 비디오, 오디오 없는 사람도 if로 조건문 넣기
         // 기본 publisher를 설정합니다.
-        let publisher = this.OV.initPublisher(undefined, {
+        this.publisher = this.OV.initPublisher(undefined, {
             audioSource: undefined,
             videoSource: videoDevices[0].deviceId,
             publishAudio: localUser.isAudioActive(),
@@ -193,10 +192,10 @@ class VideoRoomComponent extends Component {
 
         // 만약 session이 publish 중이라면
         if (this.state.session.capabilities.publish) {
-            publisher.on("accessAllowed", () => {
+            this.publisher.on("accessAllowed", () => {
                 // accessAllowed 이벤트 만들어줍니다, publisher를 세션에 발행합니다.
-                this.state.session.publish(publisher).then(() => {
-                    this.updateSubscriber();
+                this.state.session.publish(this.publisher).then(() => {
+                    this.updateSubscribers();
                     this.localUserAccessAllowed = true;
                     if (this.props.joinSession) {
                         this.props.joinSession();
@@ -208,7 +207,7 @@ class VideoRoomComponent extends Component {
         localUser.setNickname(this.state.myUserName);
         localUser.setConnectionId(this.state.session.connection.connectionId);
         localUser.setScreenShareActive(false);
-        localUser.setStreamManager(publisher);
+        localUser.setStreamManager(this.publisher);
         this.subscribeToUserChanged();
         this.subscribeToStreamDestroyed();
         this.sendSignalUserChanged({
@@ -222,7 +221,7 @@ class VideoRoomComponent extends Component {
                 .getStreamManager()
                 .on("streamPlaying", (e) => {
                     this.updateLayout();
-                    publisher.videos[0].video.parentElement.classList.remove(
+                    this.publisher.videos[0].video.parentElement.classList.remove(
                         "custom-class"
                     );
                 });
@@ -231,12 +230,12 @@ class VideoRoomComponent extends Component {
     }
 
 // 원격 사용자들을 업데이트 합니다.
-    updateSubscriber() {
-        const subscriber = this.remote;
-        // remote를 받아와서 subscriber 업데이트
+    updateSubscribers() {
+        const subscribers = this.remotes;
+        // remotes를 받아와서 subscribers 업데이트
         this.setState(
             {
-                subscriber: subscriber,
+                subscribers: subscribers,
             },
             // 이 함수 끝나면 실행되는 callback
             () => {
@@ -268,8 +267,8 @@ class VideoRoomComponent extends Component {
         this.OV = null;
         this.setState({
             session: undefined,
-            subscriber: undefined,
-            mySessionId: null,
+            subscribers: [],
+            sessionId: null,
             myUserName: null,
             localUser: undefined,
         });
@@ -300,21 +299,20 @@ class VideoRoomComponent extends Component {
 
     // 해당 구독자를 삭제합니다.
     deleteSubscriber(stream) {
-        this.setState({subscriber: undefined});
-        // const remoteUser = this.state.subscriber;
-        // // 구독자의 stream과 주어진 stream이 일치하는 구독자(userStream)를 찾습니다.
-        // const userStream = remoteUser.filter(
-        //     (user) => user.getStreamManager().stream === stream
-        // )[0];
-        // // userStream 이 처음으로 나타나는 index를 반환합니다. 찾는 문자열이 없으면 -1 반환.
-        // let index = remoteUser.indexOf(userStream, 0);
-        // // userStream을 찾은 경우 해당 구독자를 배열에서 제거하고 subscriber를 업데이트 합니다.
-        // if (index > -1) {
-        //     remoteUser.splice(index, 1);
-        //     this.setState({
-        //         subscriber: remoteUsers,
-        //     });
-        // }
+        const remoteUsers = this.state.subscribers;
+        // 구독자의 stream과 주어진 stream이 일치하는 구독자(userStream)를 찾습니다.
+        const userStream = remoteUsers.filter(
+            (user) => user.getStreamManager().stream === stream
+        )[0];
+        // userStream 이 처음으로 나타나는 index를 반환합니다. 찾는 문자열이 없으면 -1 반환.
+        let index = remoteUsers.indexOf(userStream, 0);
+        // userStream을 찾은 경우 해당 구독자를 배열에서 제거하고 subscribers를 업데이트 합니다.
+        if (index > -1) {
+            remoteUsers.splice(index, 1);
+            this.setState({
+                subscribers: remoteUsers,
+            });
+        }
     }
 
     // 원격 스트림이 생성되었을 때 구독합니다.
@@ -342,11 +340,11 @@ class VideoRoomComponent extends Component {
             // 여기 닉네임도 나중에 상대방 닉네임으로 받아오게하자
             const nickname = e.stream.connection.data.split("%")[0];
             newUser.setNickname(JSON.parse(nickname).clientData);
-            // 새로운 유저를 remote에 넣습니다
-            this.remote = newUser;
+            // 새로운 유저를 remotes에 넣습니다
+            this.remotes.push(newUser);
             // 로컬 사용자가 자신의 스트림 구독을 허용했을 때만 구독자 목록 업데이트 가능
             if (this.localUserAccessAllowed) {
-                this.updateSubscriber();
+                this.updateSubscribers();
             }
         });
     }
@@ -372,34 +370,34 @@ class VideoRoomComponent extends Component {
         // signal:userChanged 이벤트 발동 시
         this.state.session.on("signal:userChanged", (e) => {
             // 구독자들 다 받아서
-            let remoteUser = this.state.subscriber;
+            let remoteUsers = this.state.subscribers;
             // 반복문 돌면서 이벤트 보낸 ConnectionId 일치하는 유저 찾는다
-            // remoteUser.forEach((user) => {
-            if (remoteUser.getConnectionId() === e.from.connectionId) {
-                // 찾으면 비디오 오디오 닉네임 화면공유 다 업데이트
-                const data = JSON.parse(e.data);
-                console.log("userChanged 이벤트 발동했구요 이벤트 데이터 입니당 ", e.data);
-                if (data.isAudioActive !== undefined) {
-                    remoteUser.setAudioActive(data.isAudioActive);
+            remoteUsers.forEach((user) => {
+                if (user.getConnectionId() === e.from.connectionId) {
+                    // 찾으면 비디오 오디오 닉네임 화면공유 다 업데이트
+                    const data = JSON.parse(e.data);
+                    console.log("userChanged 이벤트 발동했구요 이벤트 데이터 입니당 ", e.data);
+                    if (data.isAudioActive !== undefined) {
+                        user.setAudioActive(data.isAudioActive);
+                    }
+                    if (data.isVideoActive !== undefined) {
+                        user.setVideoActive(data.isVideoActive);
+                    }
+                    if (data.nickname !== undefined) {
+                        user.setNickname(data.nickname);
+                    }
+                    if (data.isScreenShareActive !== undefined) {
+                        user.setScreenShareActive(data.isScreenShareActive);
+                    }
                 }
-                if (data.isVideoActive !== undefined) {
-                    remoteUser.setVideoActive(data.isVideoActive);
-                }
-                if (data.nickname !== undefined) {
-                    remoteUser.setNickname(data.nickname);
-                }
-                if (data.isScreenShareActive !== undefined) {
-                    remoteUser.setScreenShareActive(data.isScreenShareActive);
-                }
-            }
-            // });
+            });
             this.setState(
                 // 바뀐 remoteUser를 다시 subscriber에 업데이트
                 {
-                    subscriber: remoteUser,
+                    subscribers: remoteUsers,
                 },
                 // 그거 끝나면 다시 누가 화면 공유하는지 확인해서 ui 업데이트
-                () => this.checkSomeoneShareScreen()
+                () => this.checkSomeoneShareScreen(),
             );
         });
     }
@@ -461,41 +459,42 @@ class VideoRoomComponent extends Component {
         // 파이어폭스면 window 아니면 screen
         const videoSource =
             navigator.userAgent.indexOf("Firefox") !== -1 ? "window" : "screen";
+        this.publisher.addVideoElement(videoSource);
         // publisher 객체를 초기화합니다. 이 때 공유할 videoSource와 화면과 소리를 공유할지 말지 옵션 설정합니다.
-        const publisher = this.OV.initPublisher(
-            undefined,
-            {
-                videoSource: videoSource,
-                publishAudio: localUser.isAudioActive(),
-                publishVideo: localUser.isVideoActive(),
-                mirror: false,
-            },
-            // 오류 발생 시 처리
-            (error) => {
-                if (error && error.name === "SCREEN_EXTENSION_NOT_INSTALLED") {
-                    this.setState({showExtensionDialog: true});
-                } else if (
-                    error &&
-                    error.name === "SCREEN_SHARING_NOT_SUPPORTED"
-                ) {
-                    alert("Your browser does not support screen sharing");
-                } else if (
-                    error &&
-                    error.name === "SCREEN_EXTENSION_DISABLED"
-                ) {
-                    alert("You need to enable screen sharing extension");
-                } else if (error && error.name === "SCREEN_CAPTURE_DENIED") {
-                    alert(
-                        "You need to choose a window or application to share"
-                    );
-                }
-            }
-        );
+        // const publisher = this.OV.initPublisher(
+        //     undefined,
+        //     {
+        //         videoSource: videoSource,
+        //         publishAudio: localUser.isAudioActive(),
+        //         publishVideo: localUser.isVideoActive(),
+        //         mirror: false,
+        //     },
+        // 오류 발생 시 처리
+        // (error) => {
+        //     if (error && error.name === "SCREEN_EXTENSION_NOT_INSTALLED") {
+        //         this.setState({showExtensionDialog: true});
+        //     } else if (
+        //         error &&
+        //         error.name === "SCREEN_SHARING_NOT_SUPPORTED"
+        //     ) {
+        //         alert("Your browser does not support screen sharing");
+        //     } else if (
+        //         error &&
+        //         error.name === "SCREEN_EXTENSION_DISABLED"
+        //     ) {
+        //         alert("You need to enable screen sharing extension");
+        //     } else if (error && error.name === "SCREEN_CAPTURE_DENIED") {
+        //         alert(
+        //             "You need to choose a window or application to share"
+        //         );
+        //     }
+        // }
+        // );
         // 화면 공유 허락되었을 때 한번만 실행
-        publisher.once("accessAllowed", () => {
+        this.publisher.once("accessAllowed", () => {
             // 이미 있던 streamManager unpublish하고 새로 streamManager 생성 후 발행
             this.state.session.unpublish(localUser.getStreamManager());
-            localUser.setStreamManager(publisher);
+            localUser.setStreamManager(this.publisher);
             this.state.session
             .publish(localUser.getStreamManager())
             .then(() => {
@@ -510,9 +509,9 @@ class VideoRoomComponent extends Component {
             });
         });
         // 화면 공유 스트림이 재생될 때 실행 -> 레이아웃 업데이트
-        publisher.on("streamPlaying", () => {
+        this.publisher.on("streamPlaying", () => {
             this.updateLayout();
-            publisher.videos[0].video.parentElement.classList.remove(
+            this.publisher.videos[0].video.parentElement.classList.remove(
                 "custom-class"
             );
         });
@@ -534,7 +533,7 @@ class VideoRoomComponent extends Component {
         let isScreenShared;
         // 나 혹은 구독자 중에서 누구 한 명이라도 화면 공유중이라면 true
         isScreenShared =
-            this.state.subscriber.some((user) => user.isScreenShareActive()) ||
+            this.state.subscribers.some((user) => user.isScreenShareActive()) ||
             localUser.isScreenShareActive();
         const openviduLayoutOptions = {
             maxRatio: 3 / 2,
@@ -597,18 +596,39 @@ class VideoRoomComponent extends Component {
         }
     }
 
+    // 녹화 시작합니다
+    startRecording() {
+        const res = axios.post(
+            APPLICATION_SERVER_URL + "api/recording/start", {
+                sessionId: this.state.sessionId
+            }, {
+                headers: {"Content-Type": "application/json"},
+            }
+        );
+        console.log(res + "이거 녹화시작 res 에용")
+    }
+
+    // 녹화 끝냅니다
+    stopRecording() {
+        const res = axios.post(
+            APPLICATION_SERVER_URL + "api/recording/stop", {
+                recordingId: this.state.recordingId
+            }, {
+                headers: {"Content-Type": "application/json"},
+            }
+        );
+        console.log(res + "이거 녹화 중지 res에요")
+    }
+
     render() {
-        const mySessionId = this.state.mySessionId;
         const localUser = this.state.localUser;
-        const subscriber = this.state.subscriber;
         const chatDisplay = {display: this.state.chatDisplay};
 
         return (
             <div className="container" id="container">
-
                 {/*위에 툴바*/}
                 <ToolbarComponent
-                    sessionId={mySessionId}
+                    sessionId={this.state.sessionId}
                     user={localUser}
                     showNotification={this.state.messageReceived}
                     camStatusChanged={this.camStatusChanged}
@@ -618,6 +638,8 @@ class VideoRoomComponent extends Component {
                     toggleFullscreen={this.toggleFullscreen}
                     leaveSession={this.leaveSession}
                     toggleChat={this.toggleChat}
+                    startRecordng={this.startRecording}
+                    stopRecording={this.stopRecording}
                 />
 
                 {/*이건 아마 화면공유창?*/}
@@ -641,18 +663,18 @@ class VideoRoomComponent extends Component {
                         )}
                     {/*subscriber에 있는 원소들 i로 하나씩 꺼내온다
                     근데 우리는 구독자 1명만 가능하게 할거니까 그렇게 설정하면 반복문 빼자*/}
-                    {/*{this.state.subscriber.map((sub, i) => (*/}
-                    <div
-                        className="OT_root OT_publisher custom-class"
-                        id="remoteUser"
-                    >
-                        {/*아마 구독자들 stream 뜨는 창*/}
-                        <StreamComponent
-                            user={subscriber}
-                            streamId={subscriber.streamManager.stream.streamId}
-                        />
-                    </div>
-                    {/*))}*/}
+                    {this.state.subscribers.map((sub, i) => (
+                        <div
+                            className="OT_root OT_publisher custom-class"
+                            id="remoteUser"
+                        >
+                            {/*아마 구독자들 stream 뜨는 창*/}
+                            <StreamComponent
+                                user={sub}
+                                streamId={sub.streamManager.stream.streamId}
+                            />
+                        </div>
+                    ))}
                     {/*만약에 localUser 있고streamManager도 있고, 채팅창 켜져있으면 */}
                     {localUser !== undefined &&
                         localUser.getStreamManager() !== undefined && (
@@ -689,7 +711,7 @@ class VideoRoomComponent extends Component {
      * more about the integration of OpenVidu in your application server.
      */
     async getToken() {
-        const sessionId = await this.createSession(this.state.mySessionId);
+        const sessionId = await this.createSession(this.state.sessionId);
         return await this.createToken(sessionId);
     }
 

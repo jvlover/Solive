@@ -34,13 +34,12 @@ const openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
 app.use(bodyParser.urlencoded({extended: true}));
 // application/json 을 허용합니다.
 app.use(bodyParser.json());
-
 // 정적 리소스를 제공합니다. (public 폴더 안의 파일들을 제공합니다.)
 app.use(express.static(__dirname + '/public'));
 
 // 애플리케이션 서버를 시작하고 지정된 포트에서 리스닝합니다.
 server.listen(SERVER_PORT, () => {
-    console.log("애플리케이션이 이 서버에서 시작햇어요 ", SERVER_PORT);
+    console.log("애플리케이션이 이 서버포트에서 시작햇어요 ", SERVER_PORT);
     console.warn('그리고 오픈비두 여기랑 연결 시도 중 ' + OPENVIDU_URL);
 });
 
@@ -62,6 +61,32 @@ app.post("/api/sessions/:sessionId/connections", async (req, res) => {
         const connection = await session.createConnection(req.body);
         res.send(connection.token);
     }
+});
+
+app.post("/api/recording/start", function (req, res) {
+    const recordingProperties = {
+        outputMode: "COMPOSED",
+        hasAudio: true,
+        hasVideo: true,
+        resolution: '640x480',
+        frameRate: 30,
+    }
+    const sessionId = req.body.sessionId;
+    console.log("Starting recording | {sessionId}=" + sessionId);
+
+    openvidu.startRecording(sessionId, recordingProperties)
+    .then(recording => res.status(200).send(recording))
+    .catch(error => res.status(400).send(error.message));
+});
+
+// Stop recording
+app.post("/api/recording/stop", function (req, res) {
+    const recordingId = req.body.recording;
+    console.log("Stopping recording | {recordingId}=" + recordingId);
+
+    openvidu.stopRecording(recordingId)
+    .then(recording => res.status(200).send(recording))
+    .catch(error => res.status(400).send(error.message));
 });
 
 // 예외가 처리되지 않은 경우, 해당 오류를 콘솔에 출력합니다.
