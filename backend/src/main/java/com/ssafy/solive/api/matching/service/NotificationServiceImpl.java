@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.matching.service;
 
+import com.ssafy.solive.api.matching.request.NotificationDeletePutReq;
 import com.ssafy.solive.api.matching.request.NotificationModifyPutReq;
 import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.api.matching.response.NotificationRes;
@@ -187,5 +188,30 @@ public class NotificationServiceImpl implements NotificationService {
             .orElseThrow(IllegalArgumentException::new);
 
         notification.modifyReadAt();
+    }
+
+    /**
+     * 유저가 알림 삭제 처리 API 서비스
+     *
+     * @param deleteInfo : 삭제할 알림 id
+     * @return true : 삭제 성공, false : 삭제 실패
+     */
+    @Override
+    public boolean deleteNotification(NotificationDeletePutReq deleteInfo) {
+
+        log.info("NotificationService_deleteNotification_start: " + deleteInfo.toString());
+
+        Notification notification = notificationRepository.findById(deleteInfo.getNotificationId())
+            .orElseThrow(IllegalArgumentException::new);
+
+        // deleteInfo의 유저 정보와 해당 알림의 실제 유저 정보가 같아야만 삭제
+        if (notification.getUser().getId().equals(deleteInfo.getUserId())) {
+            notification.deleteNotification();
+            log.info("NotificationService_deleteNotification_end: true");
+            return true;
+        }
+        // deleteInfo의 유저 정보와 해당 알림의 실제 유저 정보가 다를 경우
+        log.info("NotificationService_deleteNotification_end: false");
+        return false;
     }
 }

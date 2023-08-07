@@ -1,9 +1,11 @@
 package com.ssafy.solive.api.matching.controller;
 
+import com.ssafy.solive.api.matching.request.NotificationDeletePutReq;
 import com.ssafy.solive.api.matching.request.NotificationModifyPutReq;
 import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
+import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -87,7 +89,7 @@ public class NotificationController {
      * 유저 알림 읽음 처리
      *
      * @param modifyInfo : 수정할 알림 id
-     * @return findResList : 알림 조회 결과 리스트
+     * @return success : 성공
      */
     @PutMapping()
     public CommonResponse<?> modify(NotificationModifyPutReq modifyInfo) {
@@ -98,5 +100,34 @@ public class NotificationController {
 
         log.info("NotificationController_modify_end: success");
         return CommonResponse.success(SUCCESS);
+    }
+
+    /**
+     * 알림 삭제
+     *
+     * @param deleteInfo : 수정할 알림 id
+     * @return success : 성공
+     */
+    @PutMapping("/delete")
+    public CommonResponse<?> delete(NotificationDeletePutReq deleteInfo,
+        HttpServletRequest request) {
+
+        log.info("NotificationController_delete_start: " + deleteInfo.toString());
+
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+
+        // http 헤더에서 유저 아이디 꺼내서 setting
+        deleteInfo.setUserId(userId);
+
+        boolean isDeleted = notificationService.deleteNotification(deleteInfo); // 삭제 실패하면 false
+        if (isDeleted) {
+            log.info("NotificationController_delete_end: success");
+            return CommonResponse.success(SUCCESS);
+        } else {
+            // 유저가 자신의 소유가 아닌 알림을 삭제하려고 하는 경우
+            log.info("NotificationController_delete_end: QuestionPossessionFailException");
+            throw new MatchingPossessionFailException();
+        }
     }
 }

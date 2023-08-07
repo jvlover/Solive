@@ -1,5 +1,6 @@
 package com.ssafy.solive.api.matching.service;
 
+import com.ssafy.solive.api.matching.request.NotificationDeletePutReq;
 import com.ssafy.solive.api.matching.request.NotificationModifyPutReq;
 import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.db.entity.User;
@@ -23,4 +24,6 @@ public interface NotificationService {
     List<NotificationFindRes> findNotification(Long userId);
 
     void modifyNotification(NotificationModifyPutReq modifyInfo);
+
+    boolean deleteNotification(NotificationDeletePutReq deleteInfo);
 }
