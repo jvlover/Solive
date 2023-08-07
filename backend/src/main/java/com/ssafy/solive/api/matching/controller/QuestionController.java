@@ -49,7 +49,7 @@ public class QuestionController {
      */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> regist(@RequestPart QuestionRegistPostReq registInfo,
-        @RequestPart("fileList") List<MultipartFile> fileList) {
+        @RequestPart("files") List<MultipartFile> fileList) {
         /*
          *  fileList : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 null일 수 없음
          *  registInfo : 문제 등록할 때 입력한 정보

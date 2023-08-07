@@ -16,7 +16,6 @@ import com.ssafy.solive.common.exception.user.PasswordMismatchException;
 import com.ssafy.solive.common.exception.user.UserNotFoundException;
 import com.ssafy.solive.common.model.FileDto;
 import com.ssafy.solive.common.util.FileUploader;
-import com.ssafy.solive.common.util.S3Uploader;
 import com.ssafy.solive.config.JwtConfiguration;
 import com.ssafy.solive.db.entity.Favorite;
 import com.ssafy.solive.db.entity.FavoriteId;
@@ -42,9 +41,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class UserServiceImpl implements UserService {
 
-    // 파일 업로드 경로
-    private final String uploadFilePath = "C:/solive/image/";
-
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
@@ -52,13 +48,12 @@ public class UserServiceImpl implements UserService {
     private final FavoriteRepository favoriteRepository;
     private final JwtConfiguration jwtConfiguration;
     private final FileUploader fileUploader;
-    private final S3Uploader s3Uploader;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository,
         TeacherRepository teacherRepository, MasterCodeRepository masterCodeRepository,
         FavoriteRepository favoriteRepository, JwtConfiguration jwtConfiguration,
-        FileUploader fileUploader, S3Uploader s3Uploader) {
+        FileUploader fileUploader) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
@@ -66,7 +61,6 @@ public class UserServiceImpl implements UserService {
         this.favoriteRepository = favoriteRepository;
         this.jwtConfiguration = jwtConfiguration;
         this.fileUploader = fileUploader;
-        this.s3Uploader = s3Uploader;
     }
 
     /**
@@ -266,17 +260,15 @@ public class UserServiceImpl implements UserService {
         log.info("UserService_modifyUserProfile_start: \nuserId: " + userId + "\nuserInfo: "
             + userInfo.toString());
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        log.info(
-            "UserService_modifyUserProfile_mid: \nuser: " + user.toString() + "\nprofilePicture: "
-                + profilePicture);
 
         user.modifyUserProfile(userInfo);
         log.info("UserService_modifyUserProfile_mid: \nmodifiedUser: " + user.toString());
 
-        // 프로필 사진 정보 수정, 프로필 사진은 항상 length 1
-        FileDto fileDto = fileUploader.fileUpload(profilePicture, "/profile").get(0);
-        user.modifyProfilePicture(fileDto);
-
+        if (profilePicture != null) { // 저장할 프로필 사진이 있으면
+            // 프로필 사진 정보 수정, 프로필 사진은 항상 length 1
+            FileDto fileDto = fileUploader.fileUpload(profilePicture, "/profile").get(0);
+            user.modifyProfilePicture(fileDto);
+        }
         log.info("UserService_modifyUserProfile_end");
     }
 

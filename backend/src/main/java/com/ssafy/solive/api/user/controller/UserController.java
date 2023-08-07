@@ -146,7 +146,7 @@ public class UserController {
      */
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> modifyProfile(@RequestPart UserModifyProfilePutReq userInfo,
-        @RequestPart("files") List<MultipartFile> profilePicture,
+        @RequestPart(value = "files", required = false) List<MultipartFile> profilePicture,
         HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
