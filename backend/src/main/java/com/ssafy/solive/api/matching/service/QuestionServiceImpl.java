@@ -6,6 +6,8 @@ import com.ssafy.solive.api.matching.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.matching.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
+import com.ssafy.solive.common.exception.ImageUploadFailException;
+import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.exception.matching.QuestionNoImageException;
 import com.ssafy.solive.common.exception.matching.QuestionNotFoundException;
 import com.ssafy.solive.common.model.FileDto;
@@ -78,11 +80,10 @@ public class QuestionServiceImpl implements QuestionService {
         /*
          *  registInfo를 바탕으로 Question Entity 생성 시작
          */
-        // TODO: IllegalArgumentException을 BaseException을 상속 받는 Custom Exception으로 변경 필요
         Student student = studentRepository.findById(registInfo.getStudentId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         MasterCode masterCode = masterCodeRepository.findById(masterCodeId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         String title = registInfo.getTitle();
         String description = registInfo.getDescription();
 
@@ -128,12 +129,11 @@ public class QuestionServiceImpl implements QuestionService {
         /*
          *  deleteInfo : 문제 삭제하기 위해 필요한 정보
          */
-        // TODO: IllegalArg Exception 을 적절한 Custom Exception으로 대체
 
         log.info("QuestionService_deleteQuestion_start: " + deleteInfo.toString());
 
         Question question = questionRepository.findById(deleteInfo.getQuestionId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
 
         // deleteInfo의 유저 정보와 해당 문제의 실제 유저 정보가 같아야만 삭제
         if (question.getStudent().getId().equals(deleteInfo.getStudentId())) {
@@ -154,14 +154,13 @@ public class QuestionServiceImpl implements QuestionService {
         /*
          *  modifyInfo : 문제 삭제하기 위해 필요한 정보
          */
-        // TODO: IllegalArg Exception 을 적절한 Custom Exception으로 대체
 
         log.info("QuestionService_modifyQuestion_start: " + modifyInfo.toString());
 
         Question question = questionRepository.findById(modifyInfo.getQuestionId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         MasterCode masterCode = masterCodeRepository.findById(modifyInfo.getMasterCodeId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
 
         String title = modifyInfo.getTitle();
         String description = modifyInfo.getDescription();

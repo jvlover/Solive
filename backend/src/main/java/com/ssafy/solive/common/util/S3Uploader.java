@@ -3,6 +3,7 @@ package com.ssafy.solive.common.util;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ssafy.solive.common.exception.NoDataException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class S3Uploader {
         log.info("S3Uploader_upload_start(MultipartFile): " + fileName + " - " + multipartFile);
 
         File uploadFile = convert(multipartFile)
-            .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
+            .orElseThrow(NoDataException::new);
 
         log.info("S3Uploader_upload_end(MultipartFile): " + uploadFile);
         return upload(uploadFile, fileName);

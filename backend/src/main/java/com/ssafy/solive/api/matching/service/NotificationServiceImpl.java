@@ -4,6 +4,7 @@ import com.ssafy.solive.api.matching.request.NotificationDeletePutReq;
 import com.ssafy.solive.api.matching.request.NotificationModifyPutReq;
 import com.ssafy.solive.api.matching.response.NotificationFindRes;
 import com.ssafy.solive.api.matching.response.NotificationRes;
+import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.db.entity.Notification;
 import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.EmitterRepository;
@@ -185,7 +186,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void modifyNotification(NotificationModifyPutReq modifyInfo) {
 
         Notification notification = notificationRepository.findById(modifyInfo.getId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
 
         notification.modifyReadAt();
     }
@@ -202,7 +203,7 @@ public class NotificationServiceImpl implements NotificationService {
         log.info("NotificationService_deleteNotification_start: " + deleteInfo.toString());
 
         Notification notification = notificationRepository.findById(deleteInfo.getNotificationId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
 
         // deleteInfo의 유저 정보와 해당 알림의 실제 유저 정보가 같아야만 삭제
         if (notification.getUser().getId().equals(deleteInfo.getUserId())) {
