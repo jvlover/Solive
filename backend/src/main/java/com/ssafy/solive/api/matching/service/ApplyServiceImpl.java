@@ -4,6 +4,7 @@ import com.ssafy.solive.api.matching.request.ApplyDeletePutReq;
 import com.ssafy.solive.api.matching.request.ApplyFindGetReq;
 import com.ssafy.solive.api.matching.request.ApplyRegistPostReq;
 import com.ssafy.solive.api.matching.response.ApplyFindRes;
+import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.db.entity.Apply;
 import com.ssafy.solive.db.entity.Question;
 import com.ssafy.solive.db.entity.Teacher;
@@ -53,11 +54,10 @@ public class ApplyServiceImpl implements ApplyService {
         /*
          *  registInfo를 바탕으로 Apply Entity 생성 시작
          */
-        // TODO: IllegalArgumentException을 BaseException을 상속 받는 Custom Exception으로 변경 필요
         Teacher teacher = teacherRepository.findById(registInfo.getTeacherId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         Question question = questionRepository.findById(registInfo.getQuestionId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
 
         Integer estimatedTime = registInfo.getEstimatedTime();
         Integer solvePoint = registInfo.getSolvePoint();
@@ -94,12 +94,11 @@ public class ApplyServiceImpl implements ApplyService {
         /*
          *  deleteInfo : 신청 취소하기 위해 필요한 정보
          */
-        // TODO: IllegalArg Exception 을 적절한 Custom Exception으로 대체
 
         log.info("ApplyService_deleteApply_start: " + deleteInfo.toString());
 
         Apply apply = applyRepository.findById(deleteInfo.getApplyId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
 
         // deleteInfo의 강사 정보와 해당 지원 신청의 실제 유저 정보가 같아야만 삭제
         if (apply.getTeacher().getId().equals(deleteInfo.getTeacherId())) {

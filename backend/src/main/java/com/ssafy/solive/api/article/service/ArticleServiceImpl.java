@@ -7,6 +7,7 @@ import com.ssafy.solive.api.article.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.article.request.ArticleReportPostReq;
 import com.ssafy.solive.api.article.response.ArticleFindRes;
 import com.ssafy.solive.common.exception.FileIOException;
+import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.util.S3Uploader;
 import com.ssafy.solive.db.entity.Article;
 import com.ssafy.solive.db.entity.ArticleLike;
@@ -90,11 +91,10 @@ public class ArticleServiceImpl implements ArticleService {
             log.info("ArticleService_registArticle_start: " + registInfo.toString());
         }
         // user가 null일 수 있으므로 controller로 exception throw
-        // TODO: IllegalArgumentExeption 말고 custom exception 만들기
         User user = userRepository.findById(registInfo.getUserId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         String title = registInfo.getTitle();
         String content = registInfo.getContent();
 
@@ -183,13 +183,13 @@ public class ArticleServiceImpl implements ArticleService {
             log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString());
         }
         Article article = articleRepository.findById(modifyInfo.getArticleId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         // 현재 로그인 유저의 id와 글쓴이의 id가 일치할 때
         if (article.getUser().getId().equals(modifyInfo.getUserId())) {
 
             // 게시글 수정
             MasterCode masterCode = masterCodeRepository.findById(modifyInfo.getMasterCodeId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoDataException::new);
             String title = modifyInfo.getTitle();
             String content = modifyInfo.getContent();
             article.modifyArticle(masterCode, title, content);
@@ -274,7 +274,7 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("ArticleService_deleteArticle_start: " + deleteInfo.toString());
 
         Article article = articleRepository.findById(deleteInfo.getArticleId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         // deleteInfo의 유저 정보와 해당 문제의 실제 유저 정보가 같아야만 삭제
         if (article.getUser().getId().equals(deleteInfo.getUserId())) {
             // 게시글 삭제
@@ -313,9 +313,9 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (optionalArticleLike.isEmpty()) {
             User user = userRepository.findById(likeInfo.getUserId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoDataException::new);
             Article article = articleRepository.findById(likeInfo.getArticleId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoDataException::new);
 
             ArticleLike articleLike = ArticleLike.builder()
                 .user(user)
@@ -353,11 +353,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (optionalArticleReport.isEmpty()) {
             User reportUser = userRepository.findById(reportInfo.getUserReportId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoDataException::new);
             User reportedUser = userRepository.findById(reportInfo.getUserReportedId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoDataException::new);
             Article article = articleRepository.findById(reportInfo.getArticleId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoDataException::new);
             String content = reportInfo.getContent();
 
             ArticleReport articleReport = ArticleReport.builder()
@@ -398,7 +398,7 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("ArticleService_findArticle_start: " + articleId);
 
         Article article = articleRepository.findById(articleId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         List<String> articlePicturePathNames = articlePictureRepository.findPathNameByArticle(
             articleId);
 

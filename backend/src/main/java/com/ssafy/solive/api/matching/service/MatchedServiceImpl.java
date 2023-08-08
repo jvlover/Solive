@@ -3,6 +3,7 @@ package com.ssafy.solive.api.matching.service;
 import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
+import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.db.entity.Apply;
 import com.ssafy.solive.db.entity.Matched;
 import com.ssafy.solive.db.entity.Question;
@@ -63,15 +64,14 @@ public class MatchedServiceImpl implements MatchedService {
         /*
          *  registInfo를 바탕으로 Matched Entity 생성 시작
          */
-        // TODO: IllegalArgumentException을 BaseException을 상속 받는 Custom Exception으로 변경 필요
         Apply apply = applyRepository.findById(registInfo.getApplyId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         Student student = studentRepository.findById(registInfo.getStudentId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         Teacher teacher = teacherRepository.findById(apply.getTeacher().getId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
         Question question = questionRepository.findById(apply.getQuestion().getId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoDataException::new);
 
         Integer solvePoint = apply.getSolvePoint();
 
