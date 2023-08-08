@@ -15,24 +15,34 @@ const SignupSelect = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div className="flex justify-evenly w-[80%]">
-        <div
-          className="flex flex-col items-center justify-start w-[26rem] h-[23rem] bg-white text-center rounded-lg shadow-lg cursor-pointer"
-          onClick={() => navigate('/signup/student')}
-        >
-          <img src={StudentImg} className="w-1/2 mt-10" alt="student" />
-          <p className="text-3xl font-semibold mt-auto mb-8">
-            과외를 받고 싶은 학생!
-          </p>
+      <div className="flex flex-col w-[80%] mt-10">
+        <div className="flex justify-evenly">
+          <div
+            className="flex flex-col items-center justify-start w-[26rem] h-[23rem] min-w-[26rem] min-h-[23rem] bg-white text-center rounded-lg shadow-lg cursor-pointer"
+            onClick={() => navigate('/signup/student')}
+          >
+            <img src={StudentImg} className="w-1/2 mt-10" alt="student" />
+            <p className="mt-auto mb-8 text-3xl font-semibold">
+              과외를 받고 싶은 학생!
+            </p>
+          </div>
+          <div
+            className="flex flex-col items-center justify-start w-[26rem] h-[23rem] min-w-[26rem] min-h-[23rem] bg-solive-100 text-center rounded-lg shadow-lg cursor-pointer"
+            onClick={() => navigate('/signup/teacher')}
+          >
+            <img src={TeacherImg} className="w-1/2 mt-10" alt="teacher" />
+            <p className="mt-auto mb-8 text-3xl font-semibold">
+              과외를 하고 싶은 선생님!
+            </p>
+          </div>
         </div>
-        <div
-          className="flex flex-col items-center justify-start w-[26rem] h-[23rem] bg-solive-100 text-center rounded-lg shadow-lg cursor-pointer"
-          onClick={() => navigate('/signup/teacher')}
-        >
-          <img src={TeacherImg} className="w-1/2 mt-10" alt="teacher" />
-          <p className="text-3xl font-semibold mt-auto mb-8">
-            과외를 하고 싶은 선생님!
-          </p>
+        <div className="flex justify-center mt-10">
+          <button
+            onClick={() => navigate(-1)}
+            className="w-[120px] text-lg text-blue-gray-600 underline underline-offset-4 bg-transparent hover:bg-transparent hover:border-none active:bg-transparent active:outline-none active:border-none focus:outline-none focus:border-none"
+          >
+            뒤로가기
+          </button>
         </div>
       </div>
     </div>
