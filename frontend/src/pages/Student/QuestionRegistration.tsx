@@ -1,9 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import axios from 'axios';
 import { userState } from '../../recoil/user/userState';
-import { useRecoilValue } from 'recoil';
-
-const BASE_URL = 'http://localhost:8080'
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { submitQuestion, getNewAccessToken } from '../../api';
 
 type Subject = {
   label: string;
@@ -108,6 +106,7 @@ const QuestionRegistration = () => {
   const [preview, setPreview] = useState<string>('');
 
   const user = useRecoilValue(userState);
+  const setUser = useSetRecoilState(userState);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -117,7 +116,7 @@ const QuestionRegistration = () => {
       return;
     }
 
-    const dataObject = {
+    const data = {
       title: title,
       subject: subject,
       subSubject: subSubject,
@@ -128,30 +127,34 @@ const QuestionRegistration = () => {
 
     const formData = new FormData();
 
-    formData.append('dataObject', JSON.stringify(dataObject));
+    formData.append(
+      'registInfo',
+      new Blob([JSON.stringify(data)], { type: 'application/json' }),
+    );
 
     files.forEach((file, index) => {
       formData.append(`file${index}`, file);
     });
 
-    try {
-      const response = await axios.post(BASE_URL + '/question', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+    const result = await submitQuestion(formData, user.accessToken); // 이 부분을 수정
 
-      if (response.data.success) {
-        alert('문제가 등록되었습니다.');
-      } else if (response.data.error.code === 'NO_IMAGE') {
-        alert('문제 등록에 실패했습니다. 이미지 파일이 없습니다.');
-      } else if (response.data.error.code === 'IMAGE_UPLOAD_FAIL') {
-        alert('문제 등록에 실패했습니다. 이미지 업로드에 실패했습니다.');
-      } else {
-        alert('문제 등록에 실패했습니다. 알 수 없는 오류입니다.');
+    if (result.success) {
+      alert('문제가 등록되었습니다.');
+    } else if (result.error === 'NO_IMAGE') {
+      alert('문제 등록에 실패했습니다. 이미지 파일이 없습니다.');
+    } else if (result.error === 'IMAGE_UPLOAD_FAIL') {
+      alert('문제 등록에 실패했습니다. 이미지 업로드에 실패했습니다.');
+    } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
+      const newAccessToken = await getNewAccessToken(user.refreshToken);
+      if (newAccessToken) {
+        setUser({
+          ...user,
+          accessToken: newAccessToken,
+        });
+        submitQuestion(formData, user.accessToken);
       }
-    } catch (error) {
-      console.error('Failed to submit question: ', error);
+    } else {
+      console.error('Failed to load problems:', result.error);
     }
   };
 
@@ -182,26 +185,26 @@ const QuestionRegistration = () => {
   );
 
   return (
-    <div className="flex text-black pt-24">
+    <div className="flex text-black pt-24 min-h-screen w-screen">
       <div className="w-1/2 p-5">
         <form onSubmit={handleSubmit} className="space-y-3">
-          <label className="block bg-light-blue-200 p-3 rounded-md">
+          <label className="block p-3 rounded-md">
             <span className="text-gray-700" style={{ fontWeight: '900' }}>
               제목
             </span>
             <input
-              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm bg-blue-200"
+              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </label>
-          <label className="block bg-light-blue-200 p-3 rounded-md">
+          <label className="block p-3 rounded-md">
             <span className="text-gray-700" style={{ fontWeight: '900' }}>
               사진
             </span>
             <input
-              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm bg-blue-200"
+              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
               type="file"
               onChange={handleFileChange}
               multiple
@@ -217,7 +220,7 @@ const QuestionRegistration = () => {
             </div>
           )}
           <button
-            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded"
+            className="mt-3 px-4 py-2 text-white rounded  border-light-blue-500 bg-light-blue-500"
             type="submit"
           >
             등록
@@ -226,23 +229,23 @@ const QuestionRegistration = () => {
       </div>
       <div className="w-1/2 p-5">
         <form className="space-y-3">
-          <label className="block bg-light-blue-200 p-3 rounded-md">
+          <label className="block p-3 rounded-md">
             <span className="text-gray-700" style={{ fontWeight: '900' }}>
               닉네임
             </span>
             <input
-              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm bg-blue-200"
+              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             />
           </label>
-          <label className="block bg-light-blue-200 p-3 rounded-md">
+          <label className="block p-3 rounded-md">
             <span className="text-gray-700" style={{ fontWeight: '900' }}>
               과목
             </span>
             <select
-              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm bg-blue-200"
+              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
             >
@@ -255,10 +258,10 @@ const QuestionRegistration = () => {
             </select>
           </label>
           {selectedSubject && (
-            <label className="block bg-light-blue-200 p-3 rounded-md">
+            <label className="block  p-3 rounded-md">
               <span className="text-gray-700">세부 과목:</span>
               <select
-                className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm bg-blue-200"
+                className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
                 value={subSubject}
                 onChange={(e) => setSubSubject(e.target.value)}
               >
@@ -272,10 +275,10 @@ const QuestionRegistration = () => {
             </label>
           )}
           {selectedSubSubject && (
-            <label className="block bg-light-blue-200 p-3 rounded-md">
+            <label className="block  p-3 rounded-md">
               <span className="text-gray-700">세부 주제:</span>
               <select
-                className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm bg-blue-200"
+                className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm "
                 value={detail}
                 onChange={(e) => setDetail(e.target.value)}
               >
@@ -288,12 +291,12 @@ const QuestionRegistration = () => {
               </select>
             </label>
           )}
-          <label className="block bg-light-blue-200 p-3 rounded-md">
+          <label className="block  p-3 rounded-md">
             <span className="text-gray-700" style={{ fontWeight: '900' }}>
               설명
             </span>
             <textarea
-              className="mt-1 block w-full h-48 border-2 border-light-blue-500 rounded-md shadow-sm bg-blue-200"
+              className="mt-1 block w-full h-48 border-2 border-light-blue-500 rounded-md shadow-sm "
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
