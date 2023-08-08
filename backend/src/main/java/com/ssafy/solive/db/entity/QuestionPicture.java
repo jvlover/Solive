@@ -29,21 +29,17 @@ public class QuestionPicture extends BaseEntity {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    // 문제 이미지 url
-    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
-    private String url;
-
-    // 문제 이미지 절대 경로
-    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
-    private String pathName;
-
     // 경로에 저장된 이미지 파일 이름
     @Column(nullable = false, columnDefinition = "VARCHAR(100)")
     private String fileName;
 
     // 유저가 제출한 이미지 오리지널 이름
     @Column(nullable = false, columnDefinition = "VARCHAR(100)")
-    private String imageName;
+    private String originalName;
+
+    // 문제 이미지 절대 경로
+    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    private String path;
 
     // 이미지 타입
     @Column(nullable = false, columnDefinition = "VARCHAR(100)")
@@ -52,8 +48,4 @@ public class QuestionPicture extends BaseEntity {
     // 이미지 올린 시간
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime time;
-
-    // 이미지 사이즈
-    @Column(nullable = false)
-    private Integer size;
 }
