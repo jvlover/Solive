@@ -116,7 +116,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     @Override
     public List<String> findQuestionImages(Long questionId) {
         return queryFactory
-            .select(questionPicture.pathName)
+            .select(questionPicture.path)
             .from(questionPicture)
             .where(questionPicture.question.id.eq(questionId))
             .fetch();
@@ -126,7 +126,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     @Override
     public String findQuestionImage(Long questionId) {
         return queryFactory
-            .select(questionPicture.pathName)
+            .select(questionPicture.path)
             .from(questionPicture)
             .where(questionPicture.question.id.eq(questionId))
             .offset(0)
