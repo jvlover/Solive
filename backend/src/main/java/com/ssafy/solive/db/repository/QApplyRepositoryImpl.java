@@ -45,7 +45,7 @@ public class QApplyRepositoryImpl implements QApplyRepository {
             .select(Projections.constructor(ApplyFindRes.class,
                 apply.id.as("applyId"),
                 teacher.nickname.as("teacherNickname"),
-                teacher.pathName.as("teacherPathName"),
+                teacher.path.as("teacherPathName"),
                 masterCode.id.as("teacherSubjectId"),
                 apply.solvePoint.as("solvePoint"),
                 apply.estimatedTime.as("estimatedTime"),
