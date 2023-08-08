@@ -16,6 +16,7 @@ import ArticleRegist from './pages/Board/ArticleRegist';
 import ArticleModify from './pages/Board/ArticleModify';
 import SolvePoint from './pages/Student/mypage/SolvePoint';
 import QuestionManagement from './pages/Student/mypage/QuestionManagement';
+import Teacher from './pages/Teacher/TeacherMain';
 import Error404 from './pages/Error404';
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
           path="/student/mypage/questionmanagement"
           element={<QuestionManagement />}
         />
+        <Route path="/teacher" element={<Teacher />} />
       </Routes>
       <FooterNav />
     </Router>

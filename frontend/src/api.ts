@@ -227,3 +227,27 @@ export async function getNewAccessToken(
     return null;
   }
 }
+
+export async function submitQuestion(
+  formData: FormData,
+  accessToken: string,
+): Promise<{ success: boolean; data?: any; error?: any }> {
+  try {
+    const response = await axios.post(BASE_URL + '/question', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        accessToken: accessToken,
+      },
+    });
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+}
