@@ -53,8 +53,8 @@ public class QApplyRepositoryImpl implements QApplyRepository {
                 teacher.ratingSum.as("ratingSum"),
                 teacher.ratingCount.as("ratingCount")))
             .from(apply)
-            .leftJoin(teacher).on(teacher.id.eq(apply.teacher.id))
-            .leftJoin(question)
+            .leftJoin(apply.teacher, teacher).on(teacher.id.eq(apply.teacher.id))
+            .leftJoin(apply.question, question)
             .on(question.id.eq(apply.question.id))
             .leftJoin(masterCode).on(teacher.masterCode.id.eq(masterCode.id))
             .where(questionIdEq(findCondition.getQuestionId()),
@@ -85,7 +85,7 @@ public class QApplyRepositoryImpl implements QApplyRepository {
                 question.matchingState.as("matchingState")))
             .from(apply)
             .leftJoin(masterCode).on(masterCode.id.eq(apply.question.masterCode.id))
-            .leftJoin(question).on(question.id.eq(apply.question.id))
+            .leftJoin(apply.question, question).on(question.id.eq(apply.question.id))
             .where(teacherIdEq(findCondition.getUserId()), mastercodeBetween(code),
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))

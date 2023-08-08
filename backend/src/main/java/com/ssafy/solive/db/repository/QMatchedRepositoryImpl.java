@@ -52,7 +52,7 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
                 question.matchingState.as("matchingState")))
             .from(matched)
             .leftJoin(masterCode).on(masterCode.id.eq(matched.question.masterCode.id))
-            .leftJoin(question).on(question.id.eq(matched.question.id))
+            .leftJoin(matched.question, question).on(question.id.eq(matched.question.id))
             .where(teacherIdEq(findCondition.getUserId()), mastercodeBetween(code),
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))

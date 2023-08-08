@@ -55,8 +55,8 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 question.time.as("createTime"),
                 masterCode.name.as("masterCodeName")))
             .from(question)
-            .leftJoin(student).on(student.id.eq(question.student.id))
-            .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
+            .leftJoin(question.student, student).on(student.id.eq(question.student.id))
+            .leftJoin(question.masterCode, masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()),
                 matchingStateLt())
             .orderBy(timeSort(findCondition.getSort()))
@@ -81,8 +81,8 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 masterCode.id.as("masterCodeId"),
                 question.time.as("createTime")))
             .from(question)
-            .leftJoin(student).on(student.id.eq(question.student.id))
-            .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
+            .leftJoin(question.student, student).on(student.id.eq(question.student.id))
+            .leftJoin(question.masterCode, masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(questionIdEq(id))
             .fetchOne();
     }
@@ -108,7 +108,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 masterCode.name.as("masterCodeName"),
                 question.matchingState.as("matchingState")))
             .from(question)
-            .leftJoin(masterCode).on(masterCode.id.eq(question.masterCode.id))
+            .leftJoin(question.masterCode, masterCode).on(masterCode.id.eq(question.masterCode.id))
             .where(studentIdEq(findCondition.getUserId()), mastercodeBetween(code),
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
