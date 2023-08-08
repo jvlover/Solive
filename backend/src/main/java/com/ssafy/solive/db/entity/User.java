@@ -1,6 +1,7 @@
 package com.ssafy.solive.db.entity;
 
 import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
+import com.ssafy.solive.common.model.FileDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -17,7 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @ToString
@@ -60,21 +60,17 @@ public class User extends BaseEntity {
     @Column(nullable = false, columnDefinition = "VARCHAR(40)")
     private String email;
 
-    // 프로필 사진의 URL
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String pictureUrl;
-
     // 프로필 사진의 이름
-    @Column(columnDefinition = "VARCHAR(100)")
-    private String pictureName;
-
-    // 프로필 사진의 실제 업로드 된 파일이름
     @Column(columnDefinition = "VARCHAR(100)")
     private String fileName;
 
+    // 프로필 사진의 실제 업로드 된 파일이름
+    @Column(columnDefinition = "VARCHAR(100)")
+    private String originalName;
+
     // 프로필 사진의 업로드 경로
     @Column(columnDefinition = "VARCHAR(100)")
-    private String pathName;
+    private String path;
 
     // 프로필 사진의 확장자명
     @Column(columnDefinition = "VARCHAR(10)")
@@ -151,13 +147,11 @@ public class User extends BaseEntity {
         this.masterCodeId = code;
     }
 
-    public void modifyProfilePicture(String fileName, String pathName, String resourcePathName,
-        MultipartFile profilePicture) {
-        this.pictureUrl = resourcePathName;
-        this.pictureName = profilePicture.getOriginalFilename();
-        this.fileName = fileName;
-        this.pathName = pathName;
-        this.contentType = profilePicture.getContentType();
+    public void modifyProfilePicture(FileDto fileDto) {
+        this.fileName = fileDto.getFileName();
+        this.originalName = fileDto.getOriginalName();
+        this.path = fileDto.getPath();
+        this.contentType = fileDto.getContentType();
     }
 
     public void logout(MasterCode stateId) {

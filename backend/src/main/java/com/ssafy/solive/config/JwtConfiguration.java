@@ -10,10 +10,10 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-@Component
+@Configuration
 public class JwtConfiguration {
 
     // SALT는 임의 생성 문자열

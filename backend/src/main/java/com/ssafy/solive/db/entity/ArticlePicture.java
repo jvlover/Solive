@@ -30,19 +30,13 @@ public class ArticlePicture extends BaseEntity {
     private Article article;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255)")
-    private String pathName; // 파일 업로드 경로
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String fileName; // 실제 업로드 된 파일명
 
-    @Column(nullable = false)
-    private Integer size; // 파일 크기
+    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    private String originalName; // 원본 파일 이름
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255)")
-    private String url; // 게시판에서 사진 눌렀을 때 이동할 url
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
-    private String imageName; // 원본 파일 이름
+    private String path; // 파일 업로드 경로
 
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
     private String contentType; // 확장자명

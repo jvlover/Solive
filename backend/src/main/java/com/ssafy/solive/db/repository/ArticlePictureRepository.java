@@ -15,7 +15,7 @@ public interface ArticlePictureRepository extends JpaRepository<ArticlePicture, 
     List<ArticlePicture> findByArticle(Article article);
 
     // 게시글 id로 게시글 사진의 경로를 찾는 JPQL 메소드
-    @Query("select ap.pathName from ArticlePicture ap join ap.article a where a.id = :articleId")
+    @Query("select ap.path from ArticlePicture ap join ap.article a where a.id = :articleId")
     List<String> findPathNameByArticle(@Param("articleId") Long articleId);
 
     // 게시글에 사진이 존재하는지 찾는 메소드
