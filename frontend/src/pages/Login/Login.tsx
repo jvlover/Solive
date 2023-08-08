@@ -116,7 +116,7 @@ const Login = () => {
           )}
           <button
             type="submit"
-            className="w-full bg-solive-200 text-white font-semibold mt-3 p-2 rounded-md"
+            className="w-full p-2 mt-3 font-semibold text-white rounded-md bg-solive-200"
           >
             로그인
           </button>

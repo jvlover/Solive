@@ -95,7 +95,7 @@ const Signup = () => {
       }}
     >
       <div className="bg-white rounded-lg shadow-lg w-[30%] h-[90%] min-w-[500px] pt-6 pb-10 px-10">
-        <h2 className="my-3 text-2xl text-center font-bold text-black">
+        <h2 className="my-3 text-2xl font-bold text-center text-black">
           {`${userType === 'student' ? '학생' : '선생님'} 회원가입`}
         </h2>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -111,7 +111,7 @@ const Signup = () => {
                   className:
                     'peer-focus:text-solive-200 after:border-solive-200 peer-focus:after:border-solive-200',
                 }}
-                className="focus:border-solive-200"
+                className="focus:border-solive-200 "
               />
             )}
           />
@@ -282,7 +282,7 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-solive-200 text-white font-semibold p-2 rounded-md"
+            className="w-full p-2 font-semibold text-white rounded-md bg-solive-200"
           >
             회원가입
           </button>
