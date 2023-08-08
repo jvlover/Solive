@@ -7,7 +7,7 @@ import { fetchArticleById, likeArticle } from '../../api';
 import { ReactComponent as FullHeart } from '../../assets/full_heart.svg';
 import { ReactComponent as EmptyHeart } from '../../assets/empty_heart.svg';
 import { ReactComponent as Eye } from '../../assets/eye.svg';
-import { ReactComponent as Pencil } from '../../assets/Pencil.svg';
+import { ReactComponent as Pencil } from '../../assets/pencil.svg';
 import {
   Breadcrumbs,
   Card,
@@ -48,12 +48,12 @@ const ArticleDetail = () => {
           <Typography variant="h2" className="mb-3">
             {article?.title}
           </Typography>
-          <div className="flex justify-between items-end mb-1">
+          <div className="flex items-end justify-between mb-1">
             <Breadcrumbs className="p-1 bg-transparent">
               <div>{article?.author}</div>
               <div>{article?.time.replace('T', ' ')} 작성</div>
             </Breadcrumbs>
-            <div className="flex justify-center items-center">
+            <div className="flex items-center justify-center">
               <FullHeart />
               <div className="ml-1 mr-3">{article?.likeCount}</div>
               <Eye />
@@ -73,17 +73,17 @@ const ArticleDetail = () => {
         <CardFooter className="flex justify-center">
           {/* 작성자랑 로그인된 유저랑 똑같으면 보이게 */}
           <button
-            className="btn-primary pl-6 pr-6 mr-4"
+            className="pl-6 pr-6 mr-4 btn-primary"
             onClick={() => navigate(`/board/modify/${id}`)}
           >
-            <div className="flex justify-center items-center">
+            <div className="flex items-center justify-center">
               <Pencil className="w-4 h-4 mr-1" />
               수정
             </div>
           </button>
           {/* 좋아요 누른 적 있으면 누른 적 있다고 alert 없으면 좋아요 api 호출 */}
           <button className="btn-primary" onClick={like}>
-            <div className="flex justify-center items-center">
+            <div className="flex items-center justify-center">
               <EmptyHeart className="w-4 h-4 mr-1 stroke-white" />
               좋아요
             </div>

@@ -1,16 +1,32 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { useState, useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../recoil/user/userState';
+import { ReactComponent as SolvePoint } from '../assets/solve_point.svg';
 import {
   Navbar,
-  MobileNav,
   Typography,
   IconButton,
+  Collapse,
+  MenuHandler,
+  Menu,
+  MenuList,
+  MenuItem,
 } from '@material-tailwind/react';
+import {
+  DocumentTextIcon,
+  PencilSquareIcon,
+  PowerIcon,
+  UserCircleIcon,
+  UserIcon,
+} from '@heroicons/react/24/outline';
+import MatchingNotification from './MatchingNotification';
 
 // 로그인 하면 로그인 했다고 표시
 const HeaderNav = () => {
   const [openNav, setOpenNav] = useState(false);
+  const user = useRecoilValue(userState);
 
   useEffect(() => {
     window.addEventListener(
@@ -25,11 +41,61 @@ const HeaderNav = () => {
     className: 'p-1 font-normal font-[Pretendard]',
   };
 
-  const navList = (
-    <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+  const navList = user ? (
+    <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Typography {...labelProps}>
-        <Link to="/board" className="flex items-center text-black">
-          공지사항
+        안녕하세요{' '}
+        <span className="font-semibold font-[Pretendard]">{user.nickname}</span>
+        {user.masterCodeId === 2 ? ' 선생' : ' '}님
+      </Typography>
+      <MatchingNotification />
+      <Menu>
+        <MenuHandler>
+          <UserIcon className="w-auto cursor-pointer h-7" />
+        </MenuHandler>
+        <MenuList>
+          <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+            <SolvePoint className="w-5 h-5" />
+            <Typography variant="small" className="font-normal">
+              {user.solvePoint} SP
+            </Typography>
+          </MenuItem>
+          <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+            <UserCircleIcon className="w-5 h-5" />
+            <Typography variant="small" className="font-normal">
+              프로필
+            </Typography>
+          </MenuItem>
+          {user.masterCodeId === 1 ? (
+            <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+              <PencilSquareIcon className="w-5 h-5" />
+              <Typography variant="small" className="font-normal">
+                문제 등록하기
+              </Typography>
+            </MenuItem>
+          ) : (
+            <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+              <DocumentTextIcon className="w-5 h-5" />
+              <Typography variant="small" className="font-normal">
+                문제 보기
+              </Typography>
+            </MenuItem>
+          )}
+          <hr className="my-2 border-blue-gray-50" />
+          <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+            <PowerIcon className="w-5 h-5" />
+            <Typography variant="small" className="font-normal">
+              로그아웃
+            </Typography>
+          </MenuItem>
+        </MenuList>
+      </Menu>
+    </ul>
+  ) : (
+    <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+      <Typography {...labelProps}>
+        <Link to="/login" className="flex items-center text-black">
+          로그인
         </Link>
       </Typography>
       <Typography {...labelProps}>
@@ -37,32 +103,20 @@ const HeaderNav = () => {
           회원가입
         </Link>
       </Typography>
-      <Typography {...labelProps}>
-        <Link to="/login" className="flex items-center text-black">
-          로그인
-        </Link>
-      </Typography>
     </ul>
   );
 
   return (
-    <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none py-2 px-4 lg:px-8 lg:py-4">
+    <Navbar className="sticky top-0 z-10 max-w-full px-4 py-2 rounded-none h-max lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
         <Link to="/">
-          <img src={logo} alt="Logo" className="h-10 w-auto" />
+          <img src={logo} alt="Logo" className="w-auto h-10" />
         </Link>
         <div className="flex items-center gap-4">
           <div className="hidden lg:block">{navList}</div>
-          {/* <Button
-              variant="gradient"
-              size="sm"
-              className="hidden lg:inline-block"
-            >
-              <span>Buy Now</span>
-            </Button> */}
           <IconButton
             variant="text"
-            className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+            className="w-6 h-6 ml-auto text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
             ripple={false}
             onClick={() => setOpenNav(!openNav)}
           >
@@ -70,7 +124,7 @@ const HeaderNav = () => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                className="h-6 w-6"
+                className="w-6 h-6"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 strokeWidth={2}
@@ -84,7 +138,7 @@ const HeaderNav = () => {
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
@@ -99,52 +153,9 @@ const HeaderNav = () => {
           </IconButton>
         </div>
       </div>
-      <MobileNav open={openNav}>
-        {navList}
-        {/* <Button variant="gradient" size="sm" fullWidth className="mb-2">
-          <span>Buy Now</span>
-        </Button> */}
-      </MobileNav>
+      <Collapse open={openNav}>{navList}</Collapse>
     </Navbar>
   );
-
-  // return (
-  //   <nav className="fixed w-full flex items-center justify-between flex-wrap bg-white p-4 z-10">
-  //     <div className="flex items-center flex-shrink-0 mr-6">
-  //       <img src={logo} alt="Logo" className="h-10 w-auto" />
-  //     </div>
-  //     <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-  //       <div className="text-sm lg:flex-grow"></div>
-  //       <div>
-  //         <Link
-  //           to="/"
-  //           className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-white mr-4"
-  //         >
-  //           Home
-  //         </Link>
-  //         <Link
-  //           to="/board"
-  //           className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-white mr-4"
-  //         >
-  //           Board
-  //         </Link>
-  //         <Link
-  //           to="/signup"
-  //           className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-white mr-4"
-  //         >
-  //           Signup
-  //         </Link>
-  //         {/* 수정 navbar에 로그인 추가 */}
-  //         <Link
-  //           to="/login"
-  //           className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-white mr-4"
-  //         >
-  //           Login
-  //         </Link>
-  //       </div>
-  //     </div>
-  //   </nav>
-  // );
 };
 
 export default HeaderNav;

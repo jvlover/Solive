@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
-import { StudentFormData } from './pages/Signup/StudentSignup';
-import { TeacherFormData } from './pages/Signup/TeacherSignup';
+import { SignupFormData } from './pages/Signup/Signup';
 import { User } from './recoil/user/userState';
 
 const BASE_URL = 'http://localhost:8080';
@@ -151,20 +150,8 @@ export const chargeSolvePoint = async (
   }
 };
 
-export const studentSignup = async (
-  signupData: StudentFormData,
-  onSuccess: () => void,
-): Promise<void> => {
-  const response = await axios.post(BASE_URL + '/user', signupData);
-  if (response.data.success === true) {
-    onSuccess();
-  } else {
-    throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
-  }
-};
-
-export const teacherSignup = async (
-  signupData: TeacherFormData,
+export const signup = async (
+  signupData: SignupFormData,
   onSuccess: () => void,
 ): Promise<void> => {
   const response = await axios.post(BASE_URL + '/user', signupData);

@@ -6,7 +6,7 @@ const Error404 = () => {
       <img
         src={NotFoundImage}
         alt="Page not found"
-        className="w-1/4 h-auto object-contain"
+        className="-mt-10 w-1/4 h-auto object-contain"
       />
       <h1 className="mt-20">404 not found</h1>
     </div>
