@@ -103,18 +103,18 @@ public class ArticleController {
      */
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> modify(@RequestPart ArticleModifyPutReq modifyInfo,
-        @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
         /*
-         *  files : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
+         *  fileList : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
          *  modifyInfo : 게시글 수정할 때 입력한 정보
          */
-        if (files != null) {
+        if (fileList != null) {
             log.info("ArticleController_modify_start: " + modifyInfo.toString() + ", "
-                + files.toString());
+                + fileList.toString());
         } else {
             log.info("ArticleController_modify_start: " + modifyInfo.toString());
         }
-        boolean isModified = articleService.modifyArticle(modifyInfo, files);
+        boolean isModified = articleService.modifyArticle(modifyInfo, fileList);
 
         if (isModified) {
             log.info("ArticleController_modify_end: success");

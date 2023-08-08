@@ -2,7 +2,6 @@ package com.ssafy.solive.common.util;
 
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.model.FileDto;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -45,9 +44,8 @@ public class FileUploader {
                 // 파일 업로드 경로 디렉토리가 만약 존재하지 않으면 생성
                 Files.createDirectories(Paths.get(s3UploadPath));
 
-                String path = s3UploadPath + fileName;    // 파일 절대 경로
-                File destination = new File(path);
-                file.transferTo(destination);
+                // 파일 절대 경로
+                String path = s3UploadPath + fileName;
 
                 fileDtoList.add(FileDto.builder()
                     .fileName(fileName)
