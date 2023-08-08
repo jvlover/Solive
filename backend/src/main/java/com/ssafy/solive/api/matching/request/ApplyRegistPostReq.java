@@ -2,8 +2,8 @@ package com.ssafy.solive.api.matching.request;
 
 import lombok.Data;
 
-/*
- *  강사의 문제 풀이 지원 신청 API에 대한 Request
+/**
+ * 강사의 문제 풀이 지원 신청 API에 대한 Request
  */
 @Data
 public class ApplyRegistPostReq {

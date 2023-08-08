@@ -7,8 +7,8 @@ import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
 import java.util.List;
 
-/*
- *  Querydsl을 위한 Question Repository interface
+/**
+ * Querydsl을 위한 Question Repository interface
  */
 public interface QQuestionRepository {
 

@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
 
-/*
- *  문제 상세 조회 API에 대한 Response
+/**
+ * 문제 상세 조회 API에 대한 Response
  */
 @Data
 public class QuestionFindDetailRes {

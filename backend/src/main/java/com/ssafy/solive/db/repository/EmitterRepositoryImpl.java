@@ -7,9 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-/*
- *  Emitter Repository 구현
- *  SSE 연결을 관리하는 SseEmitter 객체와 이벤트 캐시를 맵 형태로 저장하고 관리하기 위한 Repository
+/**
+ * SSE 연결을 관리하는 SseEmitter 객체와 이벤트 캐시를 맵 형태로 저장하고 관리하기 위한 Repository
  */
 @Slf4j
 @Repository

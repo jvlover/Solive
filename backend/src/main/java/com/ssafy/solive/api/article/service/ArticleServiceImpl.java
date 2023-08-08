@@ -34,16 +34,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-/*
- *  유저가 게시판을 이용할 때의 API에 대한 서비스
+/**
+ * 유저가 게시판을 이용할 때의 API에 대한 서비스
  */
-
 @Slf4j
 @Transactional
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    // Spring Data Jpa 사용을 위한 Repository들
+    // Spring Data Jpa 사용을 위한 Repositories
     private final UserRepository userRepository;
     private final MasterCodeRepository masterCodeRepository;
     private final ArticleRepository articleRepository;
@@ -67,22 +66,23 @@ public class ArticleServiceImpl implements ArticleService {
         this.fileUploader = fileUploader;
     }
 
-    /*
-     *  Regist API에 대한 서비스
+    /**
+     * 게시판에서 게시글 Regist API에 대한 서비스
+     *
+     * @param registInfo : 게시글 등록할 때 입력한 정보
+     * @param fileList   : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
      */
     @Override
     public Article registArticle(ArticleRegistPostReq registInfo,
         List<MultipartFile> fileList) {
-        /*
-         *  fileList : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
-         *  registInfo : 게시글 등록할 때 입력한 정보
-         */
+
         if (fileList != null) {
             log.info("ArticleService_registArticle_start: " + registInfo.toString() + ", "
                 + fileList.toString());
         } else {
             log.info("ArticleService_registArticle_start: " + registInfo.toString());
         }
+
         // user가 null일 수 있으므로 controller로 exception throw
         User user = userRepository.findById(registInfo.getUserId())
             .orElseThrow(NoDataException::new);
@@ -103,7 +103,6 @@ public class ArticleServiceImpl implements ArticleService {
         /*
          *  files 를 바탕으로 ArticlePicture Entity 생성 시작
          */
-
         if (!Objects.isNull(fileList) && fileList.get(0).getSize() > 0) {
             List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "/article");
             for (FileDto fileDto : fileDtoList) {
@@ -123,27 +122,28 @@ public class ArticleServiceImpl implements ArticleService {
         return article;
     }
 
-    /*
-     *  modify API 에 대한 서비스
+    /**
+     * 게시글 modify API 에 대한 서비스
+     *
+     * @param modifyInfo : 게시글 수정할 때 입력한 정보
+     * @param fileList   : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
      */
-    // TODO: 게시판 사진 수정 사진 삭제 관련 로직 변경 필요
     @Override
     public boolean modifyArticle(ArticleModifyPutReq modifyInfo, List<MultipartFile> fileList) {
-        /*
-         *  fileList : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
-         *  modifyInfo : 게시글 수정할 때 입력한 정보
-         */
+
+        // TODO: 게시판 사진 수정 사진 삭제 관련 로직 변경 필요
+
         if (fileList != null) {
             log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString() + ", "
                 + fileList.toString());
         } else {
             log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString());
         }
+
         Article article = articleRepository.findById(modifyInfo.getArticleId())
             .orElseThrow(NoDataException::new);
         // 현재 로그인 유저의 id와 글쓴이의 id가 일치할 때
         if (article.getUser().getId().equals(modifyInfo.getUserId())) {
-
             // 게시글 수정
             MasterCode masterCode = masterCodeRepository.findById(modifyInfo.getMasterCodeId())
                 .orElseThrow(NoDataException::new);
@@ -182,14 +182,14 @@ public class ArticleServiceImpl implements ArticleService {
         return false;
     }
 
-    /*
-     *  delete API에 대한 서비스
+    /**
+     * 게시글 delete API에 대한 서비스
+     *
+     * @param deleteInfo : 게시글을 삭제하기 위해 필요한 정보
      */
     @Override
     public boolean deleteArticle(ArticleDeletePutReq deleteInfo) {
-        /*
-         *  deleteInfo : 게시글을 삭제하기 위해 필요한 정보
-         */
+
         log.info("ArticleService_deleteArticle_start: " + deleteInfo.toString());
 
         Article article = articleRepository.findById(deleteInfo.getArticleId())
@@ -205,22 +205,24 @@ public class ArticleServiceImpl implements ArticleService {
             for (ArticlePicture articlePicture : articlePictures) {
                 articlePicture.deleteArticlePicture();
             }
+
             log.info("ArticleService_deleteArticle_end: true");
             return true;
         }
+
         // deleteInfo의 유저 정보와 해당 문제의 실제 유저 정보가 다를 경우
         log.info("ArticleService_deleteArticle_end: false");
         return false;
     }
 
-    /*
-     *  like API에 대한 서비스
+    /**
+     * like API에 대한 서비스
+     *
+     * @param likeInfo : 게시글을 좋아요하기 위해 필요한 정보
      */
     @Override
     public boolean likeArticle(ArticleLikePostReq likeInfo) {
-        /*
-         *  likeInfo : 게시글을 좋아요하기 위해 필요한 정보
-         */
+
         log.info("ArticleService_likeArticle_start: " + likeInfo.toString());
 
         ArticleLikeId articleLikeId = ArticleLikeId.builder()
@@ -248,18 +250,19 @@ public class ArticleServiceImpl implements ArticleService {
             log.info("ArticleService_likeArticle_end: true");
             return true;
         }
+
         log.info("ArticleService_likeArticle_end: false");
         return false;
     }
 
-    /*
-     *  report API에 대한 서비스
+    /**
+     * 게시글 신고 API에 대한 서비스
+     *
+     * @param reportInfo : 게시글을 신고하기 위해 필요한 정보
      */
     @Override
     public boolean reportArticle(ArticleReportPostReq reportInfo) {
-        /*
-         *  reportInfo : 게시글을 신고하기 위해 필요한 정보
-         */
+
         log.info("ArticleService_reportArticle_start: " + reportInfo.toString());
 
         ArticleReportId articleReportId = ArticleReportId.builder()
@@ -299,21 +302,23 @@ public class ArticleServiceImpl implements ArticleService {
                     articlePicture.deleteArticlePicture();
                 }
             }
+
             log.info("ArticleService_reportArticle_end: true");
             return true;
         }
+
         log.info("ArticleService_reportArticle_end: false");
         return false;
     }
 
-    /*
-     *  유저가 게시글의 상세 정보를 확인하기 위한 API 서비스
+    /**
+     * 유저가 게시글의 상세 정보를 확인하기 위한 API 서비스
+     *
+     * @param articleId : 게시글의 Id
      */
     @Override
     public ArticleFindRes findArticle(Long articleId) {
-        /*
-         *  articleId : 게시글의 Id
-         */
+
         log.info("ArticleService_findArticle_start: " + articleId);
 
         Article article = articleRepository.findById(articleId)
@@ -335,21 +340,20 @@ public class ArticleServiceImpl implements ArticleService {
             .articlePicturePathNames(articlePicturePathNames)
             .build();
 
+        // 게시글 상세 정보 조회 결과
         log.info("ArticleService_findArticle_end: " + articleFindRes.toString());
         return articleFindRes;
     }
 
-    /*
-     *  유저가 게시글 목록을 조회하기 위한 API 서비스
-     *  검색어, 시간 순 정렬 조건 선택 가능
-     *  keyword를 공백으로 보내면 전체 검색
+    /**
+     * 유저가 게시글 목록을 조회하기 위한 API 서비스
+     *
+     * @param keyword  : 검색어. keyword 를 공백으로 보내면 전체 검색
+     * @param pageable : Spring Data JPA 의 페이징 기능
      */
     @Override
     public Page<ArticleFindRes> findAllArticle(String keyword, Pageable pageable) {
-        /*
-         *  keyword : 검색어
-         *  pageable : Spring Data JPA의 페이징 기능
-         */
+
         log.info("ArticleService_findAllArticle_start: " + keyword + ", "
             + pageable.toString());
 
@@ -370,8 +374,8 @@ public class ArticleServiceImpl implements ArticleService {
                     m.getId()))
                 .build());
 
-        log.info("ArticleService_findAllArticle_end: " + articleFindRes.toString());
-
+        // 게시글 조회 결과 리스트
+        log.info("ArticleService_findAllArticle_end: " + articleFindRes);
         return articleFindRes;
     }
 }

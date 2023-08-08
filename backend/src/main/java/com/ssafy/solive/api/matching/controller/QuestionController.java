@@ -25,10 +25,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-/*
- *  학생과 강사가 문제를 Matching 할 때 필요한 API를 모은 컨트롤러
+/**
+ * 학생이 풀이를 원하는 문제를 서버에 등록할 때 필요한 API를 모은 컨트롤러
  */
-
 @Slf4j
 @RestController
 @RequestMapping("/question")
@@ -44,19 +43,20 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    /*
-     *  유저(학생)가 문제를 등록하기 위한 API
+    /**
+     * 유저(학생)가 문제를 등록하기 위한 API
+     *
+     * @param registInfo : 문제 등록할 때 입력한 정보
+     * @param fileList   : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 Null 불가능
      */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> regist(@RequestPart QuestionRegistPostReq registInfo,
         @RequestPart("files") List<MultipartFile> fileList) {
-        /*
-         *  fileList : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 null일 수 없음
-         *  registInfo : 문제 등록할 때 입력한 정보
-         */
-        // TODO: 인증 된 사용자인지 확인하는 과정 필요
 
-        log.info("QuestionController_regist_start: " + registInfo.toString() + ", "
+        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+
+        log.info("QuestionController_regist_start: registInfo = " + registInfo.toString()
+            + "\n fileList =  "
             + fileList.toString());
 
         questionService.registQuestion(registInfo, fileList);
@@ -65,14 +65,15 @@ public class QuestionController {
         return CommonResponse.success(SUCCESS);
     }
 
-    /*
-     *  유저(학생)이 문제를 삭제하기 위한 API
+    /**
+     * 유저(학생)이 문제를 삭제하기 위한 API
+     *
+     * @param deleteInfo : 문제 삭제하기 위해 필요한 정보
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(@RequestBody QuestionDeletePutReq deleteInfo) {
-        /*
-         *  deleteInfo : 문제 삭제하기 위해 필요한 정보
-         */
+
+        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
 
         log.info("QuestionController_delete_start: " + deleteInfo.toString());
 
@@ -80,22 +81,20 @@ public class QuestionController {
         if (isDeleted) {
             log.info("QuestionController_delete_end: success");
             return CommonResponse.success(SUCCESS);
-        } else {
-            // 유저가 작성하지 않은 문제를 삭제하려고 하는 경우
-            log.info("QuestionController_delete_end: QuestionPossessionFailException");
+        } else {    // 유저가 작성하지 않은 문제를 삭제하려고 하는 경우
             throw new MatchingPossessionFailException();
         }
     }
 
-    /*
-     *  유저(학생)이 문제를 수정하기 위한 API
+    /**
+     * 유저(학생)이 문제를 수정하기 위한 API
+     *
+     * @param modifyInfo : 문제 수정하기 위해 필요한 정보
      */
     @PutMapping()
     public CommonResponse<?> modify(@RequestBody QuestionModifyPutReq modifyInfo) {
-        /*
-         *  modifyInfo : 문제 수정하기 위해 필요한 정보
-         */
-        // TODO: 인증 된 사용자인지 확인하는 과정 필요
+
+        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
 
         log.info("QuestionController_modify_start: " + modifyInfo.toString());
 
@@ -103,46 +102,53 @@ public class QuestionController {
         if (isModified) {
             log.info("QuestionController_modify_end: success");
             return CommonResponse.success(SUCCESS);
-        } else {
-            log.info("QuestionController_modify_end: QuestionPossessionFailException");
+        } else {    // 유저가 작성하지 않은 문제를 수정하려고 하는 경우
             throw new MatchingPossessionFailException();
         }
     }
 
-    /*
-     *  유저(강사)가 문제를 검색하기 위한 API
-     *  제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+    /**
+     * 유저(강사)가 문제를 검색하기 위한 API
+     *
+     * @param findCondition : 검색 조건. 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @GetMapping()
     public CommonResponse<?> findByCondition(QuestionFindConditionGetReq findCondition) {
-        /*
-         *  findCondition : 검색 조건
-         */
+
+        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
 
         log.info("QuestionController_findByCondition_start: " + findCondition.toString());
 
         List<QuestionFindConditionRes> findResList = questionService.findByCondition(findCondition);
 
-        log.info("QuestionController_findByCondition_end: " + findResList.toString());
+        if (findResList.size() == 0) {
+            log.info("QuestionController_findByCondition_end: No Result");
+        } else {
+            log.info("QuestionController_findByCondition_end: " + findResList);
+        }
         return CommonResponse.success(findResList);
     }
 
-    /*
-     *  유저가 문제의 상세 정보를 확인하기 위한 API
+    /**
+     * 유저가 문제의 상세 정보를 확인하기 위한 API
+     *
+     * @param id      : question id
+     * @param request : jwt token check
      */
     @GetMapping("/{id}")
-    public CommonResponse<?> findDetail(@PathVariable Long id, HttpServletRequest req) {
-        /*
-         *  id : question의 id
-         *  req : jwt token check 할 때 필요할 것 같아서 일단 넣었는데 아직 모름
-         */
+    public CommonResponse<?> findDetail(@PathVariable Long id, HttpServletRequest request) {
 
-        log.info("QuestionController_findDetail_start: " + id + ", " + req.toString());
+        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+
+        log.info("QuestionController_findDetail_start: " + id);
 
         QuestionFindDetailRes findDetailRes = questionService.findDetail(id);
 
-        log.info("QuestionController_findDetail_end: " + findDetailRes.toString());
+        if (findDetailRes == null) {
+            log.info("QuestionController_findDetail_end: No Data");
+        } else {
+            log.info("QuestionController_findDetail_end: " + findDetailRes);
+        }
         return CommonResponse.success(findDetailRes);
     }
-
 }

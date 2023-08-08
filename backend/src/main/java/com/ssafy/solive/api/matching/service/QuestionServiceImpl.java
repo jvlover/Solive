@@ -6,7 +6,6 @@ import com.ssafy.solive.api.matching.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.matching.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
-import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.exception.matching.QuestionNoImageException;
 import com.ssafy.solive.common.exception.matching.QuestionNotFoundException;
@@ -27,16 +26,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-/*
- *  학생과 강사가 문제를 Matching 할 때 API에 대한 서비스
+/**
+ * 학생이 풀이를 원하는 문제를 등록할 때 API에 대한 서비스
  */
-
 @Slf4j
 @Transactional
 @Service
 public class QuestionServiceImpl implements QuestionService {
 
-    // Spring Data Jpa 사용을 위한 Repository들
+    // Spring Data Jpa 사용을 위한 Repositories
     private final QuestionRepository questionRepository;
     private final QuestionPictureRepository questionPictureRepository;
     private final StudentRepository studentRepository;
@@ -54,19 +52,20 @@ public class QuestionServiceImpl implements QuestionService {
         this.fileUploader = fileUploader;
     }
 
-    /*
-     *  Regist API에 대한 서비스
+    /**
+     * 문제 regist API에 대한 서비스
+     *
+     * @param registInfo : 문제 등록할 때 입력한 정보
+     * @param fileList   : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 Null 불가능
      */
     @Override
     public void registQuestion(QuestionRegistPostReq registInfo,
         List<MultipartFile> fileList) {
-        /*
-         *  fileList : 문제 사진. 문제는 반드시 사진이 하나 이상 있어야 하므로 null일 수 없음
-         *  registInfo : 문제 등록할 때 입력한 정보
-         */
 
-        log.info("QuestionService_registQuestion_start: " + registInfo.toString() + ", "
-            + fileList.toString());
+        log.info(
+            "QuestionService_registQuestion_start: registInfo = " + registInfo.toString()
+                + "\n fileList = "
+                + fileList.toString());
 
         // 문제는 반드시 이미지가 필요하므로, 이미지가 없으면 QuestionNoImageException 처리
         if (fileList.get(0).getSize() == 0) {
@@ -98,13 +97,10 @@ public class QuestionServiceImpl implements QuestionService {
         /*
          *  생성한 Question Entity DB에 insert 완료
          */
-        // TODO: JpaRepository의 save에서 Exception이 발생할 경우가 있는지 확인 필요
 
         /*
          *  files를 바탕으로 QuestionPicture Entity 생성 시작
          */
-        // TODO: 파일 업로드 관련 DB에 추가한 여러 컬럼들 나중에 전부 필요한 지 확인 필요
-
         List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "/question");
 
         for (FileDto fileDto : fileDtoList) {
@@ -117,18 +113,20 @@ public class QuestionServiceImpl implements QuestionService {
                 .build();
             questionPictureRepository.save(questionPicture);
         }
+        /*
+         *  files를 바탕으로 QuestionPicture Entity DB에 insert 완료
+         */
 
         log.info("QuestionService_registQuestion_end: success");
     }
 
-    /*
-     *  delete API에 대한 서비스
+    /**
+     * 문제 delete API에 대한 서비스
+     *
+     * @param deleteInfo : 문제 삭제하기 위해 필요한 정보
      */
     @Override
     public boolean deleteQuestion(QuestionDeletePutReq deleteInfo) {
-        /*
-         *  deleteInfo : 문제 삭제하기 위해 필요한 정보
-         */
 
         log.info("QuestionService_deleteQuestion_start: " + deleteInfo.toString());
 
@@ -146,14 +144,13 @@ public class QuestionServiceImpl implements QuestionService {
         return false;
     }
 
-    /*
-     *  modify API에 대한 서비스
+    /**
+     * 문제 modify API에 대한 서비스
+     *
+     * @param modifyInfo : 문제 수정하기 위해 필요한 정보
      */
     @Override
     public boolean modifyQuestion(QuestionModifyPutReq modifyInfo) {
-        /*
-         *  modifyInfo : 문제 삭제하기 위해 필요한 정보
-         */
 
         log.info("QuestionService_modifyQuestion_start: " + modifyInfo.toString());
 
@@ -176,16 +173,14 @@ public class QuestionServiceImpl implements QuestionService {
         return false;
     }
 
-    /*
-     *  유저(강사)가 문제를 검색하기 위한 API 서비스
-     *  제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+    /**
+     * 유저(강사)가 문제를 검색하기 위한 API 서비스
+     *
+     * @param findCondition : 검색 조건. 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @Override
     public List<QuestionFindConditionRes> findByCondition(
         QuestionFindConditionGetReq findCondition) {
-        /*
-         *  findCondition : 검색 조건
-         */
 
         log.info("QuestionService_findByCondition_start: " + findCondition.toString());
 
@@ -200,19 +195,21 @@ public class QuestionServiceImpl implements QuestionService {
             findConditionRes.get(i).setImagePathName(questionImage);
         }
 
-        log.info("QuestionService_findByCondition_end: " + findConditionRes.toString());
-
+        if (findConditionRes.size() == 0) {
+            log.info("QuestionService_findByCondition_end: No Result");
+        } else {
+            log.info("QuestionService_findByCondition_end: " + findConditionRes);
+        }
         return findConditionRes;
     }
 
-    /*
-     *  유저가 문제의 상세 정보를 확인하기 위한 API
+    /**
+     * 유저가 문제의 상세 정보를 확인하기 위한 API
+     *
+     * @param id : question의 id
      */
     @Override
     public QuestionFindDetailRes findDetail(Long id) {
-        /*
-         *  id : question의 id
-         */
 
         log.info("QuestionService_findDetail_start: " + id);
 
@@ -220,16 +217,15 @@ public class QuestionServiceImpl implements QuestionService {
         QuestionFindDetailRes findDetailRes = questionRepository.findDetail(id);
         // 상세 정보 검색 결과가 null이면 NotFoundException 처리
         if (findDetailRes == null) {
-            log.info("QuestionService_findDetail_end: QuestionNotFoundException");
             throw new QuestionNotFoundException();
         }
+
         // 해당 문제의 Images 얻어오기
         List<String> questionImages = questionRepository.findQuestionImages(id);
         // Response에 Images Setting
         findDetailRes.setImagePathName(questionImages);
 
-        log.info("QuestionService_findDetail_end: " + findDetailRes.toString());
+        log.info("QuestionService_findDetail_end: " + findDetailRes);
         return findDetailRes;
     }
-
 }
