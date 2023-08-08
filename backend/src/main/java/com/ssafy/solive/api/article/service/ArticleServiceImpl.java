@@ -6,9 +6,7 @@ import com.ssafy.solive.api.article.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.article.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.article.request.ArticleReportPostReq;
 import com.ssafy.solive.api.article.response.ArticleFindRes;
-import com.ssafy.solive.common.exception.FileIOException;
 import com.ssafy.solive.common.exception.NoDataException;
-import com.ssafy.solive.common.util.S3Uploader;
 import com.ssafy.solive.common.model.FileDto;
 import com.ssafy.solive.common.util.FileUploader;
 import com.ssafy.solive.db.entity.Article;
@@ -142,12 +140,7 @@ public class ArticleServiceImpl implements ArticleService {
             log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString());
         }
         Article article = articleRepository.findById(modifyInfo.getArticleId())
-<<<<<<< backend/src/main/java/com/ssafy/solive/api/article/service/ArticleServiceImpl.java
             .orElseThrow(NoDataException::new);
-=======
-            .orElseThrow(IllegalArgumentException::new);
-
->>>>>>> backend/src/main/java/com/ssafy/solive/api/article/service/ArticleServiceImpl.java
         // 현재 로그인 유저의 id와 글쓴이의 id가 일치할 때
         if (article.getUser().getId().equals(modifyInfo.getUserId())) {
 
