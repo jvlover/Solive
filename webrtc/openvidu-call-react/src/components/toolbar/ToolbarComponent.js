@@ -32,16 +32,6 @@ export default class ToolbarComponent extends Component {
         this.toggleFullscreen = this.toggleFullscreen.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
         this.toggleChat = this.toggleChat.bind(this);
-        this.stopRecording = this.stopRecording.bind(this);
-        this.startRecording = this.startRecording.bind(this);
-    }
-
-    startRecording() {
-        this.props.startRecordng();
-    }
-
-    stopRecording() {
-        this.props.stopRecording();
     }
 
     micStatusChanged() {
@@ -79,63 +69,6 @@ export default class ToolbarComponent extends Component {
     toggleChat() {
         this.props.toggleChat();
     }
-
-//     // httprequest 보냅니다
-//     httpRequest(method, url, body, errorMsg, callback) {
-//         const http = new XMLHttpRequest();
-//         http.open(method, url, true);
-//         http.setRequestHeader('Content-type', 'application/json');
-//         http.addEventListener('readystatechange', processRequest, false);
-//         http.send(JSON.stringify(body));
-//
-//         function processRequest() {
-//             if (http.readyState === 4) {
-//                 if (http.status === 200) {
-//                     try {
-//                         callback(JSON.parse(http.responseText));
-//                     } catch (e) {
-//                         callback(e);
-//                     }
-//                 } else {
-//                     console.warn(errorMsg + ' (' + http.status + ')');
-//                     console.warn(http.responseText);
-//                 }
-//             }
-//         }
-//     }
-//
-//     // 녹화 끝냅니다
-//     stopRecording() {
-//         this.httpRequest(
-//             'POST',
-//             'recording-node/api/recording/stop', {
-//                 recording: this.props.recordingId,
-//             },
-//             '녹화 중지 오류 발생',
-//             res => {
-//                 console.log(res);
-//             }
-//         );
-//     }
-//
-// // 녹화 시작합니다
-//     startRecording() {
-//         console.log(this.props.connectionId + "세션아이디입니다")
-//         this.httpRequest(
-//             'POST',
-//             'recording-node/api/recording/start', {
-//                 session: this.props.connectionId,
-//                 outputMode: "COMPOSED",
-//                 hasAudio: true,
-//                 hasVideo: true
-//             },
-//             '녹화 시작 오류 발생', // 오류났을 때 메시지
-//             res => {
-//                 console.log(res);
-//                 this.state.recordingId = res.id;
-//             }
-//         )
-//     }
 
     render() {
         const sessionId = this.props.sessionId;
@@ -235,11 +168,6 @@ export default class ToolbarComponent extends Component {
                         >
                             <PowerSettingsNew/>
                         </IconButton>
-
-                        <button onClick={this.startRecording}> 녹화시작</button>
-                        <button onClick={this.stopRecording}> 녹화 끝</button>
-
-
                         {/*채팅창 버튼*/}
                         <IconButton
                             color="inherit"

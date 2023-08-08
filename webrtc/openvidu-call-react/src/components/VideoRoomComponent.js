@@ -31,7 +31,6 @@ class VideoRoomComponent extends Component {
         this.remotes = [];
         this.localUserAccessAllowed = false;
         this.recording = false;
-        this.publisher = undefined;
         this.state = {
             sessionId: sessionName,
             myUserName: userName,
@@ -40,7 +39,6 @@ class VideoRoomComponent extends Component {
             subscribers: [],
             chatDisplay: "none",
             currentVideoDevice: undefined,
-            recordingId: "",
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -56,7 +54,7 @@ class VideoRoomComponent extends Component {
         this.toggleChat = this.toggleChat.bind(this);
         this.checkNotification = this.checkNotification.bind(this);
         this.checkSize = this.checkSize.bind(this);
-        this.startRecording = this.startRecording.bind(this);
+        this.stopRecording = this.stopRecording.bind(this);
     }
 
     // 컴포넌트가 마운트될 때 초기화 작업을 수행합니다.
@@ -180,7 +178,7 @@ class VideoRoomComponent extends Component {
 // 오디오 장치는 안가져와도 되는지?
 // 비디오, 오디오 없는 사람도 if로 조건문 넣기
         // 기본 publisher를 설정합니다.
-        this.publisher = this.OV.initPublisher(undefined, {
+        const publisher = this.OV.initPublisher(undefined, {
             audioSource: undefined,
             videoSource: videoDevices[0].deviceId,
             publishAudio: localUser.isAudioActive(),
@@ -192,9 +190,9 @@ class VideoRoomComponent extends Component {
 
         // 만약 session이 publish 중이라면
         if (this.state.session.capabilities.publish) {
-            this.publisher.on("accessAllowed", () => {
+            publisher.on("accessAllowed", () => {
                 // accessAllowed 이벤트 만들어줍니다, publisher를 세션에 발행합니다.
-                this.state.session.publish(this.publisher).then(() => {
+                this.state.session.publish(publisher).then(() => {
                     this.updateSubscribers();
                     this.localUserAccessAllowed = true;
                     if (this.props.joinSession) {
@@ -207,7 +205,7 @@ class VideoRoomComponent extends Component {
         localUser.setNickname(this.state.myUserName);
         localUser.setConnectionId(this.state.session.connection.connectionId);
         localUser.setScreenShareActive(false);
-        localUser.setStreamManager(this.publisher);
+        localUser.setStreamManager(publisher);
         this.subscribeToUserChanged();
         this.subscribeToStreamDestroyed();
         this.sendSignalUserChanged({
@@ -221,7 +219,7 @@ class VideoRoomComponent extends Component {
                 .getStreamManager()
                 .on("streamPlaying", (e) => {
                     this.updateLayout();
-                    this.publisher.videos[0].video.parentElement.classList.remove(
+                    publisher.videos[0].video.parentElement.classList.remove(
                         "custom-class"
                     );
                 });
@@ -257,6 +255,8 @@ class VideoRoomComponent extends Component {
 
     // 세션에서 퇴장합니다.
     leaveSession() {
+        this.stopRecording();
+
         const mySession = this.state.session;
 
         if (mySession) {
@@ -459,42 +459,41 @@ class VideoRoomComponent extends Component {
         // 파이어폭스면 window 아니면 screen
         const videoSource =
             navigator.userAgent.indexOf("Firefox") !== -1 ? "window" : "screen";
-        this.publisher.addVideoElement(videoSource);
         // publisher 객체를 초기화합니다. 이 때 공유할 videoSource와 화면과 소리를 공유할지 말지 옵션 설정합니다.
-        // const publisher = this.OV.initPublisher(
-        //     undefined,
-        //     {
-        //         videoSource: videoSource,
-        //         publishAudio: localUser.isAudioActive(),
-        //         publishVideo: localUser.isVideoActive(),
-        //         mirror: false,
-        //     },
-        // 오류 발생 시 처리
-        // (error) => {
-        //     if (error && error.name === "SCREEN_EXTENSION_NOT_INSTALLED") {
-        //         this.setState({showExtensionDialog: true});
-        //     } else if (
-        //         error &&
-        //         error.name === "SCREEN_SHARING_NOT_SUPPORTED"
-        //     ) {
-        //         alert("Your browser does not support screen sharing");
-        //     } else if (
-        //         error &&
-        //         error.name === "SCREEN_EXTENSION_DISABLED"
-        //     ) {
-        //         alert("You need to enable screen sharing extension");
-        //     } else if (error && error.name === "SCREEN_CAPTURE_DENIED") {
-        //         alert(
-        //             "You need to choose a window or application to share"
-        //         );
-        //     }
-        // }
-        // );
+        const publisher = this.OV.initPublisher(
+            undefined,
+            {
+                videoSource: videoSource,
+                publishAudio: localUser.isAudioActive(),
+                publishVideo: localUser.isVideoActive(),
+                mirror: false,
+            },
+            // 오류 발생 시 처리
+            (error) => {
+                if (error && error.name === "SCREEN_EXTENSION_NOT_INSTALLED") {
+                    this.setState({showExtensionDialog: true});
+                } else if (
+                    error &&
+                    error.name === "SCREEN_SHARING_NOT_SUPPORTED"
+                ) {
+                    alert("Your browser does not support screen sharing");
+                } else if (
+                    error &&
+                    error.name === "SCREEN_EXTENSION_DISABLED"
+                ) {
+                    alert("You need to enable screen sharing extension");
+                } else if (error && error.name === "SCREEN_CAPTURE_DENIED") {
+                    alert(
+                        "You need to choose a window or application to share"
+                    );
+                }
+            }
+        );
         // 화면 공유 허락되었을 때 한번만 실행
-        this.publisher.once("accessAllowed", () => {
+        publisher.once("accessAllowed", () => {
             // 이미 있던 streamManager unpublish하고 새로 streamManager 생성 후 발행
             this.state.session.unpublish(localUser.getStreamManager());
-            localUser.setStreamManager(this.publisher);
+            localUser.setStreamManager(publisher);
             this.state.session
             .publish(localUser.getStreamManager())
             .then(() => {
@@ -509,9 +508,9 @@ class VideoRoomComponent extends Component {
             });
         });
         // 화면 공유 스트림이 재생될 때 실행 -> 레이아웃 업데이트
-        this.publisher.on("streamPlaying", () => {
+        publisher.on("streamPlaying", () => {
             this.updateLayout();
-            this.publisher.videos[0].video.parentElement.classList.remove(
+            publisher.videos[0].video.parentElement.classList.remove(
                 "custom-class"
             );
         });
@@ -596,28 +595,15 @@ class VideoRoomComponent extends Component {
         }
     }
 
-    // 녹화 시작합니다
-    startRecording() {
+    // 녹화 끝냅니다
+    stopRecording() {
         const res = axios.post(
-            APPLICATION_SERVER_URL + "api/recording/start", {
+            APPLICATION_SERVER_URL + "api/recording/stop", {
                 sessionId: this.state.sessionId
             }, {
                 headers: {"Content-Type": "application/json"},
             }
         );
-        console.log(res + "이거 녹화시작 res 에용")
-    }
-
-    // 녹화 끝냅니다
-    stopRecording() {
-        const res = axios.post(
-            APPLICATION_SERVER_URL + "api/recording/stop", {
-                recordingId: this.state.recordingId
-            }, {
-                headers: {"Content-Type": "application/json"},
-            }
-        );
-        console.log(res + "이거 녹화 중지 res에요")
     }
 
     render() {
@@ -638,7 +624,6 @@ class VideoRoomComponent extends Component {
                     toggleFullscreen={this.toggleFullscreen}
                     leaveSession={this.leaveSession}
                     toggleChat={this.toggleChat}
-                    startRecordng={this.startRecording}
                     stopRecording={this.stopRecording}
                 />
 
@@ -711,19 +696,19 @@ class VideoRoomComponent extends Component {
      * more about the integration of OpenVidu in your application server.
      */
     async getToken() {
-        const sessionId = await this.createSession(this.state.sessionId);
-        return await this.createToken(sessionId);
+        this.state.sessionId = await this.createSession(this.state.sessionId);
+        return await this.createToken(this.state.sessionId);
     }
 
-    async createSession(sessionId) {
+    async createSession(sessionProperties) {
         const response = await axios.post(
             APPLICATION_SERVER_URL + "api/sessions",
-            {customSessionId: sessionId},
+            {},
             {
                 headers: {"Content-Type": "application/json"},
             }
         );
-        return response.data; // The sessionId
+        return response.data; // 세션아이디 반환합니다.
     }
 
     async createToken(sessionId) {

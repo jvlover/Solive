@@ -1,7 +1,14 @@
 // .env 파일을 읽어와 환경 변수를 설정합니다. CONFIG 환경 변수가 존재하면 해당 파일을 사용하고, 그렇지 않으면 기본적으로 빈 객체를 사용합니다.
 require("dotenv").config(
     !!process.env.CONFIG ? {path: process.env.CONFIG} : {});
-
+const sessionProperties = {
+    recordingMode: "ALWAYS",
+    defaultRecordingProperties: {
+        outputMode: "COMPOSED",
+        resolution: "640x480",
+        frameRate: 30
+    }
+};
 // Express 애플리케이션을 생성합니다.
 const express = require("express");
 const bodyParser = require("body-parser"); // 요청의 본문을 파싱하기 위한 미들웨어
@@ -45,7 +52,7 @@ server.listen(SERVER_PORT, () => {
 
 // "/api/sessions" 경로로 POST 요청이 오면 OpenVidu 에서 새 세션을 생성하고 세션 ID를 반환합니다.
 app.post("/api/sessions", async (req, res) => {
-    const session = await openvidu.createSession(req.body);
+    const session = await openvidu.createSession(sessionProperties);
     res.send(session.sessionId);
 });
 
@@ -63,27 +70,9 @@ app.post("/api/sessions/:sessionId/connections", async (req, res) => {
     }
 });
 
-app.post("/api/recording/start", function (req, res) {
-    const recordingProperties = {
-        outputMode: "COMPOSED",
-        hasAudio: true,
-        hasVideo: true,
-        resolution: '640x480',
-        frameRate: 30,
-    }
-    const sessionId = req.body.sessionId;
-    console.log("Starting recording | {sessionId}=" + sessionId);
-
-    openvidu.startRecording(sessionId, recordingProperties)
-    .then(recording => res.status(200).send(recording))
-    .catch(error => res.status(400).send(error.message));
-});
-
 // Stop recording
 app.post("/api/recording/stop", function (req, res) {
-    const recordingId = req.body.recording;
-    console.log("Stopping recording | {recordingId}=" + recordingId);
-
+    const recordingId = req.body.sessionId;
     openvidu.stopRecording(recordingId)
     .then(recording => res.status(200).send(recording))
     .catch(error => res.status(400).send(error.message));
