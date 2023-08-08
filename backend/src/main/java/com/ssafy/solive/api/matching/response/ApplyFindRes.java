@@ -2,8 +2,8 @@ package com.ssafy.solive.api.matching.response;
 
 import lombok.Data;
 
-/*
- *  유저(학생)가 강사들의 문제 풀이 지원 신청을 검색한 API의 결과 Response
+/**
+ * 유저(학생)가 강사들의 문제 풀이 지원 신청을 검색한 API의 결과 Response
  */
 @Data
 public class ApplyFindRes {

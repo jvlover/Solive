@@ -17,8 +17,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-/*
- *  Querydsl을 위한 Matched Repository 구현
+/**
+ * Querydsl을 위한 Matched Repository 구현
  */
 @Slf4j
 @Repository
@@ -30,9 +30,10 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    /*
-     *  유저(강사)가 자신의 매칭 이력을 검색하기 위한 Query
-     *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+    /**
+     * 유저(강사)가 자신의 매칭 이력을 검색하기 위한 Query
+     *
+     * @param findCondition : 매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @Override
     public List<MatchedFindMineRes> findMyMatching(MatchedFindMineGetReq findCondition) {
@@ -51,7 +52,7 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
                 question.matchingState.as("matchingState")))
             .from(matched)
             .leftJoin(masterCode).on(masterCode.id.eq(matched.question.masterCode.id))
-            .leftJoin(question).on(question.id.eq(matched.question.id))
+            .leftJoin(matched.question, question).on(question.id.eq(matched.question.id))
             .where(teacherIdEq(findCondition.getUserId()), mastercodeBetween(code),
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
@@ -59,7 +60,7 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
             .fetch();
     }
 
-    /*
+    /**
      * masterCode Range 처리
      */
     private BooleanExpression mastercodeBetween(int code) {
@@ -74,38 +75,35 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
         }
     }
 
-    /*
-     *  keyword 검색. 검색어 없으면 키워드 없이 검색
+    /**
+     * keyword 검색. 검색어 없으면 키워드 없이 검색
      */
     private BooleanExpression keywordSearch(String keyword) {
         return keyword == null ? null : question.title.contains(keyword);
     }
 
-    /*
-     *  문제 시간 순 정렬
-     *  "TIME_ASC" : 시간 오름차순 정렬
-     *  "TIME_DESC" : 시간 내림차순 정렬
+    /**
+     * 문제 시간 순 정렬
      */
     private OrderSpecifier<LocalDateTime> timeSort(String sort) {
-        if (sort.equals("TIME_ASC")) {
+        if (sort.equals("TIME_ASC")) {  // "TIME_ASC" : 시간 오름차순 정렬
             return question.time.asc();
-        } else {
+        } else {    // "TIME_DESC" : 시간 내림차순 정렬
             return question.time.desc();
         }
     }
 
-    /*
-     *  teacher id로 본인이 지원한 question 조회하기 위한 where절에서 사용
+    /**
+     * teacher id로 본인이 지원한 question 조회하기 위한 where 절에서 사용
      */
     private BooleanExpression teacherIdEq(Long id) {
         return teacher.id.eq(id);
     }
 
-    /*
-     *  question 조회할 때 matchingState 검색 조건 반영하여 where절에서 사용
+    /**
+     * question 조회할 때 matchingState 검색 조건 반영하여 where 절에서 사용
      */
     private BooleanExpression matchingStateEq(Integer id) {
         return question.matchingState.eq(id);
     }
-
 }

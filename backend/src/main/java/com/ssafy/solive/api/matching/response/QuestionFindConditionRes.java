@@ -3,8 +3,8 @@ package com.ssafy.solive.api.matching.response;
 import java.time.LocalDateTime;
 import lombok.Data;
 
-/*
- *  문제 검색 API에 대한 Response
+/**
+ * 문제 검색 API에 대한 Response
  */
 @Data
 public class QuestionFindConditionRes {

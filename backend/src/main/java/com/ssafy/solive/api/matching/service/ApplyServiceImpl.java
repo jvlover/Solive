@@ -18,16 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/*
- *  강사가 학생이 등록한 문제에 지원할 때 필요한 API 서비스
+/**
+ * 강사가 학생이 등록한 문제에 지원할 때 필요한 API 서비스
  */
-
 @Slf4j
 @Transactional
 @Service
 public class ApplyServiceImpl implements ApplyService {
 
-    // Spring Data Jpa 사용을 위한 Repository들
+    // Spring Data Jpa 사용을 위한 Repositories
     private final ApplyRepository applyRepository;
     private final TeacherRepository teacherRepository;
     private final QuestionRepository questionRepository;
@@ -44,16 +43,14 @@ public class ApplyServiceImpl implements ApplyService {
      * 강사가 학생이 등록한 문제에 대해서 풀이 지원 요청 Regist API에 대한 서비스
      *
      * @param registInfo : 문제 지원 신청할 때에 입력한 정보
-     * @return user : 요청을 받는 학생의 정보
+     * @return user : 요청을 받는 학생의 정보(알림 때문에 필요함)
      */
     @Override
     public User registApply(ApplyRegistPostReq registInfo) {
 
         log.info("ApplyService_registApply_start: " + registInfo.toString());
 
-        /*
-         *  registInfo를 바탕으로 Apply Entity 생성 시작
-         */
+        // registInfo를 바탕으로 Apply Entity 생성 시작
         Teacher teacher = teacherRepository.findById(registInfo.getTeacherId())
             .orElseThrow(NoDataException::new);
         Question question = questionRepository.findById(registInfo.getQuestionId())
@@ -77,23 +74,18 @@ public class ApplyServiceImpl implements ApplyService {
         // 요청을 받는 학생에게 알림을 전송하기 위해 요청 받게 되는 학생의 정보 return
         User user = question.getStudent();
 
-        /*
-         *  생성한 Apply Entity를 DB에 insert 완료
-         */
-
+        // 생성한 Apply Entity를 DB에 insert 완료
         log.info("ApplyService_registApply_end: " + user.toString());
-
         return user;
     }
 
-    /*
-     *  delete API에 대한 서비스
+    /**
+     * Apply delete(지원 취소) API에 대한 서비스
+     *
+     * @param deleteInfo : 요청 취소하기 위해 필요한 정보
      */
     @Override
     public boolean deleteApply(ApplyDeletePutReq deleteInfo) {
-        /*
-         *  deleteInfo : 신청 취소하기 위해 필요한 정보
-         */
 
         log.info("ApplyService_deleteApply_start: " + deleteInfo.toString());
 
@@ -111,26 +103,26 @@ public class ApplyServiceImpl implements ApplyService {
         return false;
     }
 
-    /*
-     *  유저(학생)가 자신이 등록한 문제에 어떤 강사들이 지원 신청했는지 검색하기 위한 API 서비스
-     *  정렬 / 검색 기준 : 예상 풀이시간순, 가격순, 평점순 정렬, 강사의 선호 과목과 문제의 과목 일치 여부 선택
-     *  Response : 강사명, 강사 프로필 사진, 강사의 선호 과목, 강사가 달아 놓은 SP, 예측 시간, 강사 평점
+    /**
+     * 유저(학생)가 자신이 등록한 문제에 어떤 강사들이 지원 신청했는지 검색하기 위한 API 서비스
+     *
+     * @param findCondition : 검색 조건. 정렬/검색 기준 : 예상 풀이시간순, 가격순, 평점순 정렬, 강사의 선호 과목과 문제의 과목 일치 여부 선택
+     * @return findConditionRes : 강사명, 강사 프로필 사진, 강사의 선호 과목, 강사가 달아 놓은 SP, 예측 시간, 강사 평점
      */
     @Override
     public List<ApplyFindRes> findByCondition(
         ApplyFindGetReq findCondition) {
-        /*
-         *  findCondition : 검색 조건
-         */
 
         log.info("ApplyService_findByCondition_start: " + findCondition.toString());
 
         List<ApplyFindRes> findConditionRes = applyRepository.findByCondition(
             findCondition);
 
-        log.info("ApplyService_findByCondition_end: " + findConditionRes.toString());
-
+        if (findConditionRes.size() == 0) {
+            log.info("ApplyService_findByCondition_end: No Result");
+        } else {
+            log.info("ApplyService_findByCondition_end: " + findConditionRes);
+        }
         return findConditionRes;
     }
-
 }

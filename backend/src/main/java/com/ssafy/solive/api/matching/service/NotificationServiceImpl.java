@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 /**
  * 매칭 과정 중 알림 API 서비스
  */
-
 @Slf4j
 @Transactional
 @Service
@@ -47,6 +46,15 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public SseEmitter subscribe(Long userId, String lastEventId) {
+
+        if (lastEventId.isEmpty()) {
+            log.info("NotificationService_subscribe_start: userId = " + userId.toString()
+                + "\n lastEventId is Null");
+        } else {
+            log.info("NotificationService_subscribe_start: userId = " + userId.toString()
+                + "\n lastEventId = " + lastEventId);
+        }
+
         // emitterId 생성
         String emitterId = includeTimeToEmitterId(Long.toString(userId));
         // SseEmitter 객체 생성
@@ -68,14 +76,15 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         // 생성된 SseEmitter 객체 클라이언트에게 전달. 이를 통해서 서버로부터 알림 수신 및 처리
+        log.info("NotificationService_subscribe_end: success");
         return sseEmitter;
     }
 
     /**
-     * SseEmitter를 식별하는 emitterId를 생성하기 위한 함수. userId에 emitter 생성 시간 붙여서 생성 시간 붙이는 이유 : 데이터가 유실 될 경우
-     * 그 시점을 파악하기 용이, 데이터가 언제 보내졌는지도 알 수 있다
+     * SseEmitter를 식별하는 emitterId를 생성하기 위한 함수. userId에 emitter 생성 시간 붙여서 생성 시간 붙이는 이유 : 데이터가 유실 될
+     * 경우, 그 시점을 파악하기 용이, 데이터가 언제 보내졌는지도 알 수 있다
      *
-     * @param userId : 유저 PK를 스트링으로 변환
+     * @param userId : 유저 PK를 시간을 붙여서 스트링으로 변환
      * @return emitterID : SseEmitter 식별
      */
     @Override
@@ -86,10 +95,10 @@ public class NotificationServiceImpl implements NotificationService {
     /**
      * SseEmitter 객체를 사용하여 SSE를 클라이언트에게 전송
      *
-     * @param sseEmitter SseEmitter 객체
-     * @param eventId    eventId
-     * @param emitterId  emitter의 id
-     * @param data       data
+     * @param sseEmitter : SseEmitter 객체
+     * @param eventId    : event Id
+     * @param emitterId  : emitter의 id
+     * @param data       : data
      */
     @Override
     public void sendNotification(SseEmitter sseEmitter, String eventId, String emitterId,
@@ -118,10 +127,10 @@ public class NotificationServiceImpl implements NotificationService {
     /**
      * 미수신한 데이터 전송
      *
-     * @param lastEventId
-     * @param userId
-     * @param emitterId
-     * @param sseEmitter
+     * @param lastEventId : 마지막 이벤트 ID
+     * @param userId      : 유저 ID
+     * @param emitterId   : emitter ID
+     * @param sseEmitter  : sseEmitter
      */
     @Override
     public void sendLostData(String lastEventId, String userId, String emitterId,
@@ -136,12 +145,16 @@ public class NotificationServiceImpl implements NotificationService {
     /**
      * 알림을 생성한 후 지정된 클라이언트에게 알림 전송
      *
-     * @param user    알림을 받을 유저
-     * @param title   알림 제목
-     * @param content 알림 내용
+     * @param user    : 알림을 받을 유저
+     * @param title   : 알림 제목
+     * @param content : 알림 내용
      */
     @Override
     public void send(User user, String title, String content) {
+
+        log.info("NotificationService_send_start: user = " + user.toString() + "\n title = "
+            + title + "\n content = " + content);
+
         Notification notification = notificationRepository.save(Notification.builder()
             .user(user)
             .title(title)
@@ -161,6 +174,8 @@ public class NotificationServiceImpl implements NotificationService {
                         .build());
             }
         );
+
+        log.info("NotificationService_send_end: success");
     }
 
     /**
@@ -172,8 +187,15 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<NotificationFindRes> findNotification(Long userId) {
 
+        log.info("NotificationService_findNotification_start: " + userId.toString());
+
         List<NotificationFindRes> findResList = notificationRepository.findNotification(userId);
 
+        if (findResList.size() == 0) {
+            log.info("NotificationService_findNotification_end: No Result");
+        } else {
+            log.info("NotificationService_findNotification_end: " + findResList);
+        }
         return findResList;
     }
 
@@ -185,10 +207,14 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void modifyNotification(NotificationModifyPutReq modifyInfo) {
 
+        log.info("NotificationService_modifyNotification_start: " + modifyInfo.toString());
+
         Notification notification = notificationRepository.findById(modifyInfo.getId())
             .orElseThrow(NoDataException::new);
 
         notification.modifyReadAt();
+
+        log.info("NotificationService_modifyNotification_end: success");
     }
 
     /**

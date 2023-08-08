@@ -23,16 +23,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/*
- *  학생이 강사가 지원한 요청들 중 하나를 수락한 후부터의 과정들 API 서비스
+/**
+ * 학생이 강사가 지원한 요청들 중 하나를 수락한 후부터의 과정들 API 서비스
  */
-
 @Slf4j
 @Transactional
 @Service
 public class MatchedServiceImpl implements MatchedService {
 
-    // Spring Data Jpa 사용을 위한 Repository들
+    // Spring Data Jpa 사용을 위한 Repositories
     private final ApplyRepository applyRepository;
     private final TeacherRepository teacherRepository;
     private final QuestionRepository questionRepository;
@@ -54,16 +53,14 @@ public class MatchedServiceImpl implements MatchedService {
      * 학생이 강사 요청 수락하는 Regist API에 대한 서비스
      *
      * @param registInfo : 어떤 학생이 어떤 apply를 수락했는가
-     * @return teacher : 학생이 강사 요청을 수락했을 때, 해당 사항ㅇ 대
+     * @return teacher : 학생이 강사 요청을 수락했을 때, 알림을 받게 될 강사
      */
     @Override
     public User registMatched(MatchedRegistPostReq registInfo) {
 
         log.info("MatchedService_registMatched_start: " + registInfo.toString());
 
-        /*
-         *  registInfo를 바탕으로 Matched Entity 생성 시작
-         */
+        // registInfo를 바탕으로 Matched Entity 생성 시작
         Apply apply = applyRepository.findById(registInfo.getApplyId())
             .orElseThrow(NoDataException::new);
         Student student = studentRepository.findById(registInfo.getStudentId())
@@ -90,26 +87,20 @@ public class MatchedServiceImpl implements MatchedService {
         // 해당 question의 matching_state를 1에서 2로 바꿔야 함
         question.modifyMatchingState(2);
 
-        /*
-         *  생성한 Matched Entity를 DB에 insert 완료
-         */
-
+        // 생성한 Matched Entity를 DB에 insert 완료
         log.info("MatchedService_registMatched_end: " + teacher.toString());
-
-        // 매칭이 성사되었음을 강사에게 알림을 보내야 함
+        // 매칭이 성사되었다는 알림을 받을 강사
         return teacher;
     }
 
-    /*
-     *  유저가 자신이 등록했던 문제, 매칭 이력을 검색하기 위한 API
-     *  매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
+    /**
+     * 유저가 자신이 등록했던 문제, 매칭 이력을 검색하기 위한 API
+     *
+     * @param findCondition : 검색 조건. 매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @Override
     public List<MatchedFindMineRes> findMyMatching(
         MatchedFindMineGetReq findCondition) {
-        /*
-         *  findCondition : 검색 조건
-         */
 
         log.info("MatchedService_findMyMatching_start: " + findCondition.toString());
 
@@ -126,8 +117,11 @@ public class MatchedServiceImpl implements MatchedService {
                 findConditionRes.get(i).setImagePathName(questionImage);
             }
 
-            log.info("MatchedService_findMyMatching_end: " + findConditionRes.toString());
-
+            if (findConditionRes.size() == 0) {
+                log.info("MatchedService_findMyMatching_end: No Result");
+            } else {
+                log.info("MatchedService_findMyMatching_end: " + findConditionRes);
+            }
             return findConditionRes;
 
         } else {    // 강사가 자신의 매칭 이력을 검색하려는 경우
@@ -151,8 +145,11 @@ public class MatchedServiceImpl implements MatchedService {
                 findConditionRes.get(i).setImagePathName(questionImage);
             }
 
-            log.info("MatchedService_findMyMatching_end: " + findConditionRes.toString());
-
+            if (findConditionRes.size() == 0) {
+                log.info("MatchedService_findMyMatching_end: No Result");
+            } else {
+                log.info("MatchedService_findMyMatching_end: " + findConditionRes);
+            }
             return findConditionRes;
         }
     }

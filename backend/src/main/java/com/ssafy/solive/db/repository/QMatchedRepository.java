@@ -4,8 +4,8 @@ import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import java.util.List;
 
-/*
- *  Querydsl을 위한 Matched Repository interface
+/**
+ * Querydsl을 위한 Matched Repository interface
  */
 public interface QMatchedRepository {
 

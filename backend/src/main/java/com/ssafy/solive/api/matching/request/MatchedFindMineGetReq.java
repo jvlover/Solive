@@ -2,13 +2,11 @@ package com.ssafy.solive.api.matching.request;
 
 import lombok.Data;
 
-/*
- *  마이페이지에서 자신의 매칭 검색 API 조건 Request
+/**
+ * 마이페이지에서 자신의 매칭 검색 API 조건 Request
  */
 @Data
 public class MatchedFindMineGetReq {
-
-    // TODO: 검색 조건에 관해서 프론트와 협의 필요. 무엇을 어떤 형식으로 주고 받을 것인지
 
     // 검색하는 유저 아이디
     Long userId;

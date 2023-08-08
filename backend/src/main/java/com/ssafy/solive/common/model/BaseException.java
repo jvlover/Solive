@@ -11,7 +11,7 @@ public class BaseException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    /*
+    /**
      * Errorcode 외에 별도의 메시지가 필요할 경우 추가하여 작성 가능
      */
     public BaseException(String message, ErrorCode errorCode) {

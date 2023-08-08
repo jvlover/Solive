@@ -3,8 +3,8 @@ package com.ssafy.solive.api.matching.response;
 import java.time.LocalDateTime;
 import lombok.Data;
 
-/*
- *  마이페이지에서 자신이 등록한 문제 검색 API Response
+/**
+ * 마이페이지에서 자신이 등록한 문제 검색 API Response
  */
 @Data
 public class MatchedFindMineRes {
