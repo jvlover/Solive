@@ -40,4 +40,6 @@ public interface UserService {
     void addFavorite(Long studentId, Long teacherId);
 
     void deleteFavorite(Long studentId, Long teacherId);
+
+    boolean isLogout(String accessToken);
 }

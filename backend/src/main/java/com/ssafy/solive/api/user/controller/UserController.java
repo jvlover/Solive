@@ -101,7 +101,6 @@ public class UserController {
         Long userId = userService.getUserIdByToken(accessToken);
         log.info("UserController_logout_start: " + userId);
 
-        // TODO: Token 관련 처리해야함!!!
         userService.logout(userId);
         log.info("UserController_logout_end: success");
         return CommonResponse.success(SUCCESS);

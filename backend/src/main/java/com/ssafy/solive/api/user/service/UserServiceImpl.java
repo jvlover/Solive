@@ -399,4 +399,19 @@ public class UserServiceImpl implements UserService {
         favorite.addDeleteAt();
         log.info("UserService_deleteFavorite_end");
     }
+
+    @Override
+    public boolean isLogout(String accessToken) {
+        log.info("UserService_isLogout_start: " + accessToken);
+        Long userId = getUserIdByToken(accessToken);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        if (user.getMasterCodeId().getId() == 11) { // 로그아웃 이면
+            log.info("UserService_isLogout_end: true");
+            return true;
+        } else {
+            log.info("UserService_isLogout_end: false");
+            return false;
+        }
+    }
 }
