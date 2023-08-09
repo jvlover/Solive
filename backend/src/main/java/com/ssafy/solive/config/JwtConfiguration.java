@@ -70,8 +70,17 @@ public class JwtConfiguration {
     }
 
     public boolean checkToken(String token) {
+        log.info("==================== JwtConfiguration_checkToken_start ====================");
+        if (token == null) {
+            log.info("access-token이 존재하지 않습니다.");
+            log.info(
+                "==================== JwtConfiguration_checkToken_end : null ====================");
+            return false;
+        }
+
         try {
             Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(token);
+            log.info("==================== JwtConfiguration_checkToken_end ====================");
             return true; // token 이 유효하면 exception 발생을 안함
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
@@ -79,12 +88,14 @@ public class JwtConfiguration {
             log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) { // 우리 프로젝트에서는 이 경우만 고려
             log.info("만료된 JWT 토큰입니다.");
+            log.info("==================== JwtConfiguration_checkToken_end ====================");
             throw new JwtTokenExpiredException();
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
+        log.info("==================== JwtConfiguration_checkToken_end ====================");
         return false;
     }
 

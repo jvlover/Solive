@@ -50,7 +50,7 @@ public class UserController {
      *
      * @param registInfo 로그인 정보,
      */
-    @PostMapping()
+    @PostMapping("/auth")
     public CommonResponse<?> regist(@RequestBody UserRegistPostReq registInfo) {
         log.info("UserController_regist_start: " + registInfo.toString());
         User user = userService.registUser(registInfo);
@@ -111,7 +111,7 @@ public class UserController {
      * @param loginInfo 로그인 id, password
      * @return 토큰 및 상단바에 필요한 nickname 등 제공
      */
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public CommonResponse<?> login(@RequestBody UserLoginPostReq loginInfo) {
         log.info("UserController_login_start: " + loginInfo.toString());
         try {

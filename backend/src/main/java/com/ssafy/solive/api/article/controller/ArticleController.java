@@ -170,7 +170,7 @@ public class ArticleController {
     /*
      *  유저가 게시글의 상세 정보를 확인하기 위한 API
      */
-    @GetMapping("/{articleId}")
+    @GetMapping("/auth/{articleId}")
     public CommonResponse<?> find(@PathVariable Long articleId) {
         /*
          *  articleId : 게시글의 Id
@@ -193,7 +193,7 @@ public class ArticleController {
      *  검색어, 시간 순 정렬 조건 선택 가능
      *  keyword를 공백으로 보내면 전체 검색
      */
-    @GetMapping
+    @GetMapping("/auth")
     public CommonResponse<?> findAll(@RequestParam String keyword, Pageable pageable) {
         /*
          *  keyword : 검색어
