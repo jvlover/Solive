@@ -1,8 +1,9 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
 import experience from '../../../assets/experience.png';
 import { getNewAccessToken, getProfile, modifyProfile } from '../../../api';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../../recoil/user/userState';
+import { Card, CardBody } from '@material-tailwind/react';
 // import { userState } from '../../../recoil/user/userState';
 // import { useRecoilValue } from 'recoil';
 
@@ -23,6 +24,8 @@ const ProfilePage = () => {
   });
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
   const [isModified, setIsModified] = useState(false);
+
+  const imageInput = useRef<HTMLInputElement>();
 
   useEffect(() => {
     const userProfile = async (accessToken: string): Promise<void> => {
@@ -92,85 +95,96 @@ const ProfilePage = () => {
     setIsModified(false);
   };
   return (
-    <div className="pt-20">
-      <div>
-        <h1 className="font-semibold ml-36">마이페이지</h1>
-      </div>
-      <hr className="h-1 mx-auto mt-4 bg-blue-200 border-none w-7/10" />
-      <div
-        className="mx-auto mt-8 h-[650px] w-[600px] p-6"
-        style={{ border: '2px solid #646CFF' }}
-      >
-        <div className="flex flex-col items-start">
-          <h3>프로필 이미지</h3>
-          <div className="flex flex-row w-full mt-6">
-            <div className="flex items-center w-1/2">
-              <img
-                src={userProfile.path || ''}
-                alt="profile"
-                style={{
-                  width: '96px',
-                  height: '128px',
-                  border: userProfile.path
-                    ? 'transparent'
-                    : '2px solid #646CFF',
-                }}
-              />
-            </div>
-            <div className="w-1/2">
-              <label className="text-blue-600 cursor-pointer">
-                프로필 이미지 변경
+    <div className="flex justify-center min-h-full min-w-fit">
+      <Card className="flex my-5 w-[80vh] min-w-[600px] min-h-[80vh]">
+        <CardBody>
+          <div className="p-6 mx-auto">
+            <div className="flex flex-col items-start">
+              <p className="font-bold">프로필 이미지</p>
+              <div className="flex flex-row w-full mt-3">
+                <div className="flex items-center mr-10">
+                  <img
+                    src={userProfile.path || ''}
+                    alt="profile"
+                    className={`w-[96px] h-[128px] ${
+                      userProfile.path
+                        ? 'border-transparent'
+                        : 'border-2 border-solid border-solive-200'
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p className="ml-3">프로필 이미지 변경</p>
+                  <div className="flex items-center justify-start mt-3">
+                    <input
+                      className="w-full p-2 border border-gray-300 rounded bg-opacity-30 bg-solive-200 min-w-[200px] min-h-[42px]"
+                      value={
+                        userProfile.path
+                          ? userProfile.path
+                          : '현재 등록된 사진이 없습니다.'
+                      }
+                      disabled
+                    ></input>
+                    <input
+                      type="file"
+                      onChange={handleImageChange}
+                      ref={imageInput}
+                      className="hidden"
+                    />
+                    <button
+                      className="ml-5 btn-primary px-0 w-[120px] h-[42px] flex items-center justify-center"
+                      onClick={() => imageInput.current.click()}
+                    >
+                      파일 찾기
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <label className="w-full mt-8 font-bold">
+                닉네임
                 <input
-                  type="file"
-                  onChange={handleImageChange}
-                  className="hidden"
+                  type="text"
+                  name="nickname"
+                  value={userProfile.nickname}
+                  onChange={handleChange}
+                  className="w-full p-2 mt-4 border border-gray-300 rounded bg-opacity-30 bg-solive-200"
+                />
+              </label>
+              <div className="flex items-center justify-between w-full mt-8">
+                <div className="flex items-center font-bold">경험치</div>
+                <div className="flex items-center">
+                  {userProfile.experience}
+                  <img
+                    src={experience}
+                    alt="experience"
+                    className="w-5 h-5 ml-2"
+                  />
+                </div>
+              </div>
+              <label className="w-full mt-8 font-bold">
+                자기소개
+                <textarea
+                  name="introduce"
+                  value={userProfile.introduce ? userProfile.introduce : ''}
+                  onChange={handleChange}
+                  className="w-full h-48 p-2 mt-4 border border-gray-300 rounded resize-none bg-solive-200 bg-opacity-30"
                 />
               </label>
             </div>
           </div>
-          <label className="w-full mt-8">
-            닉네임
-            <input
-              type="text"
-              name="nickname"
-              value={userProfile.nickname}
-              onChange={handleChange}
-              className="w-full p-2 mt-4 ml-4 border border-gray-300 rounded"
-            />
-          </label>
-          <div className="flex items-center justify-between w-full mt-4">
-            <div className="flex items-center">경험치</div>
-            <div className="flex items-center">
-              {userProfile.experience}
-              <img
-                src={experience}
-                alt="experience"
-                className="w-10 h-10 ml-2"
-              />
-            </div>
-          </div>
-          <label className="w-full mt-4">
-            자기소개
-            <textarea
-              name="introduce"
-              value={userProfile.introduce ? userProfile.introduce : ''}
-              onChange={handleChange}
-              className="w-full h-48 p-2 mt-4 border border-gray-300 rounded"
-            />
-          </label>
-        </div>
-      </div>
-      <form onSubmit={handleSubmit} className="flex justify-center">
-        <button
-          className={`mt-8 px-4 py-2 rounded w-64 h-12 ${
-            isModified ? 'bg-blue-600' : 'bg-gray-400'
-          }`}
-          type="submit"
-          disabled={!isModified}
-        >
-          저장하기
-        </button>
-      </form>
+          <form onSubmit={handleSubmit} className="flex justify-center">
+            <button
+              className={`mt-5 px-2 py-2 rounded w-2/3 h-12 text-blue-gray-800 ${
+                isModified ? 'bg-solive-200' : 'bg-gray-400'
+              }`}
+              type="submit"
+              disabled={!isModified}
+            >
+              저장하기
+            </button>
+          </form>
+        </CardBody>
+      </Card>
     </div>
   );
 };

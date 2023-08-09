@@ -252,7 +252,6 @@ export const getProfile = async (
     data: UserProfile;
   }
   try {
-    console.log(accessToken);
     const response = await axios.get<ProfileResponse>(BASE_URL + '/user', {
       headers: { 'access-token': accessToken },
     });

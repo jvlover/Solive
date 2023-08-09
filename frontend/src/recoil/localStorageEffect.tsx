@@ -8,7 +8,11 @@ const localStorageEffect =
       localStorage.removeItem(key);
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      if (window.location.pathname !== '/login') {
+      if (
+        window.location.pathname !== '/login' &&
+        window.location.pathname !== '/signup' &&
+        window.location.pathname !== '/'
+      ) {
         window.location.href = '/login';
       }
     }
