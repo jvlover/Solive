@@ -11,4 +11,6 @@ public class UserLoginPostRes {
     String refreshToken;
     Integer masterCodeId;
     String nickname;
+    Integer solvePoint;
+    String path; // 프로필 사진 경로
 }

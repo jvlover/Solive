@@ -52,6 +52,7 @@ public class JwtConfiguration {
     }
 
     private byte[] generateKey() {
+        log.info("JwtConfiguration_generate_start");
         byte[] key = null;
         try {
             key = SALT.getBytes("UTF-8");
@@ -62,21 +63,21 @@ public class JwtConfiguration {
                 log.error("Making JWT Key Error ::: {}", e.getMessage());
             }
         }
+        log.info("JwtConfiguration_generate_end: " + key);
         return key;
     }
 
     public boolean checkToken(String token) {
-        log.info("==================== JwtConfiguration_checkToken_start ====================");
+        log.info("JwtConfiguration_checkToken_start: " + token);
         if (token == null) {
             log.info("access-token이 존재하지 않습니다.");
-            log.info(
-                    "==================== JwtConfiguration_checkToken_end : null ====================");
+            log.info("JwtConfiguration_checkToken_end: false");
             return false;
         }
 
         try {
             Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(token);
-            log.info("==================== JwtConfiguration_checkToken_end ====================");
+            log.info("JwtConfiguration_checkToken_end: True");
             return true; // token 이 유효하면 exception 발생을 안함
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
@@ -84,24 +85,28 @@ public class JwtConfiguration {
             log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) { // 우리 프로젝트에서는 이 경우만 고려
             log.info("만료된 JWT 토큰입니다.");
-            log.info("==================== JwtConfiguration_checkToken_end ====================");
+            log.info("JwtConfiguration_checkToken_end: ExpiredJwtException");
             throw new JwtTokenExpiredException();
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
-        log.info("==================== JwtConfiguration_checkToken_end ====================");
+        log.info("JwtConfiguration_checkToken_end: false");
         return false;
     }
 
     public Long getUserId(String accessToken) {
+        log.info("JwtConfiguration_getUserId_start: " + accessToken);
         try {
-            return Long.valueOf(
+            Long userId = Long.valueOf(
                     Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(accessToken)
                             .getBody()
                             .get("userId").toString());
+            log.info("JwtConfiguration_getUserId_end: " + userId);
+            return userId;
         } catch (UnsupportedEncodingException e) {
+            log.info("JwtConfiguration_getUserId_end: UnsupportedEncodingException");
             throw new RuntimeException(e);
         }
     }

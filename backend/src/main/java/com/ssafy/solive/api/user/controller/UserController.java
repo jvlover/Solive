@@ -1,31 +1,19 @@
 package com.ssafy.solive.api.user.controller;
 
-import com.ssafy.solive.api.user.request.TeacherRatePostReq;
-import com.ssafy.solive.api.user.request.UserLoginPostReq;
-import com.ssafy.solive.api.user.request.UserModifyPasswordPutReq;
-import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
-import com.ssafy.solive.api.user.request.UserRegistPostReq;
+import com.ssafy.solive.api.user.request.*;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
 import com.ssafy.solive.api.user.service.UserService;
-import com.ssafy.solive.common.exception.user.UserNotFoundException;
 import com.ssafy.solive.common.model.CommonResponse;
-import com.ssafy.solive.db.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * 유저 관련 API 요청 처리를 위한 컨트롤러 정의.
@@ -53,15 +41,10 @@ public class UserController {
     @PostMapping("/auth")
     public CommonResponse<?> regist(@RequestBody UserRegistPostReq registInfo) {
         log.info("UserController_regist_start: " + registInfo.toString());
-        User user = userService.registUser(registInfo);
+        userService.registUser(registInfo);
 
-        if (user != null) {
-            log.info("UserController_regist_end: success");
-            return CommonResponse.success(SUCCESS);
-        } else {
-            log.info("UserController_regist_end: UserNotFoundException");
-            throw new UserNotFoundException();
-        }
+        log.info("UserController_regist_end: success");
+        return CommonResponse.success(SUCCESS);
     }
 
     /**
@@ -74,15 +57,11 @@ public class UserController {
     public CommonResponse<?> getUserProfile(HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_getUserProfile_start: " + userId);
 
         UserProfilePostRes userProfile = userService.getUserProfileByUserId(userId);
         log.info("UserController_getUserProfile_end: " + userProfile);
-        if (userProfile != null) {
-            return CommonResponse.success(userProfile);
-        } else {
-            // TODO: Exception 처리
-            return null;
-        }
+        return CommonResponse.success(userProfile);
     }
 
     /**
@@ -95,14 +74,11 @@ public class UserController {
     public CommonResponse<?> getUserPrivacy(HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_getUserPrivacy_start: " + userId);
 
         UserPrivacyPostRes userPrivacy = userService.getUserPrivacyByUserId(userId);
-        if (userPrivacy != null) {
-            return CommonResponse.success(userPrivacy);
-        } else {
-            // TODO: Exception 처리
-            return null;
-        }
+        log.info("UserController_getUserPrivacy_end: " + userPrivacy);
+        return CommonResponse.success(userPrivacy);
     }
 
     /**
@@ -114,27 +90,20 @@ public class UserController {
     @PostMapping("/auth/login")
     public CommonResponse<?> login(@RequestBody UserLoginPostReq loginInfo) {
         log.info("UserController_login_start: " + loginInfo.toString());
-        try {
-            UserLoginPostRes userLoginPostRes = userService.loginAndGetTokens(loginInfo);
-            // TODO: null이 아니라 PasswordMismatchException() 일때를 구현해야함
-            if (userLoginPostRes != null) {
-                return CommonResponse.success(userLoginPostRes);
-            } else {
-                return CommonResponse.fail(null, "Login Fail");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResponse.fail(null, "Login Exception");
-        }
+        UserLoginPostRes userLoginPostRes = userService.loginAndGetTokens(loginInfo);
+        log.info("UserController_login_end: " + userLoginPostRes);
+        return CommonResponse.success(userLoginPostRes);
     }
 
     @PutMapping("/logout")
     public CommonResponse<?> logout(HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_logout_start: " + userId);
 
         // TODO: Token 관련 처리해야함!!!
         userService.logout(userId);
+        log.info("UserController_logout_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -146,18 +115,16 @@ public class UserController {
      */
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> modifyProfile(@RequestPart UserModifyProfilePutReq userInfo,
-        @RequestPart(value = "files", required = false) List<MultipartFile> profilePicture,
-        HttpServletRequest request) {
+                                           @RequestPart(value = "files", required = false) List<MultipartFile> profilePicture,
+                                           HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_modifyProfile_start: " + userInfo + ", " + userId);
 
-        try {
-            userService.modifyUserProfile(userId, userInfo, profilePicture);
-            return CommonResponse.success(SUCCESS);
-        } catch (Exception e) {
-            // TODO: Exception 처리
-            return null;
-        }
+        userService.modifyUserProfile(userId, userInfo, profilePicture);
+        log.info("UserController_modifyProfile_end: success");
+        return CommonResponse.success(SUCCESS);
+
     }
 
     /**
@@ -168,17 +135,14 @@ public class UserController {
      */
     @PutMapping("/password")
     public CommonResponse<?> modifyPassword(@RequestBody UserModifyPasswordPutReq passwords,
-        HttpServletRequest request) {
+                                            HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_modifyPassword_start: " + passwords + ", " + userId);
 
-        try {
-            userService.modifyUserPassword(userId, passwords);
-            return CommonResponse.success(SUCCESS);
-        } catch (Exception e) {
-            // TODO: Exception 처리
-            return null;
-        }
+        userService.modifyUserPassword(userId, passwords);
+        log.info("UserController_modifyPassword_end: success");
+        return CommonResponse.success(SUCCESS);
     }
 
     /**
@@ -188,35 +152,13 @@ public class UserController {
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(HttpServletRequest request) {
-        try {
-            String accessToken = request.getHeader("access-token");
-            Long userId = userService.getUserIdByToken(accessToken);
-
-            userService.deleteUser(userId);
-            return CommonResponse.success(SUCCESS);
-        } catch (Exception e) {
-            // TODO: Exception 처리
-            e.printStackTrace();
-            return null;
-//            return new RuntimeException();
-        }
-    }
-
-    /**
-     * 임시라서 없어질 듯
-     *
-     * @param code    code
-     * @param request request
-     */
-    @PutMapping("/setcode")
-    public CommonResponse<?> setCode(Integer code, HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_delete_start: " + userId);
 
-        userService.setCode(userId, code);
-
+        userService.deleteUser(userId);
+        log.info("UserController_delete_end: success");
         return CommonResponse.success(SUCCESS);
-        // TODO: Exception 처리
     }
 
     /**
@@ -229,11 +171,12 @@ public class UserController {
     public CommonResponse<?> chargeSolvePoint(Integer solvePoint, HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_chargeSolvePoint_start: " + solvePoint + ", " + userId);
 
         userService.chargeSolvePoint(userId, solvePoint);
 
+        log.info("UserController_chargeSolvePoint_end: success");
         return CommonResponse.success(SUCCESS);
-        // TODO: Exception 처리
     }
 
     /**
@@ -246,11 +189,12 @@ public class UserController {
     public CommonResponse<?> cashoutSolvePoint(Integer solvePoint, HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_cashoutSolvePoint_start: " + solvePoint + ", " + userId);
 
         userService.cashOutSolvePoint(userId, solvePoint);
 
+        log.info("UserController_cashoutSolvePoint_end: success");
         return CommonResponse.success(SUCCESS);
-        // TODO: Exception 처리
     }
 
     /**
@@ -260,8 +204,10 @@ public class UserController {
      */
     @PutMapping("/rate")
     public CommonResponse<?> rateTeacher(@RequestBody TeacherRatePostReq ratingInfo) {
+        log.info("UserController_rateTeacher_start: " + ratingInfo);
         userService.rateTeacher(ratingInfo);
 
+        log.info("UserController_rateTeacher_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -274,30 +220,35 @@ public class UserController {
     @PostMapping("/refresh")
     public CommonResponse<?> recreateAccessToken(String refreshToken) {
         Long userId = userService.getUserIdByToken(refreshToken);
+        log.info("UserController_recreateAccessToken_start: " + userId);
         String accessToken = userService.recreateAccessToken(userId, refreshToken);
 
-        log.info("UserController_recreateAccessToken_end: accessToken: " + accessToken);
+        log.info("UserController_recreateAccessToken_end: " + accessToken);
         return CommonResponse.success(accessToken);
     }
 
     @PostMapping("/favorite/add")
     public CommonResponse<?> addFavorite(@RequestBody Long teacherId,
-        HttpServletRequest request) {
+                                         HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long studentId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_addFavorite_start: " + teacherId + studentId);
 
         userService.addFavorite(studentId, teacherId);
 
+        log.info("UserController_addFavorite_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
     @PutMapping("/favorite/delete")
     public CommonResponse<?> deleteFavorite(@RequestBody Long teacherId,
-        HttpServletRequest request) {
+                                            HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long studentId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_deleteFavorite_start: " + teacherId + studentId);
 
         userService.deleteFavorite(studentId, teacherId);
+        log.info("UserController_deleteFavorite_end: success");
         return CommonResponse.success(SUCCESS);
     }
 }

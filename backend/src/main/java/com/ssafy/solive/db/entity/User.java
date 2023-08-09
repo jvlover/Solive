@@ -2,22 +2,12 @@ package com.ssafy.solive.db.entity;
 
 import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
 import com.ssafy.solive.common.model.FileDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
+
+import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -84,6 +74,10 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "BIGINT DEFAULT 0")
     private Long experience;
 
+    // 보유한 SP
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer solvePoint;
+
     // 회원가입 시간
     @Column(columnDefinition = "DATETIME DEFAULT NOW()")
     private LocalDateTime signinTime;
@@ -138,15 +132,6 @@ public class User extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    /**
-     * 임시라 지워질 듯
-     *
-     * @param code 바뀔 코드
-     */
-    public void setCode(MasterCode code) {
-        this.masterCodeId = code;
-    }
-
     public void modifyProfilePicture(FileDto fileDto) {
         this.fileName = fileDto.getFileName();
         this.originalName = fileDto.getOriginalName();
@@ -157,4 +142,23 @@ public class User extends BaseEntity {
     public void logout(MasterCode stateId) {
         this.stateId = stateId;
     }
+
+    /**
+     * 학생이 Solve Point 를 충전할 때
+     *
+     * @param solvePoint 충전할 금액
+     */
+    public void chargeSolvePoint(int solvePoint) {
+        this.solvePoint += solvePoint;
+    }
+
+    /**
+     * 강사가 Solve Point 를 출금할 때
+     *
+     * @param solvePoint 출금할 금액
+     */
+    public void cashOutSolvePoint(Integer solvePoint) {
+        this.solvePoint -= solvePoint;
+    }
+
 }
