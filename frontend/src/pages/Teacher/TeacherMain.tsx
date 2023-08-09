@@ -9,8 +9,7 @@ import {
 } from '../../recoil/question/question';
 // 문제 어떻게 나오는지 보려면 밑에 한줄 주석 해제해주세요.
 // import que from '../../assets/404.png';
-
-function Teacher() {
+const Teacher = () => {
   const navigate = useNavigate();
   // 문제 어떻게 나오는지 보려면 밑에 latest 주석해주세요
   const latestQuestions = useRecoilValue(latestQuestionsSelector);
@@ -264,6 +263,6 @@ function Teacher() {
       </button>
     </div>
   );
-}
+};
 
 export default Teacher;
