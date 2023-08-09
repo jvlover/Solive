@@ -28,4 +28,7 @@ public class MatchedFindMineGetReq {
 
     // TIME_ASC와 TIME_DESC(문제 등록 시간 오름차순, 내림차순)
     String sort;
+
+    // 페이지네이션을 위한 페이지 넘버
+    Integer pageNum;
 }

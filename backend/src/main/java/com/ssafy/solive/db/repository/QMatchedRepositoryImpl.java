@@ -57,6 +57,8 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
             .orderBy(timeSort(findCondition.getSort()))
+            .offset(findCondition.getPageNum() * 8)
+            .limit(8)
             .fetch();
     }
 
