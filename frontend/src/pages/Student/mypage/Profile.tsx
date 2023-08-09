@@ -1,21 +1,23 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
 import experience from '../../../assets/experience.png';
+import { getNewAccessToken, getProfile, modifyProfile } from '../../../api';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../../recoil/user/userState';
+import { Card, CardBody } from '@material-tailwind/react';
 // import { userState } from '../../../recoil/user/userState';
 // import { useRecoilValue } from 'recoil';
 
-const BASE_URL = 'http://localhost:8080';
-
-interface UserProfile {
-  pathName: string;
+export interface UserProfile {
+  path: string;
   nickname: string;
   experience: number;
   introduce: string;
 }
 
 const ProfilePage = () => {
+  const [user, setUser] = useRecoilState(userState);
   const [userProfile, setUserProfile] = useState<UserProfile>({
-    pathName: '',
+    path: '',
     nickname: '',
     experience: 0,
     introduce: '',
@@ -23,31 +25,30 @@ const ProfilePage = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
   const [isModified, setIsModified] = useState(false);
 
-  //   const user = useRecoilValue(userState);
-  // 나중에 access-token 보내기
+  const imageInput = useRef<HTMLInputElement>();
 
-  interface ProfileResponse {
-    success: boolean;
-    data: UserProfile;
-  }
-
-  interface UpdateResponse {
-    success: boolean;
-  }
   useEffect(() => {
-    axios
-      .get<ProfileResponse>(BASE_URL + '/profile')
-      .then((response) => {
-        if (response.data.success) {
-          setUserProfile(response.data.data);
-        } else {
-          console.error('Failed to load profile: success is false');
+    const userProfile = async (accessToken: string): Promise<void> => {
+      const result = await getProfile(accessToken);
+      if (result.success) {
+        setUserProfile(result.data);
+      } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
+        const newAccessToken = await getNewAccessToken(user.refreshToken);
+        if (newAccessToken) {
+          setUser({
+            ...user,
+            accessToken: newAccessToken,
+          });
+          getProfile(newAccessToken);
         }
-      })
-      .catch((error) => {
-        console.error('Failed to load profile:', error);
-      });
-  }, []);
+      } else {
+        console.error('Failed to load userProfile:', result.error);
+      }
+    };
+    if (user !== null) {
+      userProfile(user.accessToken);
+    }
+  }, [setUser, user]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -69,7 +70,7 @@ const ProfilePage = () => {
       if (typeof reader.result === 'string') {
         setUserProfile({
           ...userProfile,
-          pathName: reader.result,
+          path: reader.result,
         });
       }
       setProfileImage(file);
@@ -84,122 +85,106 @@ const ProfilePage = () => {
       return;
     }
 
-    const profileData = {
-      nickname: userProfile.nickname,
-      experience: userProfile.experience,
-      introduce: userProfile.introduce,
-    };
+    modifyProfile(
+      userProfile.nickname,
+      userProfile.experience,
+      userProfile.introduce,
+      profileImage,
+    );
 
-    const profileJSON = JSON.stringify(profileData);
-
-    const formData = new FormData();
-    if (profileImage) {
-      formData.append('image', profileImage);
-    }
-    formData.append('profile', profileJSON);
-
-    for (const pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
-
-    axios
-      .put<UpdateResponse>(BASE_URL + '/profile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((response) => {
-        console.log(formData);
-        if (response.data.success) {
-          console.log('Profile updated:', response);
-          setIsModified(false);
-        } else {
-          console.error('Failed to update profile: success is false');
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to update profile:', error);
-      });
+    setIsModified(false);
   };
   return (
-    <div className="pt-20">
-      <div>
-        <h1 className="ml-36 font-semibold">마이페이지</h1>
-      </div>
-      <hr className="mt-4 mx-auto w-7/10 border-none h-1 bg-blue-200" />
-      <div
-        className="mx-auto mt-8 h-[650px] w-[600px] p-6"
-        style={{ border: '2px solid #646CFF' }}
-      >
-        <div className="flex flex-col items-start">
-          <h3>프로필 이미지</h3>
-          <div className="flex flex-row w-full mt-6">
-            <div className="w-1/2 flex items-center">
-              <img
-                src={userProfile.pathName || ''}
-                alt="profile"
-                style={{
-                  width: '96px',
-                  height: '128px',
-                  border: userProfile.pathName
-                    ? 'transparent'
-                    : '2px solid #646CFF',
-                }}
-              />
-            </div>
-            <div className="w-1/2">
-              <label className="cursor-pointer text-blue-600">
-                프로필 이미지 변경
+    <div className="flex justify-center min-h-full min-w-fit">
+      <Card className="flex my-5 w-[80vh] min-w-[600px] min-h-[80vh]">
+        <CardBody>
+          <div className="p-6 mx-auto">
+            <div className="flex flex-col items-start">
+              <p className="font-bold">프로필 이미지</p>
+              <div className="flex flex-row w-full mt-3">
+                <div className="flex items-center mr-10">
+                  <img
+                    src={userProfile.path || ''}
+                    alt="profile"
+                    className={`w-[96px] h-[128px] ${
+                      userProfile.path
+                        ? 'border-transparent'
+                        : 'border-2 border-solid border-solive-200'
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p className="ml-3">프로필 이미지 변경</p>
+                  <div className="flex items-center justify-start mt-3">
+                    <input
+                      className="w-full p-2 border border-gray-300 rounded bg-opacity-30 bg-solive-200 min-w-[200px] min-h-[42px]"
+                      value={
+                        userProfile.path
+                          ? userProfile.path
+                          : '현재 등록된 사진이 없습니다.'
+                      }
+                      disabled
+                    ></input>
+                    <input
+                      type="file"
+                      onChange={handleImageChange}
+                      ref={imageInput}
+                      className="hidden"
+                    />
+                    <button
+                      className="ml-5 btn-primary px-0 w-[120px] h-[42px] flex items-center justify-center"
+                      onClick={() => imageInput.current.click()}
+                    >
+                      파일 찾기
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <label className="w-full mt-8 font-bold">
+                닉네임
                 <input
-                  type="file"
-                  onChange={handleImageChange}
-                  className="hidden"
+                  type="text"
+                  name="nickname"
+                  value={userProfile.nickname}
+                  onChange={handleChange}
+                  className="w-full p-2 mt-4 border border-gray-300 rounded bg-opacity-30 bg-solive-200"
+                />
+              </label>
+              <div className="flex items-center justify-between w-full mt-8">
+                <div className="flex items-center font-bold">경험치</div>
+                <div className="flex items-center">
+                  {userProfile.experience}
+                  <img
+                    src={experience}
+                    alt="experience"
+                    className="w-5 h-5 ml-2"
+                  />
+                </div>
+              </div>
+              <label className="w-full mt-8 font-bold">
+                자기소개
+                <textarea
+                  name="introduce"
+                  value={userProfile.introduce ? userProfile.introduce : ''}
+                  onChange={handleChange}
+                  className="w-full h-48 p-2 mt-4 border border-gray-300 rounded resize-none bg-solive-200 bg-opacity-30"
                 />
               </label>
             </div>
           </div>
-          <label className="mt-8 w-full">
-            닉네임
-            <input
-              type="text"
-              name="nickname"
-              value={userProfile.nickname}
-              onChange={handleChange}
-              className="ml-4 mt-4 border border-gray-300 p-2 rounded w-full"
-            />
-          </label>
-          <div className="mt-4 w-full flex justify-between items-center">
-            <div className="flex items-center">경험치</div>
-            <div className="flex items-center">
-              {userProfile.experience}
-              <img
-                src={experience}
-                alt="experience"
-                className="w-10 h-10 ml-2"
-              />
-            </div>
-          </div>
-          <label className="mt-4 w-full">
-            자기소개
-            <textarea
-              name="introduce"
-              value={userProfile.introduce}
-              onChange={handleChange}
-              className="mt-4 w-full h-48 border border-gray-300 p-2 rounded"
-            />
-          </label>
-        </div>
-      </div>
-      <form onSubmit={handleSubmit} className="flex justify-center">
-        <button
-          className={`mt-8 px-4 py-2 rounded w-64 h-12 ${
-            isModified ? 'bg-blue-600' : 'bg-gray-400'
-          }`}
-          type="submit"
-        >
-          저장하기
-        </button>
-      </form>
+          <form onSubmit={handleSubmit} className="flex justify-center">
+            <button
+              className={`mt-5 px-2 py-2 rounded w-2/3 h-12 text-blue-gray-800 ${
+                isModified ? 'bg-solive-200' : 'bg-gray-400'
+              }`}
+              type="submit"
+              disabled={!isModified}
+            >
+              저장하기
+            </button>
+          </form>
+        </CardBody>
+      </Card>
     </div>
   );
 };

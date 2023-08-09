@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -28,6 +28,8 @@ const HeaderNav = () => {
   const [openNav, setOpenNav] = useState(false);
   const user = useRecoilValue(userState);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.addEventListener(
       'resize',
@@ -54,13 +56,23 @@ const HeaderNav = () => {
           <UserIcon className="w-auto cursor-pointer h-7" />
         </MenuHandler>
         <MenuList>
-          <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+          <MenuItem
+            onClick={() => {
+              navigate('/student/mypage/solvepoint');
+            }}
+            className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
+          >
             <SolvePoint className="w-5 h-5" />
             <Typography variant="small" className="font-normal">
               {user.solvePoint} SP
             </Typography>
           </MenuItem>
-          <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+          <MenuItem
+            onClick={() => {
+              navigate('/student/mypage/profile');
+            }}
+            className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
+          >
             <UserCircleIcon className="w-5 h-5" />
             <Typography variant="small" className="font-normal">
               프로필

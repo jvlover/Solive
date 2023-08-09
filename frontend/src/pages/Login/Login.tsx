@@ -37,7 +37,11 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormFields) => {
     try {
+      //const { decode } = jsonwebtoken;
       const user = await loginUser(data);
+      localStorage.setItem('accessToken', user.accessToken);
+      localStorage.setItem('refreshToken', user.accessToken);
+      //console.log(decode(user.accessToken));
       setUser(user);
       if (user.masterCodeId === 1) {
         navigate('/student');
