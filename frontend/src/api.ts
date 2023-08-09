@@ -182,7 +182,7 @@ export async function getMyProblems(
 ): Promise<{ success: boolean; data?: any; error?: any }> {
   try {
     const response = await axios.get(BASE_URL + '/matched/my', {
-      headers: { accessToken: accessToken },
+      headers: { 'access-token': accessToken },
     });
     return {
       success: response.data.success,
@@ -223,7 +223,7 @@ export async function submitQuestion(
     const response = await axios.post(BASE_URL + '/question', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        accessToken: accessToken,
+        'access-token': accessToken,
       },
     });
     return {
@@ -236,5 +236,38 @@ export async function submitQuestion(
       errorCode = error.response.data.error.code;
     }
     return { success: false, error: errorCode || error };
+  }
+}
+
+export async function questionSearch(
+  subjectNum: number,
+  subSubjectNum: number,
+  searchKeyword: string,
+  order: string,
+  pageNum: number,
+  accessToken: string,
+): Promise<{ success: boolean; data?: any; error?: any }> {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/question/?masterCodeMiddle=${subjectNum}&smasterCodeLow=${subSubjectNum}&keyword=${searchKeyword}&order=${order}&page=${pageNum}`,
+      {
+        headers: { 'access-token': accessToken },
+      },
+    );
+
+    if (response.data.success) {
+      return {
+        success: response.data.success,
+        data: response.data.data,
+      };
+    } else {
+      throw new Error('Failed to get questions');
+    }
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error.message };
   }
 }
