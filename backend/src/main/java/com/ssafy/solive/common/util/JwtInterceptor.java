@@ -15,10 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
 
-    private JwtConfiguration jwtConfiguration;
-
-    public JwtInterceptor() {
-    }
+    private final JwtConfiguration jwtConfiguration;
 
     @Autowired
     public JwtInterceptor(JwtConfiguration jwtConfiguration) {
