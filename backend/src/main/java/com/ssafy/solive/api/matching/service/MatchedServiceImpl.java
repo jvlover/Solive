@@ -4,6 +4,7 @@ import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import com.ssafy.solive.common.exception.NoDataException;
+import com.ssafy.solive.common.exception.matching.NotEnoughPointException;
 import com.ssafy.solive.db.entity.Apply;
 import com.ssafy.solive.db.entity.Matched;
 import com.ssafy.solive.db.entity.Question;
@@ -71,6 +72,11 @@ public class MatchedServiceImpl implements MatchedService {
             .orElseThrow(NoDataException::new);
 
         Integer solvePoint = apply.getSolvePoint();
+
+        // 학생이 갖고 있는 solvePoint 가 강사가 제시한 solvePoint 보다 낮다면 매칭 성사 불가능
+        if (student.getSolvePoint() < apply.getSolvePoint()) {
+            throw new NotEnoughPointException();
+        }
 
         Matched matched = Matched.builder()
             .teacher(teacher)

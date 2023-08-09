@@ -61,7 +61,7 @@ public class MatchedController {
 
         User user = matchedService.registMatched(registInfo);
 
-        // 깅시에게 알림 전송 코드. title과 content의 내용은 일단 임시입니다
+        // 강사에게 알림 전송 코드. title과 content의 내용은 일단 임시
         String title = "매칭 성사";
         String content = user.getNickname() + "님, 지원하신 요청이 승낙되어 매칭이 성사되었습니다.";
         notificationService.send(user, title, content);
