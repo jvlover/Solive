@@ -60,6 +60,8 @@ public class QApplyRepositoryImpl implements QApplyRepository {
             .where(questionIdEq(findCondition.getQuestionId()),
                 favoriteCodeMatch(findCondition.getIsFavorite()))
             .orderBy(applySort(findCondition.getSort()))
+            .offset(findCondition.getPageNum() * 8)
+            .limit(8)
             .fetch();
     }
 
@@ -90,6 +92,8 @@ public class QApplyRepositoryImpl implements QApplyRepository {
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
             .orderBy(timeSort(findCondition.getSort()))
+            .offset(findCondition.getPageNum() * 8)
+            .limit(8)
             .fetch();
     }
 

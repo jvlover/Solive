@@ -25,4 +25,6 @@ public class ApplyFindGetReq {
      */
     Boolean isFavorite;
 
+    // 페이지네이션을 위한 페이지 넘버
+    Integer pageNum;
 }

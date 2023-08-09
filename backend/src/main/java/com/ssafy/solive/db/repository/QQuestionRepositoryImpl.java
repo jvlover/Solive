@@ -60,6 +60,8 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
             .where(mastercodeBetween(code), keywordSearch(findCondition.getKeyword()),
                 matchingStateLt())
             .orderBy(timeSort(findCondition.getSort()))
+            .offset(findCondition.getPageNum() * 8)
+            .limit(8)
             .fetch();
     }
 
@@ -113,6 +115,8 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
             .orderBy(timeSort(findCondition.getSort()))
+            .offset(findCondition.getPageNum() * 8)
+            .limit(8)
             .fetch();
     }
 

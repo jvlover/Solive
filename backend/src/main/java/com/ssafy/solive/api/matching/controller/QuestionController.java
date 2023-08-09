@@ -7,6 +7,7 @@ import com.ssafy.solive.api.matching.request.QuestionRegistPostReq;
 import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
 import com.ssafy.solive.api.matching.service.QuestionService;
+import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,10 +38,12 @@ public class QuestionController {
     private static final String SUCCESS = "success";  // API 성공 시 return
 
     private final QuestionService questionService;
+    private final UserService userService;
 
     @Autowired
-    public QuestionController(QuestionService questionService) {
+    public QuestionController(QuestionService questionService, UserService userService) {
         this.questionService = questionService;
+        this.userService = userService;
     }
 
     /**
@@ -51,13 +54,14 @@ public class QuestionController {
      */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> regist(@RequestPart QuestionRegistPostReq registInfo,
-        @RequestPart("files") List<MultipartFile> fileList) {
+        @RequestPart("files") List<MultipartFile> fileList, HttpServletRequest request) {
 
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+        log.info("QuestionController_regist_start: " + registInfo.toString()
+            + ", " + fileList.toString() + ", " + userId);
 
-        log.info("QuestionController_regist_start: registInfo = " + registInfo.toString()
-            + "\n fileList =  "
-            + fileList.toString());
+        registInfo.setStudentId(userId);
 
         questionService.registQuestion(registInfo, fileList);
 
@@ -71,11 +75,14 @@ public class QuestionController {
      * @param deleteInfo : 문제 삭제하기 위해 필요한 정보
      */
     @PutMapping("/delete")
-    public CommonResponse<?> delete(@RequestBody QuestionDeletePutReq deleteInfo) {
+    public CommonResponse<?> delete(@RequestBody QuestionDeletePutReq deleteInfo,
+        HttpServletRequest request) {
 
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+        log.info("QuestionController_delete_start: " + deleteInfo.toString() + ", " + userId);
 
-        log.info("QuestionController_delete_start: " + deleteInfo.toString());
+        deleteInfo.setStudentId(userId);
 
         boolean isDeleted = questionService.deleteQuestion(deleteInfo); // 삭제 실패하면 false
         if (isDeleted) {
@@ -92,11 +99,14 @@ public class QuestionController {
      * @param modifyInfo : 문제 수정하기 위해 필요한 정보
      */
     @PutMapping()
-    public CommonResponse<?> modify(@RequestBody QuestionModifyPutReq modifyInfo) {
+    public CommonResponse<?> modify(@RequestBody QuestionModifyPutReq modifyInfo,
+        HttpServletRequest request) {
 
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+        log.info("QuestionController_modify_start: " + modifyInfo.toString() + ", " + userId);
 
-        log.info("QuestionController_modify_start: " + modifyInfo.toString());
+        modifyInfo.setStudentId(userId);
 
         boolean isModified = questionService.modifyQuestion(modifyInfo); // 수정 실패하면 false
         if (isModified) {
@@ -115,8 +125,6 @@ public class QuestionController {
     @GetMapping()
     public CommonResponse<?> findByCondition(QuestionFindConditionGetReq findCondition) {
 
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
-
         log.info("QuestionController_findByCondition_start: " + findCondition.toString());
 
         List<QuestionFindConditionRes> findResList = questionService.findByCondition(findCondition);
@@ -132,13 +140,10 @@ public class QuestionController {
     /**
      * 유저가 문제의 상세 정보를 확인하기 위한 API
      *
-     * @param id      : question id
-     * @param request : jwt token check
+     * @param id : question id
      */
     @GetMapping("/{id}")
-    public CommonResponse<?> findDetail(@PathVariable Long id, HttpServletRequest request) {
-
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+    public CommonResponse<?> findDetail(@PathVariable Long id) {
 
         log.info("QuestionController_findDetail_start: " + id);
 

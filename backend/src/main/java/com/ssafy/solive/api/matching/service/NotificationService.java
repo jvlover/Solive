@@ -21,7 +21,7 @@ public interface NotificationService {
 
     void send(User user, String title, String content);
 
-    List<NotificationFindRes> findNotification(Long userId);
+    List<NotificationFindRes> findNotification(Long userId, Integer pageNum);
 
     void modifyNotification(NotificationModifyPutReq modifyInfo);
 

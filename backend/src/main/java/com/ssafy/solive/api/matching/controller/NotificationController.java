@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,16 +53,14 @@ public class NotificationController {
     public SseEmitter subscribe(HttpServletRequest request,
         @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
-        log.info("NotificationController_subscribe_start: " + request.toString());
-
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("NotificationController_subscribe_start: " + userId);
 
         SseEmitter sseEmitter = notificationService.subscribe(userId, lastEventId);
 
-        log.info("NotificationController_subscribe_end: userId = " + userId.toString()
-            + "\n lastEventId = "
-            + lastEventId);
+        log.info("NotificationController_subscribe_end: " + userId.toString()
+            + ", " + lastEventId);
 
         return sseEmitter;
     }
@@ -71,15 +71,15 @@ public class NotificationController {
      * @param request : 헤더에 access-token
      * @return findResList : 알림 조회 결과 리스트
      */
-    @GetMapping()
-    public CommonResponse<?> find(HttpServletRequest request) {
-
-        log.info("NotificationController_find_start: ");
+    @GetMapping("/{pageNum}")
+    public CommonResponse<?> find(@PathVariable Integer pageNum, HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("NotificationController_find_start: " + pageNum.toString() + ", " + userId);
 
-        List<NotificationFindRes> findResList = notificationService.findNotification(userId);
+        List<NotificationFindRes> findResList = notificationService.findNotification(userId,
+            pageNum);
 
         if (findResList.size() == 0) {
             log.info("NotificationController_find_end: No Result");
@@ -95,7 +95,7 @@ public class NotificationController {
      * @param modifyInfo : 수정할 알림 id
      */
     @PutMapping()
-    public CommonResponse<?> modify(NotificationModifyPutReq modifyInfo) {
+    public CommonResponse<?> modify(@RequestBody NotificationModifyPutReq modifyInfo) {
 
         log.info("NotificationController_modify_start: " + modifyInfo.toString());
 
@@ -111,13 +111,12 @@ public class NotificationController {
      * @param deleteInfo : 수정할 알림 id
      */
     @PutMapping("/delete")
-    public CommonResponse<?> delete(NotificationDeletePutReq deleteInfo,
+    public CommonResponse<?> delete(@RequestBody NotificationDeletePutReq deleteInfo,
         HttpServletRequest request) {
-
-        log.info("NotificationController_delete_start: " + deleteInfo.toString());
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("NotificationController_delete_start: " + deleteInfo.toString() + ", " + userId);
 
         // http 헤더에서 유저 아이디 꺼내서 setting
         deleteInfo.setUserId(userId);

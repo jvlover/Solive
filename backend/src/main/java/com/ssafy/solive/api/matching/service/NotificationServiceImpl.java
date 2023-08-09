@@ -49,10 +49,10 @@ public class NotificationServiceImpl implements NotificationService {
 
         if (lastEventId.isEmpty()) {
             log.info("NotificationService_subscribe_start: userId = " + userId.toString()
-                + "\n lastEventId is Null");
+                + " lastEventId is Null");
         } else {
-            log.info("NotificationService_subscribe_start: userId = " + userId.toString()
-                + "\n lastEventId = " + lastEventId);
+            log.info("NotificationService_subscribe_start: " + userId.toString()
+                + ", " + lastEventId);
         }
 
         // emitterId 생성
@@ -152,8 +152,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void send(User user, String title, String content) {
 
-        log.info("NotificationService_send_start: user = " + user.toString() + "\n title = "
-            + title + "\n content = " + content);
+        log.info("NotificationService_send_start: " + user.toString() + ", "
+            + title + ", " + content);
 
         Notification notification = notificationRepository.save(Notification.builder()
             .user(user)
@@ -181,15 +181,17 @@ public class NotificationServiceImpl implements NotificationService {
     /**
      * 유저 별 알림 목록 검색 API 서비스
      *
-     * @param userId : 유저 식별자 PK
+     * @param userId  : 유저 식별자 PK
+     * @param pageNum : 목록 페이지 넘버
      * @return findResList : 유저 별 검색 결과 notification 리스트
      */
     @Override
-    public List<NotificationFindRes> findNotification(Long userId) {
+    public List<NotificationFindRes> findNotification(Long userId, Integer pageNum) {
 
         log.info("NotificationService_findNotification_start: " + userId.toString());
 
-        List<NotificationFindRes> findResList = notificationRepository.findNotification(userId);
+        List<NotificationFindRes> findResList = notificationRepository.findNotification(userId,
+            pageNum);
 
         if (findResList.size() == 0) {
             log.info("NotificationService_findNotification_end: No Result");

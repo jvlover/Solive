@@ -27,11 +27,12 @@ public class QNotificationRepositoryImpl implements QNotificationRepository {
     /**
      * 유저 Id로 알림 조회
      *
-     * @param userId : 유저 식별자
+     * @param userId  : 유저 식별자
+     * @param pageNum : 목록 페이지 넘버
      * @return : 검색 결과 NotificationFindRes List
      */
     @Override
-    public List<NotificationFindRes> findNotification(Long userId) {
+    public List<NotificationFindRes> findNotification(Long userId, Integer pageNum) {
 
         log.info("QNotificationRepository_findNotification_start: " + userId.toString());
 
@@ -40,11 +41,13 @@ public class QNotificationRepositoryImpl implements QNotificationRepository {
                 notification.id.as("id"),
                 notification.title.as("title"),
                 notification.content.as("content"),
-                notification.title.as("time"),
+                notification.time.as("time"),
                 notification.readAt.as("readAt")))
             .from(notification)
             .where(userIdEq(userId))
             .orderBy(notification.time.desc())
+            .offset(pageNum * 8)
+            .limit(8)
             .fetch();
     }
 

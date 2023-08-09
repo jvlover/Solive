@@ -8,5 +8,5 @@ import java.util.List;
  */
 public interface QNotificationRepository {
 
-    List<NotificationFindRes> findNotification(Long userId);
+    List<NotificationFindRes> findNotification(Long userId, Integer pageNum);
 }
