@@ -31,13 +31,14 @@ public class JwtInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler) {
+                             Object handler) {
         log.info("==================== Jwt_Interceptor_start ====================");
         try {
             return jwtConfiguration.checkToken(request.getHeader("access-token"));
         } catch (ExpiredJwtException e) {
             throw new JwtTokenExpiredException();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new JwtInvalidException();
         }
     }

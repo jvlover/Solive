@@ -1,16 +1,12 @@
 package com.ssafy.solive.config;
 
 import com.ssafy.solive.common.exception.user.JwtTokenExpiredException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 @Slf4j
 @Configuration
@@ -28,29 +24,29 @@ public class JwtConfiguration {
 
     public <T> String createRefreshToken(String key, T data) {
         return create(key, data, "refresh-token",
-            1000 * 60 * 60 * 24 * 7 * REFRESH_TOKEN_EXPIRE_MINUTES);
+                1000 * 60 * 60 * 24 * 7 * REFRESH_TOKEN_EXPIRE_MINUTES);
     }
 
     public <T> String create(String key, T data, String subject, long expire) {
         log.info("JwtConfiguration_create_start: " + "\nkey: " + key + "\ndata: " + data.toString()
-            + "\nsubject: " + subject + "\nexpire: " + expire);
+                + "\nsubject: " + subject + "\nexpire: " + expire);
 
         // PayLoad에 저장할 Claims 객체
         Claims claims = Jwts.claims()
-            .setSubject(subject) // 토큰 제목
-            .setIssuedAt(new Date()) // 생성일
-            .setExpiration(new Date(System.currentTimeMillis() + expire)); // 유효기간 설정
+                .setSubject(subject) // 토큰 제목
+                .setIssuedAt(new Date()) // 생성일
+                .setExpiration(new Date(System.currentTimeMillis() + expire)); // 유효기간 설정
 
         // 저장할 data
         claims.put(key, data);
 
         String jwt = Jwts.builder()
-            // Header 설정 : 토큰타입, 해쉬 알고리즘
-            .setHeaderParam("typ", "JWT")
-            .setClaims(claims)
-            // Signature 설정 : secret key를 활용한 암호화
-            .signWith(SignatureAlgorithm.HS256, this.generateKey())
-            .compact();
+                // Header 설정 : 토큰타입, 해쉬 알고리즘
+                .setHeaderParam("typ", "JWT")
+                .setClaims(claims)
+                // Signature 설정 : secret key를 활용한 암호화
+                .signWith(SignatureAlgorithm.HS256, this.generateKey())
+                .compact();
         log.info("JwtConfiguration_create_end: " + jwt);
         return jwt;
     }
@@ -74,7 +70,7 @@ public class JwtConfiguration {
         if (token == null) {
             log.info("access-token이 존재하지 않습니다.");
             log.info(
-                "==================== JwtConfiguration_checkToken_end : null ====================");
+                    "==================== JwtConfiguration_checkToken_end : null ====================");
             return false;
         }
 
@@ -102,9 +98,9 @@ public class JwtConfiguration {
     public Long getUserId(String accessToken) {
         try {
             return Long.valueOf(
-                Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(accessToken)
-                    .getBody()
-                    .get("userid").toString());
+                    Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(accessToken)
+                            .getBody()
+                            .get("userId").toString());
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
