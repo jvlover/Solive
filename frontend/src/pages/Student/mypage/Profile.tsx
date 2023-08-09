@@ -1,21 +1,22 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import axios from 'axios';
 import experience from '../../../assets/experience.png';
+import { getNewAccessToken, getProfile, modifyProfile } from '../../../api';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../../recoil/user/userState';
 // import { userState } from '../../../recoil/user/userState';
 // import { useRecoilValue } from 'recoil';
 
-const BASE_URL = 'http://localhost:8080';
-
-interface UserProfile {
-  pathName: string;
+export interface UserProfile {
+  path: string;
   nickname: string;
   experience: number;
   introduce: string;
 }
 
 const ProfilePage = () => {
+  const [user, setUser] = useRecoilState(userState);
   const [userProfile, setUserProfile] = useState<UserProfile>({
-    pathName: '',
+    path: '',
     nickname: '',
     experience: 0,
     introduce: '',
@@ -23,31 +24,28 @@ const ProfilePage = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
   const [isModified, setIsModified] = useState(false);
 
-  //   const user = useRecoilValue(userState);
-  // 나중에 access-token 보내기
-
-  interface ProfileResponse {
-    success: boolean;
-    data: UserProfile;
-  }
-
-  interface UpdateResponse {
-    success: boolean;
-  }
   useEffect(() => {
-    axios
-      .get<ProfileResponse>(BASE_URL + '/profile')
-      .then((response) => {
-        if (response.data.success) {
-          setUserProfile(response.data.data);
-        } else {
-          console.error('Failed to load profile: success is false');
+    const userProfile = async (accessToken: string): Promise<void> => {
+      const result = await getProfile(accessToken);
+      if (result.success) {
+        setUserProfile(result.data);
+      } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
+        const newAccessToken = await getNewAccessToken(user.refreshToken);
+        if (newAccessToken) {
+          setUser({
+            ...user,
+            accessToken: newAccessToken,
+          });
+          getProfile(newAccessToken);
         }
-      })
-      .catch((error) => {
-        console.error('Failed to load profile:', error);
-      });
-  }, []);
+      } else {
+        console.error('Failed to load userProfile:', result.error);
+      }
+    };
+    if (user !== null) {
+      userProfile(user.accessToken);
+    }
+  }, [setUser, user]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -69,7 +67,7 @@ const ProfilePage = () => {
       if (typeof reader.result === 'string') {
         setUserProfile({
           ...userProfile,
-          pathName: reader.result,
+          path: reader.result,
         });
       }
       setProfileImage(file);
@@ -84,49 +82,21 @@ const ProfilePage = () => {
       return;
     }
 
-    const profileData = {
-      nickname: userProfile.nickname,
-      experience: userProfile.experience,
-      introduce: userProfile.introduce,
-    };
+    modifyProfile(
+      userProfile.nickname,
+      userProfile.experience,
+      userProfile.introduce,
+      profileImage,
+    );
 
-    const profileJSON = JSON.stringify(profileData);
-
-    const formData = new FormData();
-    if (profileImage) {
-      formData.append('image', profileImage);
-    }
-    formData.append('profile', profileJSON);
-
-    for (const pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
-
-    axios
-      .put<UpdateResponse>(BASE_URL + '/profile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((response) => {
-        console.log(formData);
-        if (response.data.success) {
-          console.log('Profile updated:', response);
-          setIsModified(false);
-        } else {
-          console.error('Failed to update profile: success is false');
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to update profile:', error);
-      });
+    setIsModified(false);
   };
   return (
     <div className="pt-20">
       <div>
-        <h1 className="ml-36 font-semibold">마이페이지</h1>
+        <h1 className="font-semibold ml-36">마이페이지</h1>
       </div>
-      <hr className="mt-4 mx-auto w-7/10 border-none h-1 bg-blue-200" />
+      <hr className="h-1 mx-auto mt-4 bg-blue-200 border-none w-7/10" />
       <div
         className="mx-auto mt-8 h-[650px] w-[600px] p-6"
         style={{ border: '2px solid #646CFF' }}
@@ -134,21 +104,21 @@ const ProfilePage = () => {
         <div className="flex flex-col items-start">
           <h3>프로필 이미지</h3>
           <div className="flex flex-row w-full mt-6">
-            <div className="w-1/2 flex items-center">
+            <div className="flex items-center w-1/2">
               <img
-                src={userProfile.pathName || ''}
+                src={userProfile.path || ''}
                 alt="profile"
                 style={{
                   width: '96px',
                   height: '128px',
-                  border: userProfile.pathName
+                  border: userProfile.path
                     ? 'transparent'
                     : '2px solid #646CFF',
                 }}
               />
             </div>
             <div className="w-1/2">
-              <label className="cursor-pointer text-blue-600">
+              <label className="text-blue-600 cursor-pointer">
                 프로필 이미지 변경
                 <input
                   type="file"
@@ -158,17 +128,17 @@ const ProfilePage = () => {
               </label>
             </div>
           </div>
-          <label className="mt-8 w-full">
+          <label className="w-full mt-8">
             닉네임
             <input
               type="text"
               name="nickname"
               value={userProfile.nickname}
               onChange={handleChange}
-              className="ml-4 mt-4 border border-gray-300 p-2 rounded w-full"
+              className="w-full p-2 mt-4 ml-4 border border-gray-300 rounded"
             />
           </label>
-          <div className="mt-4 w-full flex justify-between items-center">
+          <div className="flex items-center justify-between w-full mt-4">
             <div className="flex items-center">경험치</div>
             <div className="flex items-center">
               {userProfile.experience}
@@ -179,13 +149,13 @@ const ProfilePage = () => {
               />
             </div>
           </div>
-          <label className="mt-4 w-full">
+          <label className="w-full mt-4">
             자기소개
             <textarea
               name="introduce"
-              value={userProfile.introduce}
+              value={userProfile.introduce ? userProfile.introduce : ''}
               onChange={handleChange}
-              className="mt-4 w-full h-48 border border-gray-300 p-2 rounded"
+              className="w-full h-48 p-2 mt-4 border border-gray-300 rounded"
             />
           </label>
         </div>
@@ -196,6 +166,7 @@ const ProfilePage = () => {
             isModified ? 'bg-blue-600' : 'bg-gray-400'
           }`}
           type="submit"
+          disabled={!isModified}
         >
           저장하기
         </button>

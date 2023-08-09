@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
 import { SignupFormData } from './pages/Signup/Signup';
 import { User } from './recoil/user/userState';
+import { UserProfile } from './pages/Student/mypage/Profile';
 
 const BASE_URL = 'http://localhost:8080';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
@@ -12,7 +13,9 @@ export const fetchArticles = async (
   pageNum: number,
   orderBy?: string,
 ): Promise<ArticlePage> => {
-  let url = `${BOARD_BASE_URL}?keyword=${keyword}&page=${pageNum - 1}&size=5`;
+  let url = `${BOARD_BASE_URL}/auth?keyword=${keyword}&page=${
+    pageNum - 1
+  }&size=5`;
   if (orderBy !== undefined) {
     url += `&sort=${orderBy},desc`;
   }
@@ -30,7 +33,9 @@ export const fetchArticleById = async (
   articleId: number,
 ): Promise<Article | null> => {
   try {
-    const response = await axios.get<Article>(`${BOARD_BASE_URL}/${articleId}`);
+    const response = await axios.get<Article>(
+      `${BOARD_BASE_URL}/auth/${articleId}`,
+    );
     // @ts-ignore
     return response.data.data;
   } catch (error) {
@@ -154,7 +159,7 @@ export const signup = async (
   signupData: SignupFormData,
   onSuccess: () => void,
 ): Promise<void> => {
-  const response = await axios.post(BASE_URL + '/user', signupData);
+  const response = await axios.post(BASE_URL + '/user/auth', signupData);
   if (response.data.success === true) {
     onSuccess();
   } else {
@@ -166,7 +171,7 @@ export const loginUser = async (loginData: {
   loginId: string;
   loginPassword: string;
 }): Promise<User> => {
-  const response = await axios.post(BASE_URL + '/user/login', loginData);
+  const response = await axios.post(BASE_URL + '/user/auth/login', loginData);
 
   if (response.data.success === true) {
     return response.data.data;
@@ -238,3 +243,72 @@ export async function submitQuestion(
     return { success: false, error: errorCode || error };
   }
 }
+
+export const getProfile = async (
+  accessToken: string,
+): Promise<{ success: boolean; data?: any; error?: any }> => {
+  interface ProfileResponse {
+    success: boolean;
+    data: UserProfile;
+  }
+  try {
+    console.log(accessToken);
+    const response = await axios.get<ProfileResponse>(BASE_URL + '/user', {
+      headers: { 'access-token': accessToken },
+    });
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+};
+
+export const modifyProfile = async (
+  nickname: string,
+  experience: number,
+  introduce: string,
+  profileImage: File | null,
+) => {
+  const profileData = {
+    nickname: nickname,
+    experience: experience,
+    introduce: introduce,
+  };
+  const formData = new FormData();
+
+  formData.append(
+    'profile',
+    new Blob([JSON.stringify(profileData)], { type: 'application/json' }),
+  );
+
+  if (profileImage) {
+    formData.append('image', profileImage);
+  }
+
+  for (const pair of formData.entries()) {
+    console.log(pair[0] + ': ' + pair[1]);
+  }
+
+  axios
+    .put<{ success: boolean }>(BASE_URL + '/user', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => {
+      if (response.data.success) {
+        console.log('Profile updated:', response);
+      } else {
+        console.error('Failed to update profile: success is false');
+      }
+    })
+    .catch((error) => {
+      console.error('Failed to update profile:', error);
+    });
+};
