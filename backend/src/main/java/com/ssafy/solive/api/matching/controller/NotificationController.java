@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -72,15 +73,16 @@ public class NotificationController {
      * @param request : 헤더에 access-token
      * @return findResList : 알림 조회 결과 리스트
      */
-    @GetMapping()
-    public CommonResponse<?> find(HttpServletRequest request) {
+    @GetMapping("/{pageNum}")
+    public CommonResponse<?> find(@PathVariable Integer pageNum, HttpServletRequest request) {
 
         log.info("NotificationController_find_start: ");
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
 
-        List<NotificationFindRes> findResList = notificationService.findNotification(userId);
+        List<NotificationFindRes> findResList = notificationService.findNotification(userId,
+            pageNum);
 
         if (findResList.size() == 0) {
             log.info("NotificationController_find_end: No Result");
