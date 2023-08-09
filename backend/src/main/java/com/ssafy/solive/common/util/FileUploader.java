@@ -2,16 +2,17 @@ package com.ssafy.solive.common.util;
 
 import com.ssafy.solive.common.exception.ImageUploadFailException;
 import com.ssafy.solive.common.model.FileDto;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Component
@@ -25,7 +26,7 @@ public class FileUploader {
     }
 
     public List<FileDto> fileUpload(List<MultipartFile> fileList, String subFolderName) {
-
+        log.info("FileUploader_fileUpload_start: " + fileList + " " + subFolderName);
         // TODO: "C:/solive/image/" -> S3 주소로 변경
 
         String s3UploadPath = "C:/solive/image/" + subFolderName;
@@ -36,7 +37,7 @@ public class FileUploader {
                 String originalName = file.getOriginalFilename();
                 // 파일 확장자 명
                 String extension = originalName.substring( // 파일명에 .은 반드시 있으니 예외처리 X
-                    originalName.lastIndexOf(".") + 1);
+                        originalName.lastIndexOf(".") + 1);
 
                 // 랜덤한 파일 이름 생성
                 String fileName = UUID.randomUUID() + "." + extension;
@@ -48,18 +49,20 @@ public class FileUploader {
                 String path = s3UploadPath + fileName;
 
                 fileDtoList.add(FileDto.builder()
-                    .fileName(fileName)
-                    .originalName(file.getOriginalFilename())
-                    .path(path)
-                    .contentType(file.getContentType())
-                    .build());
+                        .fileName(fileName)
+                        .originalName(file.getOriginalFilename())
+                        .path(path)
+                        .contentType(file.getContentType())
+                        .build());
 
                 s3Uploader.upload(file, fileName);
             } catch (IllegalStateException | IOException e) {
+                log.info("FileUploader_fileUpload_end: false");
                 throw new ImageUploadFailException(); // 이미지 등록 실패 시 Exception
             }
         }
 
+        log.info("FileUploader_fileUpload_end: " + fileDtoList);
         return fileDtoList;
     }
 }

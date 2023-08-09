@@ -57,6 +57,7 @@ public class UserController {
     public CommonResponse<?> getUserProfile(HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_getUserProfile_start: " + userId);
 
         UserProfilePostRes userProfile = userService.getUserProfileByUserId(userId);
         log.info("UserController_getUserProfile_end: " + userProfile);
@@ -73,8 +74,10 @@ public class UserController {
     public CommonResponse<?> getUserPrivacy(HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_getUserPrivacy_start: " + userId);
 
         UserPrivacyPostRes userPrivacy = userService.getUserPrivacyByUserId(userId);
+        log.info("UserController_getUserPrivacy_end: " + userPrivacy);
         return CommonResponse.success(userPrivacy);
     }
 
@@ -88,6 +91,7 @@ public class UserController {
     public CommonResponse<?> login(@RequestBody UserLoginPostReq loginInfo) {
         log.info("UserController_login_start: " + loginInfo.toString());
         UserLoginPostRes userLoginPostRes = userService.loginAndGetTokens(loginInfo);
+        log.info("UserController_login_end: " + userLoginPostRes);
         return CommonResponse.success(userLoginPostRes);
     }
 
@@ -95,9 +99,11 @@ public class UserController {
     public CommonResponse<?> logout(HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_logout_start: " + userId);
 
         // TODO: Token 관련 처리해야함!!!
         userService.logout(userId);
+        log.info("UserController_logout_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -113,8 +119,10 @@ public class UserController {
                                            HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_modifyProfile_start: " + userInfo + ", " + userId);
 
         userService.modifyUserProfile(userId, userInfo, profilePicture);
+        log.info("UserController_modifyProfile_end: success");
         return CommonResponse.success(SUCCESS);
 
     }
@@ -130,8 +138,10 @@ public class UserController {
                                             HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_modifyPassword_start: " + passwords + ", " + userId);
 
         userService.modifyUserPassword(userId, passwords);
+        log.info("UserController_modifyPassword_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -144,8 +154,10 @@ public class UserController {
     public CommonResponse<?> delete(HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_delete_start: " + userId);
 
         userService.deleteUser(userId);
+        log.info("UserController_delete_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -159,9 +171,11 @@ public class UserController {
     public CommonResponse<?> chargeSolvePoint(Integer solvePoint, HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_chargeSolvePoint_start: " + solvePoint + ", " + userId);
 
         userService.chargeSolvePoint(userId, solvePoint);
 
+        log.info("UserController_chargeSolvePoint_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -175,9 +189,11 @@ public class UserController {
     public CommonResponse<?> cashoutSolvePoint(Integer solvePoint, HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_cashoutSolvePoint_start: " + solvePoint + ", " + userId);
 
         userService.cashOutSolvePoint(userId, solvePoint);
 
+        log.info("UserController_cashoutSolvePoint_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -188,8 +204,10 @@ public class UserController {
      */
     @PutMapping("/rate")
     public CommonResponse<?> rateTeacher(@RequestBody TeacherRatePostReq ratingInfo) {
+        log.info("UserController_rateTeacher_start: " + ratingInfo);
         userService.rateTeacher(ratingInfo);
 
+        log.info("UserController_rateTeacher_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -202,9 +220,10 @@ public class UserController {
     @PostMapping("/refresh")
     public CommonResponse<?> recreateAccessToken(String refreshToken) {
         Long userId = userService.getUserIdByToken(refreshToken);
+        log.info("UserController_recreateAccessToken_start: " + userId);
         String accessToken = userService.recreateAccessToken(userId, refreshToken);
 
-        log.info("UserController_recreateAccessToken_end: accessToken: " + accessToken);
+        log.info("UserController_recreateAccessToken_end: " + accessToken);
         return CommonResponse.success(accessToken);
     }
 
@@ -213,9 +232,11 @@ public class UserController {
                                          HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long studentId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_addFavorite_start: " + teacherId + studentId);
 
         userService.addFavorite(studentId, teacherId);
 
+        log.info("UserController_addFavorite_end: success");
         return CommonResponse.success(SUCCESS);
     }
 
@@ -224,8 +245,10 @@ public class UserController {
                                             HttpServletRequest request) {
         String accessToken = request.getHeader("access-token");
         Long studentId = userService.getUserIdByToken(accessToken);
+        log.info("UserController_deleteFavorite_start: " + teacherId + studentId);
 
         userService.deleteFavorite(studentId, teacherId);
+        log.info("UserController_deleteFavorite_end: success");
         return CommonResponse.success(SUCCESS);
     }
 }

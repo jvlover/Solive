@@ -32,13 +32,17 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) {
-        log.info("==================== Jwt_Interceptor_start ====================");
+        log.info("JwtInterceptor_preHandle_start");
         try {
-            return jwtConfiguration.checkToken(request.getHeader("access-token"));
+            boolean checkToken = jwtConfiguration.checkToken(request.getHeader("access-token"));
+            log.info("JwtInterceptor_preHandle_end: true");
+            return checkToken;
         } catch (ExpiredJwtException e) {
+            log.info("JwtInterceptor_preHandle_end: false");
             throw new JwtTokenExpiredException();
         } catch (Exception e) {
             e.printStackTrace();
+            log.info("JwtInterceptor_preHandle_end: false");
             throw new JwtInvalidException();
         }
     }
