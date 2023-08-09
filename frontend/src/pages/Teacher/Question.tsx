@@ -1,6 +1,9 @@
-import { useState, ChangeEvent } from 'react';
-import axios from 'axios';
+import { useState, ChangeEvent, useEffect } from 'react';
 import { Select, Option as MOption } from '@material-tailwind/react';
+import { questionSearch, getNewAccessToken } from '../../api';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { userState } from '../../recoil/user/userState';
+
 // 페이지 보려면 아래 한줄 주석하세요.
 // 페이지 보려면 아래 주석 해제하세요.
 // import que from '../../assets/404.png';
@@ -42,9 +45,10 @@ const TeacherQuestion = () => {
   const [subSubjectNum, setSubSubjectNum] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [questionList, setQuestionList] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 번호를 상태로 추가
   const [order, setOrder] = useState('TIME_ASC');
   const [pageNum, setPageNum] = useState(0);
+  const user = useRecoilValue(userState);
+  const setUser = useSetRecoilState(userState);
   const itemsPerPage = 8;
 
   // 페이지 보려면 아래 주석 해제하세요.
@@ -186,35 +190,49 @@ const TeacherQuestion = () => {
     setSearchKeyword(event.target.value);
   };
 
-  const questionSearch = async (isPaginate = false) => {
-    const response = await axios.get(
-      `question/?masterCodeMiddle=${subjectNum}&smasterCodeLow=${subSubjectNum}&keyword=${searchKeyword}&order=${order}&page=${pageNum}`,
-    );
-    setQuestionList(response.data);
-    if (!isPaginate) {
-      setSubjectNum(0);
-      setSubSubjectNum(0);
-      setSearchKeyword('');
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        const result = await questionSearch(
+          subjectNum,
+          subSubjectNum,
+          searchKeyword,
+          order,
+          pageNum,
+          user.accessToken,
+        );
+
+        if (result.success) {
+          setQuestionList(result.data);
+        } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
+          const newAccessToken = await getNewAccessToken(user.refreshToken);
+          if (newAccessToken) {
+            setUser({
+              ...user,
+              accessToken: newAccessToken,
+            });
+            fetchData();
+          }
+        } else {
+          console.error('Failed to load questions:', result.error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [subjectNum, subSubjectNum, searchKeyword, order, pageNum, user, setUser]);
 
   const handlePrevPage = () => {
-    if (currentPage > 0) setCurrentPage((prev) => prev - 1);
-    if (pageNum > 0) {
-      setPageNum((prev) => prev - 1);
-      questionSearch(true);
-    }
+    if (pageNum > 0) setPageNum((prev) => prev - 1);
   };
 
   const handleNextPage = () => {
-    if (currentPage < Math.ceil(questionList.length / itemsPerPage) - 1)
-      setCurrentPage((prev) => prev + 1);
-    setPageNum((prev) => prev + 1);
-    questionSearch(true);
+    if (pageNum < Math.ceil(questionList.length / itemsPerPage) - 1)
+      setPageNum((prev) => prev + 1);
   };
 
-  const getCurrentPageQuestions = () => {
-    const start = currentPage * itemsPerPage;
+  const getPageNumQuestions = () => {
+    const start = pageNum * itemsPerPage;
     const end = start + itemsPerPage;
     return questionList.slice(start, end);
   };
@@ -273,7 +291,16 @@ const TeacherQuestion = () => {
         <div className="flex-initial text-center mx-2">
           <button
             className="px-3 py-2 border rounded text-black border-black"
-            onClick={() => questionSearch(false)}
+            onClick={() =>
+              questionSearch(
+                subjectNum,
+                subSubjectNum,
+                searchKeyword,
+                order,
+                pageNum,
+                user.accessToken,
+              )
+            }
           >
             검색
           </button>
@@ -303,7 +330,7 @@ const TeacherQuestion = () => {
         {questionList.length === 0 ? (
           <div className="text-gray-500 text-xl">등록된 문제가 없습니다.</div>
         ) : (
-          getCurrentPageQuestions().map((question) => (
+          getPageNumQuestions().map((question) => (
             <div
               key={question.id}
               className="w-1/5 m-2 border-2 border-blue-200 rounded-md h-96"
@@ -329,7 +356,7 @@ const TeacherQuestion = () => {
         <button
           onClick={handleNextPage}
           disabled={
-            currentPage >= Math.ceil(questionList.length / itemsPerPage) - 1
+            pageNum >= Math.ceil(questionList.length / itemsPerPage) - 1
           }
         >
           다음
