@@ -116,6 +116,9 @@ public class QuestionServiceImpl implements QuestionService {
          *  files를 바탕으로 QuestionPicture Entity DB에 insert 완료
          */
 
+        // 문제를 등록함과 동시에 학생의 질문한 문제 수 증가
+        student.incrementQuestionCount();
+
         log.info("QuestionService_registQuestion_end: success");
     }
 
