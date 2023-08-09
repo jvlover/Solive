@@ -299,7 +299,7 @@ export async function questionSearch(
     }
     return { success: false, error: errorCode || error };
   }
-};
+}
 
 export const modifyProfile = async (
   nickname: string,
