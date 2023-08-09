@@ -15,4 +15,12 @@ public class UserProfilePostRes {
     Integer gender;
     Long experience;
     String introduce;
+
+    // 학생만 사용
+    Integer questionCount;
+
+    // 선생님만 사용
+    Integer solvedCount;
+    Integer ratingSum;
+    Integer ratingCount;
 }
