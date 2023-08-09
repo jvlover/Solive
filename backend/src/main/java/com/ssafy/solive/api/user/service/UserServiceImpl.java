@@ -213,19 +213,43 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl_getUserProfileByUserId_start: " + userId);
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        UserProfilePostRes userProfilePostRes = UserProfilePostRes.builder()
-                .fileName(user.getFileName())
-                .originalName(user.getOriginalName())
-                .path(user.getPath())
-                .contentType(user.getContentType())
-                .nickname(user.getNickname())
-                .gender(user.getGender())
-                .experience(user.getExperience())
-                .introduce(user.getIntroduce())
-                .build();
+        Integer type = user.getMasterCodeId().getId();
+        if (type == 1) { // 학생일땐
+            Student student = studentRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+            UserProfilePostRes userProfilePostRes = UserProfilePostRes.builder()
+                    .fileName(user.getFileName())
+                    .originalName(user.getOriginalName())
+                    .path(user.getPath())
+                    .contentType(user.getContentType())
+                    .nickname(user.getNickname())
+                    .gender(user.getGender())
+                    .experience(user.getExperience())
+                    .introduce(user.getIntroduce())
+                    .questionCount(student.getQuestionCount()) // 학생일때만
+                    .build();
 
-        log.info("UserServiceImpl_getUserProfileByUserId_end" + userProfilePostRes);
-        return userProfilePostRes;
+            log.info("UserServiceImpl_getUserProfileByUserId_end: student: " + userProfilePostRes);
+            return userProfilePostRes;
+        } else if (type == 2) {
+            Teacher teacher = teacherRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+            UserProfilePostRes userProfilePostRes = UserProfilePostRes.builder()
+                    .fileName(user.getFileName())
+                    .originalName(user.getOriginalName())
+                    .path(user.getPath())
+                    .contentType(user.getContentType())
+                    .nickname(user.getNickname())
+                    .gender(user.getGender())
+                    .experience(user.getExperience())
+                    .introduce(user.getIntroduce())
+                    .solvedCount(teacher.getSolvedCount()) // 선생님일때만
+                    .ratingSum(teacher.getRatingSum()) // 선생님일때만
+                    .ratingCount(teacher.getRatingCount()) // 선생님일때만
+                    .build();
+            log.info("UserServiceImpl_getUserProfileByUserId_end: teacher: " + userProfilePostRes);
+            return userProfilePostRes;
+        }
+        log.info("UserServiceImpl_getUserProfileByUserId_end: InvalidMasterCodeException");
+        throw new InvalidMasterCodeException();
     }
 
     /**
