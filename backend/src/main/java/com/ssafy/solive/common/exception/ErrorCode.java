@@ -26,6 +26,8 @@ public enum ErrorCode {
 
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
 
+    NOT_ENOUGH_POINT(HttpStatus.BAD_REQUEST, "solve point가 부족합니다."),
+
     NO_SUCH_DATA(HttpStatus.NOT_FOUND, "데이터가 존재하지 않습니다."),
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."),
@@ -39,7 +41,7 @@ public enum ErrorCode {
     MASTER_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "부적절한 분류입니다."),
 
     DUPLICATED_LOGIN_ID(HttpStatus.CONFLICT, "중복된 아이디 입니다."),
-    
+
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "중복된 이메일 입니다."),
 
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임 입니다."),
