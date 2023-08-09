@@ -40,7 +40,7 @@ public class QNotificationRepositoryImpl implements QNotificationRepository {
                 notification.id.as("id"),
                 notification.title.as("title"),
                 notification.content.as("content"),
-                notification.title.as("time"),
+                notification.time.as("time"),
                 notification.readAt.as("readAt")))
             .from(notification)
             .where(userIdEq(userId))

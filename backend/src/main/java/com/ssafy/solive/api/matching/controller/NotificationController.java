@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -95,7 +96,7 @@ public class NotificationController {
      * @param modifyInfo : 수정할 알림 id
      */
     @PutMapping()
-    public CommonResponse<?> modify(NotificationModifyPutReq modifyInfo) {
+    public CommonResponse<?> modify(@RequestBody NotificationModifyPutReq modifyInfo) {
 
         log.info("NotificationController_modify_start: " + modifyInfo.toString());
 
@@ -111,7 +112,7 @@ public class NotificationController {
      * @param deleteInfo : 수정할 알림 id
      */
     @PutMapping("/delete")
-    public CommonResponse<?> delete(NotificationDeletePutReq deleteInfo,
+    public CommonResponse<?> delete(@RequestBody NotificationDeletePutReq deleteInfo,
         HttpServletRequest request) {
 
         log.info("NotificationController_delete_start: " + deleteInfo.toString());
