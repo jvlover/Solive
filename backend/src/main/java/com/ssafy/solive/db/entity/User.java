@@ -141,6 +141,7 @@ public class User extends BaseEntity {
 
     public void logout(MasterCode stateId) {
         this.stateId = stateId;
+        this.refreshToken = "";
     }
 
     /**
