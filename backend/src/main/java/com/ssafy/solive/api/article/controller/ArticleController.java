@@ -165,7 +165,7 @@ public class ArticleController {
      *
      * @param articleId : 게시글의 Id
      */
-    @GetMapping("/{articleId}")
+    @GetMapping("/auth/{articleId}")
     public CommonResponse<?> find(@PathVariable Long articleId) {
 
         log.info("ArticleController_find_start: " + articleId);
@@ -187,7 +187,7 @@ public class ArticleController {
      * @param pageable : Spring Data JPA의 페이징 기능
      * @return
      */
-    @GetMapping
+    @GetMapping("/auth")
     public CommonResponse<?> findAll(@RequestParam String keyword, Pageable pageable) {
 
         log.info("ArticleController_findAll_start: " + keyword + ", "
