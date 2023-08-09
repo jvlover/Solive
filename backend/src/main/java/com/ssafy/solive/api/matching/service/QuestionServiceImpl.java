@@ -63,9 +63,8 @@ public class QuestionServiceImpl implements QuestionService {
         List<MultipartFile> fileList) {
 
         log.info(
-            "QuestionService_registQuestion_start: registInfo = " + registInfo.toString()
-                + "\n fileList = "
-                + fileList.toString());
+            "QuestionService_registQuestion_start: " + registInfo.toString()
+                + ", " + fileList.toString());
 
         // 문제는 반드시 이미지가 필요하므로, 이미지가 없으면 QuestionNoImageException 처리
         if (fileList.get(0).getSize() == 0) {

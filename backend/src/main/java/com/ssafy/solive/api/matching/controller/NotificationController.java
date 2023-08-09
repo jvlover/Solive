@@ -53,16 +53,14 @@ public class NotificationController {
     public SseEmitter subscribe(HttpServletRequest request,
         @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
-        log.info("NotificationController_subscribe_start: " + request.toString());
-
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("NotificationController_subscribe_start: " + userId);
 
         SseEmitter sseEmitter = notificationService.subscribe(userId, lastEventId);
 
-        log.info("NotificationController_subscribe_end: userId = " + userId.toString()
-            + "\n lastEventId = "
-            + lastEventId);
+        log.info("NotificationController_subscribe_end: " + userId.toString()
+            + ", " + lastEventId);
 
         return sseEmitter;
     }
@@ -76,10 +74,9 @@ public class NotificationController {
     @GetMapping("/{pageNum}")
     public CommonResponse<?> find(@PathVariable Integer pageNum, HttpServletRequest request) {
 
-        log.info("NotificationController_find_start: ");
-
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("NotificationController_find_start: " + pageNum.toString() + ", " + userId);
 
         List<NotificationFindRes> findResList = notificationService.findNotification(userId,
             pageNum);
@@ -117,10 +114,9 @@ public class NotificationController {
     public CommonResponse<?> delete(@RequestBody NotificationDeletePutReq deleteInfo,
         HttpServletRequest request) {
 
-        log.info("NotificationController_delete_start: " + deleteInfo.toString());
-
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
+        log.info("NotificationController_delete_start: " + deleteInfo.toString() + ", " + userId);
 
         // http 헤더에서 유저 아이디 꺼내서 setting
         deleteInfo.setUserId(userId);

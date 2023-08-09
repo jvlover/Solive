@@ -5,8 +5,10 @@ import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import com.ssafy.solive.api.matching.service.MatchedService;
 import com.ssafy.solive.api.matching.service.NotificationService;
+import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.model.CommonResponse;
 import com.ssafy.solive.db.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +33,14 @@ public class MatchedController {
 
     private final MatchedService matchedService;
     private final NotificationService notificationService;
+    private final UserService userService;
 
     @Autowired
-    public MatchedController(MatchedService matchedService,
-        NotificationService notificationService) {
+    public MatchedController(MatchedService matchedService, NotificationService notificationService,
+        UserService userService) {
         this.matchedService = matchedService;
         this.notificationService = notificationService;
+        this.userService = userService;
     }
 
     /**
@@ -46,11 +50,14 @@ public class MatchedController {
      */
     @Transactional
     @PostMapping()
-    public CommonResponse<?> regist(@RequestBody MatchedRegistPostReq registInfo) {
+    public CommonResponse<?> regist(@RequestBody MatchedRegistPostReq registInfo,
+        HttpServletRequest request) {
 
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+        log.info("MatchedController_regist_start: " + registInfo.toString() + ", " + userId);
 
-        log.info("MatchedController_regist_start: " + registInfo.toString());
+        registInfo.setStudentId(userId);
 
         User user = matchedService.registMatched(registInfo);
 
@@ -69,11 +76,15 @@ public class MatchedController {
      * @param findCondition : 검색 조건. 매칭 상태, 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @GetMapping("/my")
-    public CommonResponse<?> findMyMatching(MatchedFindMineGetReq findCondition) {
+    public CommonResponse<?> findMyMatching(MatchedFindMineGetReq findCondition,
+        HttpServletRequest request) {
 
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+        log.info(
+            "MatchedController_findMyMatching_start: " + findCondition.toString() + ", " + userId);
 
-        log.info("MatchedController_findMyMatching_start: " + findCondition.toString());
+        findCondition.setUserId(userId);
 
         List<MatchedFindMineRes> findResList = matchedService.findMyMatching(findCondition);
 

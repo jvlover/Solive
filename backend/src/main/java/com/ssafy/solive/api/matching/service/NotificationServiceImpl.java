@@ -49,10 +49,10 @@ public class NotificationServiceImpl implements NotificationService {
 
         if (lastEventId.isEmpty()) {
             log.info("NotificationService_subscribe_start: userId = " + userId.toString()
-                + "\n lastEventId is Null");
+                + " lastEventId is Null");
         } else {
-            log.info("NotificationService_subscribe_start: userId = " + userId.toString()
-                + "\n lastEventId = " + lastEventId);
+            log.info("NotificationService_subscribe_start: " + userId.toString()
+                + ", " + lastEventId);
         }
 
         // emitterId 생성
@@ -152,8 +152,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void send(User user, String title, String content) {
 
-        log.info("NotificationService_send_start: user = " + user.toString() + "\n title = "
-            + title + "\n content = " + content);
+        log.info("NotificationService_send_start: " + user.toString() + ", "
+            + title + ", " + content);
 
         Notification notification = notificationRepository.save(Notification.builder()
             .user(user)

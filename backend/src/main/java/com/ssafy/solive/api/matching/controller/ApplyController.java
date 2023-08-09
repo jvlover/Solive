@@ -6,9 +6,11 @@ import com.ssafy.solive.api.matching.request.ApplyRegistPostReq;
 import com.ssafy.solive.api.matching.response.ApplyFindRes;
 import com.ssafy.solive.api.matching.service.ApplyService;
 import com.ssafy.solive.api.matching.service.NotificationService;
+import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import com.ssafy.solive.db.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +36,14 @@ public class ApplyController {
 
     private final ApplyService applyService;
     private final NotificationService notificationService;
+    private final UserService userService;
 
     @Autowired
-    public ApplyController(ApplyService applyService, NotificationService notificationService) {
+    public ApplyController(ApplyService applyService, NotificationService notificationService,
+        UserService userService) {
         this.applyService = applyService;
         this.notificationService = notificationService;
+        this.userService = userService;
     }
 
     /**
@@ -48,11 +53,14 @@ public class ApplyController {
      */
     @Transactional
     @PostMapping()
-    public CommonResponse<?> regist(@RequestBody ApplyRegistPostReq registInfo) {
+    public CommonResponse<?> regist(@RequestBody ApplyRegistPostReq registInfo,
+        HttpServletRequest request) {
 
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+        log.info("ApplyController_regist_start: " + registInfo.toString() + ", " + userId);
 
-        log.info("ApplyController_regist_start: " + registInfo.toString());
+        registInfo.setTeacherId(userId);
 
         // user : 알림을 받는 학생
         User user = applyService.registApply(registInfo);
@@ -72,11 +80,14 @@ public class ApplyController {
      * @param deleteInfo : 지원 취소하기 위해 필요한 정보
      */
     @PutMapping("/delete")
-    public CommonResponse<?> delete(@RequestBody ApplyDeletePutReq deleteInfo) {
+    public CommonResponse<?> delete(@RequestBody ApplyDeletePutReq deleteInfo,
+        HttpServletRequest request) {
 
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+        log.info("ApplyController_delete_start: " + deleteInfo.toString() + ", " + userId);
 
-        log.info("ApplyController_delete_start: " + deleteInfo.toString());
+        deleteInfo.setTeacherId(userId);
 
         boolean isDeleted = applyService.deleteApply(deleteInfo); // 삭제 실패하면 false
         if (isDeleted) {
@@ -95,8 +106,6 @@ public class ApplyController {
      */
     @GetMapping()
     public CommonResponse<?> findByCondition(ApplyFindGetReq findCondition) {
-
-        // TODO: HttpRequest에서 userId 빼는 식으로 바꾸는 것 필요
 
         log.info("ApplyController_findByCondition_start: " + findCondition.toString());
 

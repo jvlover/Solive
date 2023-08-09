@@ -17,7 +17,7 @@ public class GlobalControllerAdvice {
     public CommonResponse<?> onBaseException(BaseException e) {
 
         log.info("GlobalControllerAdvice_onBaseException: codeName = " + e.getErrorCode().name()
-            + "\n codeMessage = " + e.getMessage());
+            + " codeMessage = " + e.getMessage());
 
         return CommonResponse.fail(e.getErrorCode().name(), e.getMessage());
     }
