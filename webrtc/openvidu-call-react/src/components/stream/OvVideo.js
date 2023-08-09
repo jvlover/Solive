@@ -42,7 +42,6 @@ export default class OvVideoComponent extends Component {
     render() {
         return (
             <>
-                <div>어디냐고</div>
                 <video
                     autoPlay={true}
                     id={'video-'
@@ -51,7 +50,6 @@ export default class OvVideoComponent extends Component {
                     ref={this.videoRef}
                     muted={this.props.mutedSound}
                 />
-                <div>이건 어디야</div>
             </>
         );
     }

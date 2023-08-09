@@ -4,6 +4,7 @@ import React, {Component} from "react";
 import ChatComponent from "./chat/ChatComponent";
 import DialogExtensionComponent from "./dialog-extension/DialogExtension";
 import StreamComponent from "./stream/StreamComponent";
+import CanvasComponent from "./canvas/CanvasComponent";
 import "./VideoRoomComponent.css";
 
 import OpenViduLayout from "../layout/openvidu-layout";
@@ -12,7 +13,9 @@ import ToolbarComponent from "./toolbar/ToolbarComponent";
 
 const localUser = new UserModel();
 const APPLICATION_SERVER_URL =
-    process.env.NODE_ENV === "production" ? "" : "http://localhost:5000/";
+    process.env.NODE_ENV === "https://i9a107.p.ssafy.io:8447/";
+
+// var CircularJSON = require('circular-json');
 
 class VideoRoomComponent extends Component {
     constructor(props) {
@@ -30,7 +33,6 @@ class VideoRoomComponent extends Component {
             : null;
         this.remotes = [];
         this.localUserAccessAllowed = false;
-        this.recording = false;
         this.state = {
             sessionId: sessionName,
             myUserName: userName,
@@ -255,9 +257,12 @@ class VideoRoomComponent extends Component {
 
     // 세션에서 퇴장합니다.
     leaveSession() {
-        this.stopRecording();
-
         const mySession = this.state.session;
+
+        console.log(this.state.subscribers.length + "명 남았어요")
+        if (this.state.subscribers.length === 0) {
+            this.stopRecording();
+        }
 
         if (mySession) {
             mySession.disconnect();
@@ -597,7 +602,7 @@ class VideoRoomComponent extends Component {
 
     // 녹화 끝냅니다
     stopRecording() {
-        const res = axios.post(
+        axios.post(
             APPLICATION_SERVER_URL + "api/recording/stop", {
                 sessionId: this.state.sessionId
             }, {
@@ -632,8 +637,8 @@ class VideoRoomComponent extends Component {
                     showDialog={this.state.showExtensionDialog}
                     cancelClicked={this.closeDialogExtension}
                 />
-
                 <div id="layout" className="bounds">
+                    <CanvasComponent/>
                     {localUser !== undefined &&
                         localUser.getStreamManager() !== undefined && (
                             <div
@@ -700,10 +705,22 @@ class VideoRoomComponent extends Component {
         return await this.createToken(this.state.sessionId);
     }
 
-    async createSession(sessionProperties) {
+    async createSession() {
+        const sessionProperties = {
+            customSessionId: this.state.sessionId,
+            recordingMode: "ALWAYS",
+            defaultRecordingProperties: {
+                outputMode: "COMPOSED",
+                resolution: "640x480",
+                frameRate: 30
+            }
+        };
         const response = await axios.post(
-            APPLICATION_SERVER_URL + "api/sessions",
-            {},
+            APPLICATION_SERVER_URL + "sessions",
+            {
+                sessionId: this.state.sessionId,
+                sessionProperties: sessionProperties
+            },
             {
                 headers: {"Content-Type": "application/json"},
             }
@@ -714,10 +731,8 @@ class VideoRoomComponent extends Component {
     async createToken(sessionId) {
         const response = await axios.post(
             APPLICATION_SERVER_URL +
-            "api/sessions/" +
-            sessionId +
-            "/connections",
-            {},
+            "tokens",
+            {sessionId: sessionId},
             {
                 headers: {"Content-Type": "application/json"},
             }

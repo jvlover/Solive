@@ -1,14 +1,7 @@
 // .env 파일을 읽어와 환경 변수를 설정합니다. CONFIG 환경 변수가 존재하면 해당 파일을 사용하고, 그렇지 않으면 기본적으로 빈 객체를 사용합니다.
 require("dotenv").config(
     !!process.env.CONFIG ? {path: process.env.CONFIG} : {});
-const sessionProperties = {
-    recordingMode: "ALWAYS",
-    defaultRecordingProperties: {
-        outputMode: "COMPOSED",
-        resolution: "640x480",
-        frameRate: 30
-    }
-};
+
 // Express 애플리케이션을 생성합니다.
 const express = require("express");
 const bodyParser = require("body-parser"); // 요청의 본문을 파싱하기 위한 미들웨어
@@ -21,9 +14,10 @@ const app = express();
 // 환경 변수 : Node 서버가 리스닝하는 포트 번호
 const SERVER_PORT = process.env.SERVER_PORT || 5000;
 // 환경 변수 : OpenVidu 서버의 URL 주소
-const OPENVIDU_URL = process.env.OPENVIDU_URL || 'http://localhost:4443';
+const OPENVIDU_URL = process.env.OPENVIDU_URL
+    || 'https://i9a107.p.ssafy.io:8447/';
 // 환경 변수 : OpenVidu 서버와 공유하는 비밀 키
-const OPENVIDU_SECRET = process.env.OPENVIDU_SECRET || 'MY_SECRET';
+const OPENVIDU_SECRET = process.env.OPENVIDU_SECRET || 'solive107';
 
 // CORS 지원을 활성화합니다. 모든 도메인으로부터의 요청을 허용합니다.
 app.use(
@@ -52,6 +46,15 @@ server.listen(SERVER_PORT, () => {
 
 // "/api/sessions" 경로로 POST 요청이 오면 OpenVidu 에서 새 세션을 생성하고 세션 ID를 반환합니다.
 app.post("/api/sessions", async (req, res) => {
+    const sessionProperties = {
+        customSessionId: req.body.sessionId,
+        recordingMode: "ALWAYS",
+        defaultRecordingProperties: {
+            outputMode: "COMPOSED",
+            resolution: "640x480",
+            frameRate: 30
+        }
+    };
     const session = await openvidu.createSession(sessionProperties);
     res.send(session.sessionId);
 });

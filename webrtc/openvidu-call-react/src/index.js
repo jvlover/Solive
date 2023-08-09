@@ -10,7 +10,7 @@ const now = new Date();
 // const date = now.getFullYear() + "" + (now.getMonth() + 1)
 //     + "" + (now.getDay() - 1) + "" + now.getHours() + "" + now.getMinutes() + ""
 //     + now.getSeconds();
-const sessionName = userName;
+const sessionName = userName + "20230809";
 
 ReactDOM.render(
     // 여기서 videoRoomComponent로 props 넘겨준다
