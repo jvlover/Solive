@@ -221,7 +221,7 @@ export async function getNewAccessToken(
 ): Promise<string | null> {
   try {
     const response = await axios.post(BASE_URL + '/user/refresh', {
-      'refresh-token': refreshToken,
+      refreshToken: refreshToken,
     });
     if (response.data.success) {
       return response.data.accessToken;
@@ -425,8 +425,8 @@ export const withdrawalUser = async (
   error?: any;
 }> => {
   try {
-    const response = await axios.put(BASE_URL + '/user/delete', {
-      Headers: { 'access-token': accessToken },
+    const response = await axios.put(BASE_URL + '/user/delete', null, {
+      headers: { 'access-token': accessToken },
     });
     return {
       success: response.data.success,
@@ -491,4 +491,3 @@ export async function getTeachers(accessToken: string) {
     return { success: false, error: errorCode || error };
   }
 }
-
