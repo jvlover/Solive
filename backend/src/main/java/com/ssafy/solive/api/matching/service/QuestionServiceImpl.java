@@ -194,7 +194,7 @@ public class QuestionServiceImpl implements QuestionService {
         for (int i = 0; i < findConditionRes.size(); i++) {
             String questionImage = questionRepository.findQuestionImage(
                 findConditionRes.get(i).getQuestionId());
-            findConditionRes.get(i).setImagePathName(questionImage);
+            findConditionRes.get(i).setPath(questionImage);
         }
 
         if (findConditionRes.size() == 0) {

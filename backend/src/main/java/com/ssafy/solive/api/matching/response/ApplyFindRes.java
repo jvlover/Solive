@@ -15,7 +15,7 @@ public class ApplyFindRes {
     String teacherNickname;
 
     // 강사 프로필 사진
-    String teacherPathName;
+    String path;
 
     // 강사의 선호 과목 마스터코드
     Integer teacherSubjectId;
@@ -42,7 +42,7 @@ public class ApplyFindRes {
         Integer solvePoint, Integer estimatedTime, Integer ratingSum, Integer ratingCount) {
         this.applyId = applyId;
         this.teacherNickname = teacherNickname;
-        this.teacherPathName = teacherPathName;
+        this.path = teacherPathName;
         this.teacherSubjectId = teacherSubjectId;
         this.solvePoint = solvePoint;
         this.estimatedTime = estimatedTime;

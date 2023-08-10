@@ -13,7 +13,7 @@ public class MatchedFindMineRes {
     Long questionId;
 
     // 문제 이미지
-    String imagePathName;
+    String path;
 
     // 문제 제목
     String title;
