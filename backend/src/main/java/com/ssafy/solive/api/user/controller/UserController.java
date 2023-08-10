@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.user.controller;
 
 import com.ssafy.solive.api.user.request.*;
+import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
@@ -249,5 +250,14 @@ public class UserController {
         userService.deleteFavorite(studentId, teacherId);
         log.info("UserController_deleteFavorite_end: success");
         return CommonResponse.success(SUCCESS);
+    }
+
+    @GetMapping("/onlineteacher")
+    public CommonResponse<?> getOnlineTeacher() {
+        log.info("UserController_getOnlineTeacher_start");
+
+        List<TeacherOnlineGetRes> teacherList = userService.getOnlineTeacher();
+        log.info("UserController_getOnlineTeacher_end: " + teacherList);
+        return CommonResponse.success(teacherList);
     }
 }

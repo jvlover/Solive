@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.user.service;
 
 import com.ssafy.solive.api.user.request.*;
+import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
@@ -42,4 +43,6 @@ public interface UserService {
     void deleteFavorite(Long studentId, Long teacherId);
 
     boolean isLogout(String accessToken);
+
+    List<TeacherOnlineGetRes> getOnlineTeacher();
 }

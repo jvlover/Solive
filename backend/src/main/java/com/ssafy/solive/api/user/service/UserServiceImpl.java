@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.user.service;
 
 import com.ssafy.solive.api.user.request.*;
+import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
@@ -437,5 +438,14 @@ public class UserServiceImpl implements UserService {
             log.info("UserService_isLogout_end: false");
             return false;
         }
+    }
+
+    @Override
+    public List<TeacherOnlineGetRes> getOnlineTeacher() {
+        log.info("UserService_getOnlineTeacher_start");
+        List<TeacherOnlineGetRes> teacherOnlineGetResList = teacherRepository.findOnlineTeacher();
+        
+        log.info("UserService_getOnlineTeacher_end: " + teacherOnlineGetResList);
+        return teacherOnlineGetResList;
     }
 }
