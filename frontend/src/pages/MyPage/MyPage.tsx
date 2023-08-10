@@ -41,7 +41,7 @@ const MyPage = () => {
 
   useEffect(() => {
     window.addEventListener('resize', () => {
-      if (window.innerWidth >= 960) {
+      if (window.innerWidth >= 1200) {
         setOpenNav(true);
       } else {
         setOpenNav(false);
