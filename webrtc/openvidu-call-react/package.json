@@ -8,12 +8,12 @@
   "dependencies": {
     "@material-ui/core": "4.9.10",
     "@material-ui/icons": "4.9.1",
-    "axios": "0.19.2",
+    "axios": "^1.4.0",
     "jquery": "3.5.0",
-    "openvidu-browser": "2.27.0",
+    "openvidu-browser": "^2.20.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-scripts": "^3.4.3"
+    "react-scripts": "^5.0.1"
   },
   "name": "openvidu-call-react",
   "private": true,

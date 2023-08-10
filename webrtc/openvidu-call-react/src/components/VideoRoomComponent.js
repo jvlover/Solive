@@ -12,8 +12,7 @@ import UserModel from "../models/user-model";
 import ToolbarComponent from "./toolbar/ToolbarComponent";
 
 const localUser = new UserModel();
-const APPLICATION_SERVER_URL =
-    process.env.NODE_ENV === "https://i9a107.p.ssafy.io:8447/";
+const APPLICATION_SERVER_URL = "https://i9a107.p.ssafy.io:8447/openvidu/api/";
 
 // var CircularJSON = require('circular-json');
 
@@ -22,19 +21,12 @@ class VideoRoomComponent extends Component {
         super(props);
         this.hasBeenUpdated = false;
         this.layout = new OpenViduLayout();
-        // 세션 이름 없으면 null로 -> 나중에 선생님 이름이 세션이름 되게 바꾸자
-        // 두명만 같이 있을 새로운 방 파야함
-        let sessionName = this.props.sessionName
-            ? this.props.sessionName
-            : null;
         // props로 지금 그냥 userName만 넘기는데 나중에는 user넘기자?
-        let userName = this.props.userName
-            ? this.props.userName
-            : null;
+        let userName = this.props.userName;
         this.remotes = [];
         this.localUserAccessAllowed = false;
         this.state = {
-            sessionId: sessionName,
+            sessionId: null,
             myUserName: userName,
             session: undefined,
             localUser: undefined,
@@ -56,7 +48,6 @@ class VideoRoomComponent extends Component {
         this.toggleChat = this.toggleChat.bind(this);
         this.checkNotification = this.checkNotification.bind(this);
         this.checkSize = this.checkSize.bind(this);
-        this.stopRecording = this.stopRecording.bind(this);
     }
 
     // 컴포넌트가 마운트될 때 초기화 작업을 수행합니다.
@@ -122,13 +113,11 @@ class VideoRoomComponent extends Component {
     async connectToSession() {
         if (this.props.token !== undefined) {
             // props로 전달된 토큰이 있다면, 해당 토큰으로 세션에 연결합니다.
-            console.log('토큰 받았다 :', this.props.token);
             this.connect(this.props.token);
         } else {
             try {
                 // props로 전달된 토큰이 없다면, 서버에서 새로운 토큰을 요청하여 세션에 연결합니다.
                 const token = await this.getToken();
-                console.log(token + "토큰 이름은 이거에요");
                 this.connect(token);
             } catch (error) {
                 if (this.props.error) {
@@ -139,7 +128,7 @@ class VideoRoomComponent extends Component {
                         status: error.status
                     });
                 }
-                alert('토큰 가져오다가 오류 생겼어요', error.message);
+                alert('토큰 가져오다가 오류 생겼어요' + error.message);
             }
         }
     }
@@ -155,14 +144,14 @@ class VideoRoomComponent extends Component {
             this.connectWebCam(); // 웹캠 연결을 시작합니다.
         })
         .catch((error) => {
-            if (this.props.error) {
-                this.props.error({
-                    error: error.error,
-                    message: error.message,
-                    code: error.code,
-                    status: error.status
-                });
-            }
+            // if (this.props.error) {
+            //     this.props.error({
+            //         error: error.error,
+            //         message: error.message,
+            //         code: error.code,
+            //         status: error.status
+            //     });
+            // }
             alert('세션 연결 중에 오류 발생!' +
                 error.message);
         });
@@ -259,9 +248,8 @@ class VideoRoomComponent extends Component {
     leaveSession() {
         const mySession = this.state.session;
 
-        console.log(this.state.subscribers.length + "명 남았어요")
         if (this.state.subscribers.length === 0) {
-            this.stopRecording();
+            this.closeSession();
         }
 
         if (mySession) {
@@ -600,17 +588,6 @@ class VideoRoomComponent extends Component {
         }
     }
 
-    // 녹화 끝냅니다
-    stopRecording() {
-        axios.post(
-            APPLICATION_SERVER_URL + "api/recording/stop", {
-                sessionId: this.state.sessionId
-            }, {
-                headers: {"Content-Type": "application/json"},
-            }
-        );
-    }
-
     render() {
         const localUser = this.state.localUser;
         const chatDisplay = {display: this.state.chatDisplay};
@@ -701,43 +678,78 @@ class VideoRoomComponent extends Component {
      * more about the integration of OpenVidu in your application server.
      */
     async getToken() {
-        this.state.sessionId = await this.createSession(this.state.sessionId);
-        return await this.createToken(this.state.sessionId);
+        await this.getSession()
+        return await this.createToken();
     }
 
     async createSession() {
-        const sessionProperties = {
-            customSessionId: this.state.sessionId,
-            recordingMode: "ALWAYS",
-            defaultRecordingProperties: {
-                outputMode: "COMPOSED",
-                resolution: "640x480",
-                frameRate: 30
-            }
-        };
-        const response = await axios.post(
+        const res = await axios.post(
             APPLICATION_SERVER_URL + "sessions",
             {
-                sessionId: this.state.sessionId,
-                sessionProperties: sessionProperties
+                customSessionId: this.props.sessionName,
+                recordingMode: "ALWAYS",
+                defaultRecordingProperties: {
+                    outputMode: "COMPOSED",
+                    resolution: "640x480",
+                    frameRate: 30
+                }
             },
             {
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic T1BFTlZJRFVBUFA6c29saXZlMTA3"
+                },
             }
         );
-        return response.data; // 세션아이디 반환합니다.
+        console.log(res.data.sessionId + "여기는 잘 나오는데")
+        return res.data.sessionId; // 세션아이디 반환합니다.
     }
 
-    async createToken(sessionId) {
-        const response = await axios.post(
-            APPLICATION_SERVER_URL +
-            "tokens",
-            {sessionId: sessionId},
+    async getSession() {
+        await axios.get(
+            APPLICATION_SERVER_URL + "sessions/" + this.props.sessionName, {
+                headers: {
+                    "Authorization": "Basic T1BFTlZJRFVBUFA6c29saXZlMTA3"
+                },
+            }
+        )
+        .then(response => {
+            this.setState(
+                {
+                    sessionId: response.data.id,
+                })
+        })
+        .catch(async error => {
+            if (error.message.substring(error.message.length - 3) === "404") {
+                this.state.sessionId = await this.createSession();
+            }
+        })
+    }
+
+    closeSession() {
+        axios.delete(APPLICATION_SERVER_URL + "sessions/"
+            + this.state.sessionId, {
+            headers: {
+                "Authorization": "Basic T1BFTlZJRFVBUFA6c29saXZlMTA3"
+            },
+        })
+    };
+
+    async createToken() {
+        console.log(this.state.sessionId + "세션아이디용")
+        const res = await axios.post(
+            APPLICATION_SERVER_URL + "tokens",
             {
-                headers: {"Content-Type": "application/json"},
+                session: this.state.sessionId,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic T1BFTlZJRFVBUFA6c29saXZlMTA3"
+                },
             }
         );
-        return response.data; // The token
+        return res.data.token;
     }
 }
 
