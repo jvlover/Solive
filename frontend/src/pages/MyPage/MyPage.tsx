@@ -41,7 +41,7 @@ const MyPage = () => {
 
   useEffect(() => {
     window.addEventListener('resize', () => {
-      if (window.innerWidth >= 960) {
+      if (window.innerWidth >= 1200) {
         setOpenNav(true);
       } else {
         setOpenNav(false);
@@ -51,7 +51,7 @@ const MyPage = () => {
 
   return (
     <div>
-      <Typography variant="h2" className="ml-[30vh] mt-10">
+      <Typography variant="h2" className="ml-[30vh] mt-10 font-[Pretendard]">
         마이페이지
       </Typography>
       <hr className="my-2 mx-[25vh] border-2 border-solive-200" />

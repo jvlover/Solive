@@ -266,7 +266,6 @@ export const getProfile = async (
     data: UserProfile;
   }
   try {
-    console.log(accessToken);
     const response = await axios.get<ProfileResponse>(BASE_URL + '/user', {
       headers: { 'access-token': accessToken },
     });
@@ -365,6 +364,100 @@ export const modifyProfile = async (
     });
 };
 
+export const getPrivacy = async (
+  accessToken: string,
+): Promise<{
+  success: boolean;
+  email?: string;
+  signinTime?: string;
+  error?: any;
+}> => {
+  try {
+    const response = await axios.get(BASE_URL + '/user/privacy', {
+      headers: { 'access-token': accessToken },
+    });
+    return {
+      success: response.data.success,
+      email: response.data.data.email,
+      signinTime: response.data.data.signinTime,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+};
+
+export const modifyPassword = async (
+  oldPassword: string,
+  newPassword: string,
+  accessToken: string,
+): Promise<{
+  success: boolean;
+  error?: any;
+}> => {
+  try {
+    const data = {
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    };
+    const response = await axios.put(BASE_URL + '/user/password', data, {
+      headers: { 'access-token': accessToken },
+    });
+    return {
+      success: response.data.success,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+};
+
+export const withdrawalUser = async (
+  accessToken: string,
+): Promise<{
+  success: boolean;
+  error?: any;
+}> => {
+  try {
+    const response = await axios.put(BASE_URL + '/user/delete', {
+      Headers: { 'access-token': accessToken },
+    });
+    return {
+      success: response.data.success,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+};
+
+export const logoutUser = async (
+  accessToken: string,
+): Promise<{ success: boolean; error?: any }> => {
+  try {
+    const response = await axios.put(BASE_URL + '/user/logout', null, {
+      headers: { 'access-token': accessToken },
+    });
+    return {
+      success: response.data.success,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+};
 export async function getTeachers(accessToken: string) {
   type Teacher = {
     path: string;
@@ -398,3 +491,4 @@ export async function getTeachers(accessToken: string) {
     return { success: false, error: errorCode || error };
   }
 }
+
