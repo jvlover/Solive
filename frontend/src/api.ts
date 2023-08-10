@@ -4,7 +4,7 @@ import { SignupFormData } from './pages/Signup/Signup';
 import { User } from './recoil/user/userState';
 import { UserProfile } from './pages/MyPage/Profile';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'http://i9a107.p.ssafy.io:8200';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
 const CHARGE_URL = `${BASE_URL}/charge`;
 
@@ -412,6 +412,25 @@ export const withdrawalUser = async (
 }> => {
   try {
     const response = await axios.put(BASE_URL + '/user/delete', {
+      Headers: { 'access-token': accessToken },
+    });
+    return {
+      success: response.data.success,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+};
+
+export const logoutUser = async (
+  accessToken: string,
+): Promise<{ success: boolean; error?: any }> => {
+  try {
+    const response = await axios.put(BASE_URL + '/user/logout', {
       Headers: { 'access-token': accessToken },
     });
     return {

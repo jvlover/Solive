@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../recoil/user/userState';
 import { ReactComponent as SolvePoint } from '../assets/solve_point.svg';
+import { logoutUser } from '../api';
 import {
   Navbar,
   Typography,
@@ -36,6 +37,17 @@ const HeaderNav = () => {
       () => window.innerWidth >= 960 && setOpenNav(false),
     );
   }, []);
+
+  const handleLogout = async () => {
+    const result = await logoutUser(user.accessToken);
+
+    if (result.success) {
+      localStorage.removeItem('user');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      window.location.href = '/';
+    }
+  };
 
   const labelProps = {
     as: 'li',
@@ -94,7 +106,10 @@ const HeaderNav = () => {
             </MenuItem>
           )}
           <hr className="my-2 border-blue-gray-50" />
-          <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+          <MenuItem
+            onClick={handleLogout}
+            className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
+          >
             <PowerIcon className="w-5 h-5" />
             <Typography variant="small" className="font-normal">
               로그아웃
