@@ -18,7 +18,6 @@ const Teacher = () => {
   const [latestQuestionsPage, setLatestQuestionsPage] = useState(0);
   const [relatedQuestionsPage, setRelatedQuestionsPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-
   const banners = [1, 2, 3, 4, 5];
 
   // 문제 어떻게 나오는지 보려면 밑에  const latest 주석 해제해주세요.
@@ -26,7 +25,7 @@ const Teacher = () => {
   // const latestQuestions = [
   //   {
   //     id: 1,
-  //     path_name: que,
+  //     path: que,
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -34,7 +33,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 2,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -42,7 +41,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 3,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -50,7 +49,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 4,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -58,7 +57,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 5,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -66,7 +65,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 6,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -74,7 +73,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 7,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -82,7 +81,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 8,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -90,7 +89,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 9,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -98,7 +97,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 10,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -106,7 +105,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 11,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -114,7 +113,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 12,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -122,7 +121,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 13,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -130,7 +129,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 14,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -138,7 +137,7 @@ const Teacher = () => {
   //   },
   //   {
   //     id: 15,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -163,7 +162,7 @@ const Teacher = () => {
   const renderQuestion = (question: Question) => (
     <div className="border-2 border-blue-200 p-2 flex flex-col items-center m-2">
       <img
-        src={question.path_name}
+        src={question.path}
         alt={question.title}
         style={{ width: '100%', aspectRatio: '1/1' }}
       />
