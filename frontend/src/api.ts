@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
 import { SignupFormData } from './pages/Signup/Signup';
 import { User } from './recoil/user/userState';
-import { UserProfile } from './pages/Student/mypage/Profile';
+import { UserProfile } from './pages/MyPage/Profile';
 
 const BASE_URL = 'http://localhost:8080';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
@@ -207,7 +207,7 @@ export async function getNewAccessToken(
 ): Promise<string | null> {
   try {
     const response = await axios.post(BASE_URL + '/user/refresh', {
-      refreshToken: refreshToken,
+      'refresh-token': refreshToken,
     });
     if (response.data.success) {
       return response.data.accessToken;
@@ -252,6 +252,7 @@ export const getProfile = async (
     data: UserProfile;
   }
   try {
+    console.log(accessToken);
     const response = await axios.get<ProfileResponse>(BASE_URL + '/user', {
       headers: { 'access-token': accessToken },
     });
@@ -263,7 +264,7 @@ export const getProfile = async (
     let errorCode;
     if (error.response && error.response.data && error.response.data.error) {
       errorCode = error.response.data.error.code;
-    } 
+    }
     return { success: false, error: errorCode || error };
   }
 };
@@ -305,17 +306,20 @@ export const modifyProfile = async (
   nickname: string,
   experience: number,
   introduce: string,
+  gender: number,
   profileImage: File | null,
+  accessToken: string,
 ) => {
   const profileData = {
     nickname: nickname,
     experience: experience,
     introduce: introduce,
+    gender: gender,
   };
   const formData = new FormData();
 
   formData.append(
-    'profile',
+    'userInfo',
     new Blob([JSON.stringify(profileData)], { type: 'application/json' }),
   );
 
@@ -330,12 +334,14 @@ export const modifyProfile = async (
   axios
     .put<{ success: boolean }>(BASE_URL + '/user', formData, {
       headers: {
+        'access-token': accessToken,
         'Content-Type': 'multipart/form-data',
       },
     })
     .then((response) => {
       if (response.data.success) {
         console.log('Profile updated:', response);
+        alert('저장되었습니다.');
       } else {
         console.error('Failed to update profile: success is false');
       }

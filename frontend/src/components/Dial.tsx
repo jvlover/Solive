@@ -27,14 +27,6 @@ const Dial = () => {
       'font-[Pretendard] absolute top-2/4 -left-2/4 -translate-y-2/4 -translate-x-3/4 font-normal',
   };
 
-  const handleProfileClick = () => {
-    if (user?.masterCodeId === 1) {
-      navigate('/student/mypage/profile');
-    } else if (user?.masterCodeId === 2) {
-      navigate('/teacher/mypage/profile');
-    }
-  };
-
   const handleQuestionClick = () => {
     if (user?.masterCodeId === 1) {
       navigate('/student/questionregistration');
@@ -62,7 +54,10 @@ const Dial = () => {
           </SpeedDialAction>
           {/* 학생이면 학생 마이페이지, 선생이면 선생 마이페이지 */}
           <SpeedDialAction className="relative focus:outline-none">
-            <UserCircleIcon className="w-5 h-5" onClick={handleProfileClick} />
+            <UserCircleIcon
+              className="w-5 h-5"
+              onClick={() => navigate('/mypage/profile')}
+            />
             <Typography {...labelProps}>프로필</Typography>
           </SpeedDialAction>
           <SpeedDialAction className="relative focus:outline-none">

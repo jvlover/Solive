@@ -185,7 +185,7 @@ const QuestionRegistration = () => {
   );
 
   return (
-    <div className="flex text-black pt-24 min-h-screen w-screen">
+    <div className="flex w-screen min-h-screen pt-24 text-black">
       <div className="w-1/2 p-5">
         <form onSubmit={handleSubmit} className="space-y-3">
           <label className="block p-3 rounded-md">
@@ -193,7 +193,7 @@ const QuestionRegistration = () => {
               제목
             </span>
             <input
-              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
+              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -204,14 +204,14 @@ const QuestionRegistration = () => {
               사진
             </span>
             <input
-              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
+              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
               type="file"
               onChange={handleFileChange}
               multiple
             />
           </label>
           {preview && (
-            <div className="mt-3 flex justify-center">
+            <div className="flex justify-center mt-3">
               <img
                 src={preview}
                 alt="Preview"
@@ -220,7 +220,7 @@ const QuestionRegistration = () => {
             </div>
           )}
           <button
-            className="mt-3 px-4 py-2 text-white rounded  border-light-blue-500 bg-light-blue-500"
+            className="px-4 py-2 mt-3 text-white rounded border-light-blue-500 bg-light-blue-500"
             type="submit"
           >
             등록
@@ -234,7 +234,7 @@ const QuestionRegistration = () => {
               닉네임
             </span>
             <input
-              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
+              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
@@ -245,7 +245,7 @@ const QuestionRegistration = () => {
               과목
             </span>
             <select
-              className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
+              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
             >
@@ -258,10 +258,10 @@ const QuestionRegistration = () => {
             </select>
           </label>
           {selectedSubject && (
-            <label className="block  p-3 rounded-md">
+            <label className="block p-3 rounded-md">
               <span className="text-gray-700">세부 과목:</span>
               <select
-                className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm"
+                className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
                 value={subSubject}
                 onChange={(e) => setSubSubject(e.target.value)}
               >
@@ -275,10 +275,10 @@ const QuestionRegistration = () => {
             </label>
           )}
           {selectedSubSubject && (
-            <label className="block  p-3 rounded-md">
+            <label className="block p-3 rounded-md">
               <span className="text-gray-700">세부 주제:</span>
               <select
-                className="mt-1 block w-full h-16 border-2 border-light-blue-500 rounded-md shadow-sm "
+                className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500 "
                 value={detail}
                 onChange={(e) => setDetail(e.target.value)}
               >
@@ -291,12 +291,12 @@ const QuestionRegistration = () => {
               </select>
             </label>
           )}
-          <label className="block  p-3 rounded-md">
+          <label className="block p-3 rounded-md">
             <span className="text-gray-700" style={{ fontWeight: '900' }}>
               설명
             </span>
             <textarea
-              className="mt-1 block w-full h-48 border-2 border-light-blue-500 rounded-md shadow-sm "
+              className="block w-full h-48 mt-1 border-2 rounded-md shadow-sm border-light-blue-500 "
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />

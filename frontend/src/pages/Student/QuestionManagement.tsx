@@ -4,9 +4,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { userState } from '../../../recoil/user/userState';
+import { userState } from '../../recoil/user/userState';
 // import que from '../../../assets/404.png';
-import { getMyProblems, getNewAccessToken } from '../../../api';
+import { getMyProblems, getNewAccessToken } from '../../api';
 
 const QuestionManagement = () => {
   const user = useRecoilValue(userState);
@@ -177,9 +177,9 @@ const QuestionManagement = () => {
   return (
     <div className="pt-4">
       <div>
-        <h1 className="ml-36 font-semibold">마이페이지</h1>
+        <h1 className="font-semibold ml-36">마이페이지</h1>
       </div>
-      <hr className="mt-4 mx-auto w-7/10 border-none h-1 bg-blue-200" />
+      <hr className="h-1 mx-auto mt-4 bg-blue-200 border-none w-7/10" />
       <div
         className="mx-auto mt-8 mb-8 h-[650px] w-[800px] p-6"
         style={{ border: '2px solid #646CFF' }}
@@ -192,7 +192,7 @@ const QuestionManagement = () => {
           {problems.slice(currentIndex, currentIndex + 6).map((problem) => (
             <div
               key={problem.id}
-              className="border-2 border-blue-200 p-2 flex flex-col items-center"
+              className="flex flex-col items-center p-2 border-2 border-blue-200"
             >
               <img
                 className="h-[140px] w-[250px]"

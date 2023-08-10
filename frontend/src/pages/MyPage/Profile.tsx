@@ -1,9 +1,10 @@
 import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
-import experience from '../../../assets/experience.png';
-import { getNewAccessToken, getProfile, modifyProfile } from '../../../api';
+import experience from '../../assets/experience.png';
+import { getNewAccessToken, getProfile, modifyProfile } from '../../api';
 import { useRecoilState } from 'recoil';
-import { userState } from '../../../recoil/user/userState';
-import { Card, CardBody } from '@material-tailwind/react';
+import { userState } from '../../recoil/user/userState';
+import DefaultProfile from '../../assets/default_profile_image.svg';
+import { Avatar, Card, CardBody, Radio } from '@material-tailwind/react';
 // import { userState } from '../../../recoil/user/userState';
 // import { useRecoilValue } from 'recoil';
 
@@ -12,6 +13,11 @@ export interface UserProfile {
   nickname: string;
   experience: number;
   introduce: string;
+  gender: number;
+  questionCount: number | null;
+  solvedCount: number | null;
+  ratingSum: number | null;
+  ratingCount: number | null;
 }
 
 const ProfilePage = () => {
@@ -21,8 +27,14 @@ const ProfilePage = () => {
     nickname: '',
     experience: 0,
     introduce: '',
+    gender: 0,
+    questionCount: 0,
+    solvedCount: 0,
+    ratingSum: 0,
+    ratingCount: 0,
   });
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
+  const [profileImageName, setProfileImageName] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
 
   const imageInput = useRef<HTMLInputElement>();
@@ -64,7 +76,7 @@ const ProfilePage = () => {
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return; // 파일이 없는 경우 함수를 종료
-
+    setProfileImageName(file.name);
     const reader = new FileReader();
     reader.onloadend = () => {
       if (typeof reader.result === 'string') {
@@ -89,7 +101,9 @@ const ProfilePage = () => {
       userProfile.nickname,
       userProfile.experience,
       userProfile.introduce,
+      userProfile.gender,
       profileImage,
+      user.accessToken,
     );
 
     setIsModified(false);
@@ -103,7 +117,7 @@ const ProfilePage = () => {
               <p className="font-bold">프로필 이미지</p>
               <div className="flex flex-row w-full mt-3">
                 <div className="flex items-center mr-10">
-                  <img
+                  {/* <img
                     src={userProfile.path || ''}
                     alt="profile"
                     className={`w-[96px] h-[128px] ${
@@ -111,7 +125,11 @@ const ProfilePage = () => {
                         ? 'border-transparent'
                         : 'border-2 border-solid border-solive-200'
                     }`}
-                  />
+                  /> */}
+                  <Avatar
+                    src={userProfile.path || DefaultProfile}
+                    className="w-[100px] h-[100px] bg-solive-200 bg-opacity-30"
+                  ></Avatar>
                 </div>
                 <div>
                   <p className="ml-3">프로필 이미지 변경</p>
@@ -119,8 +137,8 @@ const ProfilePage = () => {
                     <input
                       className="w-full p-2 border border-gray-300 rounded bg-opacity-30 bg-solive-200 min-w-[200px] min-h-[42px]"
                       value={
-                        userProfile.path
-                          ? userProfile.path
+                        profileImageName
+                          ? profileImageName
                           : '현재 등록된 사진이 없습니다.'
                       }
                       disabled
@@ -151,6 +169,53 @@ const ProfilePage = () => {
                 />
               </label>
               <div className="flex items-center justify-between w-full mt-8">
+                <div className="font-bold">성별</div>
+                <div className="flex gap-5">
+                  <Radio
+                    name="gender"
+                    label="남성"
+                    value={1}
+                    checked={userProfile.gender == 1}
+                    onChange={handleChange}
+                    className="before:w-5 before:h-5 hover:before:opacity-0 checked:border-solive-200"
+                    containerProps={{
+                      className: 'p-0 mx-2 my-1',
+                    }}
+                    iconProps={{
+                      className: 'text-solive-200',
+                    }}
+                  ></Radio>
+                  <Radio
+                    name="gender"
+                    label="여성"
+                    value={2}
+                    checked={userProfile.gender == 2}
+                    onChange={handleChange}
+                    className="before:w-5 before:h-5 hover:before:opacity-0 checked:border-solive-200"
+                    containerProps={{
+                      className: 'p-0 mx-2 my-1',
+                    }}
+                    iconProps={{
+                      className: 'text-solive-200',
+                    }}
+                  ></Radio>
+                  <Radio
+                    name="gender"
+                    label="비공개"
+                    value={0}
+                    checked={userProfile.gender == 0}
+                    onChange={handleChange}
+                    className="before:w-5 before:h-5 hover:before:opacity-0 checked:border-solive-200"
+                    containerProps={{
+                      className: 'p-0 mx-2 my-1',
+                    }}
+                    iconProps={{
+                      className: 'text-solive-200',
+                    }}
+                  ></Radio>
+                </div>
+              </div>
+              <div className="flex items-center justify-between w-full mt-8">
                 <div className="flex items-center font-bold">경험치</div>
                 <div className="flex items-center">
                   {userProfile.experience}
@@ -161,6 +226,25 @@ const ProfilePage = () => {
                   />
                 </div>
               </div>
+              {user.masterCodeId === 1 ? (
+                <div className="flex items-center justify-between w-full mt-8">
+                  <div className="font-bold">등록한 문제 수</div>
+                  <div>{`${userProfile.questionCount} 개`}</div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-center justify-between w-full mt-8">
+                    <div className="font-bold">푼 문제 수</div>
+                    <div>{`${userProfile.solvedCount} 개`}</div>
+                  </div>
+                  <div className="flex items-center justify-between w-full mt-8">
+                    <div className="font-bold">평점</div>
+                    <div>{`${
+                      userProfile.ratingSum / userProfile.ratingCount
+                    }`}</div>
+                  </div>
+                </div>
+              )}
               <label className="w-full mt-8 font-bold">
                 자기소개
                 <textarea

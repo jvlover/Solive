@@ -16,6 +16,7 @@ interface CommonUserFields {
   experience: number;
   signinTime: Date;
   accessToken: string;
+  solvePoint: number;
 }
 
 export interface TeacherFields {
@@ -24,13 +25,11 @@ export interface TeacherFields {
   solvedCount: number;
   ratingSum: number;
   ratingCount: number;
-  solvePoint: number;
 }
 
 interface StudentFields {
   userId: number;
   questionCount: number;
-  solvePoint: number;
 }
 
 export type User = CommonUserFields & (TeacherFields | StudentFields);
