@@ -340,6 +340,7 @@ export const modifyProfile = async (
     .then((response) => {
       if (response.data.success) {
         console.log('Profile updated:', response);
+        alert('저장되었습니다.');
       } else {
         console.error('Failed to update profile: success is false');
       }

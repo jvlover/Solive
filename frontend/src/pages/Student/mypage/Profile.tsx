@@ -3,7 +3,8 @@ import experience from '../../../assets/experience.png';
 import { getNewAccessToken, getProfile, modifyProfile } from '../../../api';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../../recoil/user/userState';
-import { Card, CardBody, Radio } from '@material-tailwind/react';
+import DefaultProfile from '../../../assets/default_profile_image.svg';
+import { Avatar, Card, CardBody, Radio } from '@material-tailwind/react';
 // import { userState } from '../../../recoil/user/userState';
 // import { useRecoilValue } from 'recoil';
 
@@ -107,7 +108,7 @@ const ProfilePage = () => {
               <p className="font-bold">프로필 이미지</p>
               <div className="flex flex-row w-full mt-3">
                 <div className="flex items-center mr-10">
-                  <img
+                  {/* <img
                     src={userProfile.path || ''}
                     alt="profile"
                     className={`w-[96px] h-[128px] ${
@@ -115,7 +116,11 @@ const ProfilePage = () => {
                         ? 'border-transparent'
                         : 'border-2 border-solid border-solive-200'
                     }`}
-                  />
+                  /> */}
+                  <Avatar
+                    src={userProfile.path || DefaultProfile}
+                    className="w-[100px] h-[100px] bg-solive-200 bg-opacity-30"
+                  ></Avatar>
                 </div>
                 <div>
                   <p className="ml-3">프로필 이미지 변경</p>
