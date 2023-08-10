@@ -3,7 +3,7 @@ import experience from '../../../assets/experience.png';
 import { getNewAccessToken, getProfile, modifyProfile } from '../../../api';
 import { useRecoilState } from 'recoil';
 import { userState } from '../../../recoil/user/userState';
-import { Card, CardBody } from '@material-tailwind/react';
+import { Card, CardBody, Radio } from '@material-tailwind/react';
 // import { userState } from '../../../recoil/user/userState';
 // import { useRecoilValue } from 'recoil';
 
@@ -12,6 +12,7 @@ export interface UserProfile {
   nickname: string;
   experience: number;
   introduce: string;
+  gender: number;
 }
 
 const ProfilePage = () => {
@@ -21,6 +22,7 @@ const ProfilePage = () => {
     nickname: '',
     experience: 0,
     introduce: '',
+    gender: 0,
   });
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
   const [isModified, setIsModified] = useState(false);
@@ -89,7 +91,9 @@ const ProfilePage = () => {
       userProfile.nickname,
       userProfile.experience,
       userProfile.introduce,
+      userProfile.gender,
       profileImage,
+      user.accessToken,
     );
 
     setIsModified(false);
@@ -159,6 +163,53 @@ const ProfilePage = () => {
                     alt="experience"
                     className="w-5 h-5 ml-2"
                   />
+                </div>
+              </div>
+              <div className="flex items-center justify-between w-full mt-8">
+                <div className="font-bold">성별</div>
+                <div className="flex gap-5">
+                  <Radio
+                    name="gender"
+                    label="남성"
+                    value={1}
+                    checked={userProfile.gender == 1}
+                    onChange={handleChange}
+                    className="before:w-5 before:h-5 hover:before:opacity-0 checked:border-solive-200"
+                    containerProps={{
+                      className: 'p-0 mx-2 my-1',
+                    }}
+                    iconProps={{
+                      className: 'text-solive-200',
+                    }}
+                  ></Radio>
+                  <Radio
+                    name="gender"
+                    label="여성"
+                    value={2}
+                    checked={userProfile.gender == 2}
+                    onChange={handleChange}
+                    className="before:w-5 before:h-5 hover:before:opacity-0 checked:border-solive-200"
+                    containerProps={{
+                      className: 'p-0 mx-2 my-1',
+                    }}
+                    iconProps={{
+                      className: 'text-solive-200',
+                    }}
+                  ></Radio>
+                  <Radio
+                    name="gender"
+                    label="비공개"
+                    value={0}
+                    checked={userProfile.gender == 0}
+                    onChange={handleChange}
+                    className="before:w-5 before:h-5 hover:before:opacity-0 checked:border-solive-200"
+                    containerProps={{
+                      className: 'p-0 mx-2 my-1',
+                    }}
+                    iconProps={{
+                      className: 'text-solive-200',
+                    }}
+                  ></Radio>
                 </div>
               </div>
               <label className="w-full mt-8 font-bold">
