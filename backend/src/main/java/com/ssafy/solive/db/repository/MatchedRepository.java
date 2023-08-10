@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MatchedRepository extends JpaRepository<Matched, Long>, QMatchedRepository {
 
+    Matched findBySessionId(String sessionId);
 }

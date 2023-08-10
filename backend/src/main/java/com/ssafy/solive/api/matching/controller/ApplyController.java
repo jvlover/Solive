@@ -4,12 +4,12 @@ import com.ssafy.solive.api.matching.request.ApplyDeletePutReq;
 import com.ssafy.solive.api.matching.request.ApplyFindGetReq;
 import com.ssafy.solive.api.matching.request.ApplyRegistPostReq;
 import com.ssafy.solive.api.matching.response.ApplyFindRes;
+import com.ssafy.solive.api.matching.response.ApplyRegistPostRes;
 import com.ssafy.solive.api.matching.service.ApplyService;
 import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
-import com.ssafy.solive.db.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -62,13 +62,13 @@ public class ApplyController {
 
         registInfo.setTeacherId(userId);
 
-        // user : 알림을 받는 학생
-        User user = applyService.registApply(registInfo);
+        ApplyRegistPostRes applyRegistPostRes = applyService.registApply(registInfo);
 
-        // 학생에게 알림 전송 코드. title과 content의 내용은 일단 임시입니다
-        String title = "풀이 요청 도착";
-        String content = user.getNickname() + "님, 등록하신 문제에 새로운 풀이 요청이 도착했습니다.";
-        notificationService.send(user, title, content);
+        // 학생에게 알림 전송
+        String title =
+            applyRegistPostRes.getUser().getNickname() + "님, 등록하신 문제에 새로운 풀이 요청이 도착했습니다.";
+        String content = applyRegistPostRes.getQuestionTitle();
+        notificationService.send(applyRegistPostRes.getUser(), title, content);
 
         log.info("ApplyController_regist_end: success");
         return CommonResponse.success(SUCCESS);

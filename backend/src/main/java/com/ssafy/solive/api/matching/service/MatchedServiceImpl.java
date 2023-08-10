@@ -1,8 +1,10 @@
 package com.ssafy.solive.api.matching.service;
 
 import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
+import com.ssafy.solive.api.matching.request.MatchedPutReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
+import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.exception.matching.NotEnoughPointException;
 import com.ssafy.solive.db.entity.Apply;
@@ -10,12 +12,12 @@ import com.ssafy.solive.db.entity.Matched;
 import com.ssafy.solive.db.entity.Question;
 import com.ssafy.solive.db.entity.Student;
 import com.ssafy.solive.db.entity.Teacher;
-import com.ssafy.solive.db.entity.User;
 import com.ssafy.solive.db.repository.ApplyRepository;
 import com.ssafy.solive.db.repository.MatchedRepository;
 import com.ssafy.solive.db.repository.QuestionRepository;
 import com.ssafy.solive.db.repository.StudentRepository;
 import com.ssafy.solive.db.repository.TeacherRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,7 +59,7 @@ public class MatchedServiceImpl implements MatchedService {
      * @return teacher : 학생이 강사 요청을 수락했을 때, 알림을 받게 될 강사
      */
     @Override
-    public User registMatched(MatchedRegistPostReq registInfo) {
+    public MatchedRegistPostRes registMatched(MatchedRegistPostReq registInfo) {
 
         log.info("MatchedService_registMatched_start: " + registInfo.toString());
 
@@ -74,15 +76,19 @@ public class MatchedServiceImpl implements MatchedService {
         Integer solvePoint = apply.getSolvePoint();
 
         // 학생이 갖고 있는 solvePoint 가 강사가 제시한 solvePoint 보다 낮다면 매칭 성사 불가능
-        if (student.getSolvePoint() < apply.getSolvePoint()) {
+        if (student.getSolvePoint() < solvePoint) {
             throw new NotEnoughPointException();
         }
+
+        // WebRTC 세션 Id 생성
+        String sessionId = student.getLoginId() + "_" + LocalDateTime.now();
 
         Matched matched = Matched.builder()
             .teacher(teacher)
             .question(question)
             .student(student)
             .solvePoint(solvePoint)
+            .sessionId(sessionId)
             .build();
 
         matchedRepository.save(matched);
@@ -93,10 +99,15 @@ public class MatchedServiceImpl implements MatchedService {
         // 해당 question의 matching_state를 1에서 2로 바꿔야 함
         question.modifyMatchingState(2);
 
+        // MatchedController에게 전달할 Response
+        MatchedRegistPostRes matchedRegistPostRes = MatchedRegistPostRes.builder()
+            .user(teacher)
+            .sessionId(sessionId)
+            .build();
+
         // 생성한 Matched Entity를 DB에 insert 완료
-        log.info("MatchedService_registMatched_end: " + teacher.toString());
-        // 매칭이 성사되었다는 알림을 받을 강사
-        return teacher;
+        log.info("MatchedService_registMatched_end: " + matchedRegistPostRes.toString());
+        return matchedRegistPostRes;
     }
 
     /**
@@ -158,5 +169,74 @@ public class MatchedServiceImpl implements MatchedService {
             }
             return findConditionRes;
         }
+    }
+
+    /**
+     * 강사가 학생이 열은 세션에 들어가서 강의 시작
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @Override
+    public void startMatching(MatchedPutReq sessionInfo) {
+
+        log.info("MatchedService_startMatching_start: " + sessionInfo.toString());
+
+        // 시작 시간 설정
+        Matched matched = matchedRepository.findBySessionId(sessionInfo.getSessionId());
+        matched.modifyStartTime();
+
+        log.info("MatchedService_startMatching_end");
+    }
+
+    /**
+     * 강의 시간 연장
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @Override
+    public void extendMatching(MatchedPutReq sessionInfo) {
+
+        log.info("MatchedService_extendMatching_start: " + sessionInfo.toString());
+
+        // 연장 횟수 증가
+        Matched matched = matchedRepository.findBySessionId(sessionInfo.getSessionId());
+        matched.addExtensionCount();
+
+        log.info("MatchedService_extendMatching_end");
+    }
+
+    /**
+     * 강의 세션 종료
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @Override
+    public void endMatching(MatchedPutReq sessionInfo) {
+
+        log.info("MatchedService_endMatching_start: " + sessionInfo.toString());
+
+        // 종료 시간 설정
+        Matched matched = matchedRepository.findBySessionId(sessionInfo.getSessionId());
+        matched.modifyEndTime();
+
+        // 경험치와 solve point 변동 내용 반영
+        Teacher teacher = teacherRepository.findById(matched.getTeacher().getId())
+            .orElseThrow(NoDataException::new);
+        Student student = studentRepository.findById(matched.getStudent().getId())
+            .orElseThrow(NoDataException::new);
+
+        // 경험치 증가
+        teacher.addExperience();
+        student.addExperience();
+
+        // solve point 변동
+        int point = matched.getSolvePoint() * (matched.getExtensionCount() + 1);
+        teacher.modifySolvePoint(point);
+        student.modifySolvePoint(point * -1);
+
+        // 강사의 푼 문제수 증가
+        teacher.addSolvedCount();
+
+        log.info("MatchedService_endMatching_end");
     }
 }

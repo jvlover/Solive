@@ -64,4 +64,29 @@ public class Matched extends BaseEntity {
     // 매칭 끝나고 영상 저장 시 비디오 url
     @Column(columnDefinition = "VARCHAR(255)")
     private String videoUrl;
+
+    // 강의가 진행 될 Web RTC 세션 Id
+    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    private String sessionId;
+
+    /**
+     * 매칭이 시작될 때 startTime 설정
+     */
+    public void modifyStartTime() {
+        this.startTime = LocalDateTime.now();
+    }
+
+    /**
+     * 연장 횟수 증가
+     */
+    public void addExtensionCount() {
+        this.extensionCount++;
+    }
+
+    /**
+     * 매칭이 끝날 때 endTime 설정
+     */
+    public void modifyEndTime() {
+        this.endTime = LocalDateTime.now();
+    }
 }
