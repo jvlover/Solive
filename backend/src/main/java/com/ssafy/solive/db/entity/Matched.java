@@ -75,4 +75,11 @@ public class Matched extends BaseEntity {
     public void modifyStartTime() {
         this.startTime = LocalDateTime.now();
     }
+
+    /**
+     * 연장 횟수 증가
+     */
+    public void addExtensionCount() {
+        this.extensionCount++;
+    }
 }

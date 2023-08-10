@@ -1,8 +1,8 @@
 package com.ssafy.solive.api.matching.controller;
 
 import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
+import com.ssafy.solive.api.matching.request.MatchedPutReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
-import com.ssafy.solive.api.matching.request.MatchedStartPutReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.api.matching.service.MatchedService;
@@ -106,13 +106,29 @@ public class MatchedController {
      * @param sessionInfo : 세션 Id 정보
      */
     @PutMapping("/start")
-    public CommonResponse<?> start(@RequestBody MatchedStartPutReq sessionInfo) {
+    public CommonResponse<?> start(@RequestBody MatchedPutReq sessionInfo) {
 
         log.info("MatchedController_start_start: " + sessionInfo.toString());
 
         matchedService.startMatching(sessionInfo);
 
         log.info("MatchedController_start_end: success");
+        return CommonResponse.success(SUCCESS);
+    }
+
+    /**
+     * 강의 시간 연장
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @PutMapping("/extend")
+    public CommonResponse<?> extend(@RequestBody MatchedPutReq sessionInfo) {
+
+        log.info("MatchedController_extend_start: " + sessionInfo.toString());
+
+        matchedService.extendMatching(sessionInfo);
+
+        log.info("MatchedController_extend_end: success");
         return CommonResponse.success(SUCCESS);
     }
 }

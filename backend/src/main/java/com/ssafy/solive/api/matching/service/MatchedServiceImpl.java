@@ -1,8 +1,8 @@
 package com.ssafy.solive.api.matching.service;
 
 import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
+import com.ssafy.solive.api.matching.request.MatchedPutReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
-import com.ssafy.solive.api.matching.request.MatchedStartPutReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.common.exception.NoDataException;
@@ -177,7 +177,7 @@ public class MatchedServiceImpl implements MatchedService {
      * @param sessionInfo : 세션 Id 정보
      */
     @Override
-    public void startMatching(MatchedStartPutReq sessionInfo) {
+    public void startMatching(MatchedPutReq sessionInfo) {
 
         log.info("MatchedService_startMatching_start: " + sessionInfo.toString());
 
@@ -186,5 +186,22 @@ public class MatchedServiceImpl implements MatchedService {
         matched.modifyStartTime();
 
         log.info("MatchedService_startMatching_end");
+    }
+
+    /**
+     * 강의 시간 연장
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @Override
+    public void extendMatching(MatchedPutReq sessionInfo) {
+
+        log.info("MatchedService_extendMatching_start: " + sessionInfo.toString());
+
+        // 연장 횟수 증가
+        Matched matched = matchedRepository.findBySessionId(sessionInfo.getSessionId());
+        matched.addExtensionCount();
+
+        log.info("MatchedService_extendMatching_end");
     }
 }
