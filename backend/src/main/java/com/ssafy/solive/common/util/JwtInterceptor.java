@@ -6,15 +6,13 @@ import com.ssafy.solive.common.exception.user.JwtTokenExpiredException;
 import com.ssafy.solive.config.JwtConfiguration;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
 @Component
-public class JwtInterceptor implements HandlerInterceptor {
+public class JwtInterceptor {
 
     private final UserService userService;
     private final JwtConfiguration jwtConfiguration;
@@ -28,30 +26,34 @@ public class JwtInterceptor implements HandlerInterceptor {
     /**
      * accessToken이 유효하면 true, 만료됐으면 JwtTokenExpiredException, 이외는 false
      *
-     * @param request  current HTTP request
-     * @param response current HTTP response
-     * @param handler  chosen handler to execute, for type and/or instance evaluation
+     * @param request current HTTP request
      */
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) {
+    public Long checkValidAndGetUserId(HttpServletRequest request) {
         log.info("JwtInterceptor_preHandle_start");
         try {
             String accessToken = request.getHeader("access-token");
             // 로그아웃 상태가 아닌지 확인
             boolean isLogout = userService.isLogout(accessToken);
-            log.info("JwtInterceptor_preHandle_mid: " + isLogout);
+            log.info("JwtInterceptor_checkValidAndGetUserId_mid: " + isLogout);
 
             // accessToken이 유효한지 확인
-            boolean checkToken = jwtConfiguration.checkToken(request.getHeader("access-token"));
-            log.info("JwtInterceptor_preHandle_end: true");
-            return !isLogout && checkToken;
+            boolean checkToken = jwtConfiguration.checkToken(accessToken);
+            log.info("JwtInterceptor_checkValidAndGetUserId_end: true");
+
+            if (!isLogout && checkToken) {
+                Long userId = userService.getUserIdByToken(accessToken);
+                log.info("JwtInterceptor_checkValidAndGetUserId_end: " + userId);
+                return userId;
+            } else {
+                log.info("JwtInterceptor_checkValidAndGetUserId_end: Invalid User");
+                return -1L;
+            }
         } catch (ExpiredJwtException e) {
-            log.info("JwtInterceptor_preHandle_end: false");
+            log.info("JwtInterceptor_checkValidAndGetUserId_end: JwtTokenExpiredException");
             throw new JwtTokenExpiredException();
         } catch (Exception e) {
             e.printStackTrace();
-            log.info("JwtInterceptor_preHandle_end: false");
+            log.info("JwtInterceptor_checkValidAndGetUserId_end: JwtInvalidException");
             throw new JwtInvalidException();
         }
     }
