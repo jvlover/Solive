@@ -1,9 +1,9 @@
 import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
-import experience from '../../../assets/experience.png';
-import { getNewAccessToken, getProfile, modifyProfile } from '../../../api';
+import experience from '../../assets/experience.png';
+import { getNewAccessToken, getProfile, modifyProfile } from '../../api';
 import { useRecoilState } from 'recoil';
-import { userState } from '../../../recoil/user/userState';
-import DefaultProfile from '../../../assets/default_profile_image.svg';
+import { userState } from '../../recoil/user/userState';
+import DefaultProfile from '../../assets/default_profile_image.svg';
 import { Avatar, Card, CardBody, Radio } from '@material-tailwind/react';
 // import { userState } from '../../../recoil/user/userState';
 // import { useRecoilValue } from 'recoil';

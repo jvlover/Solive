@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { userState } from '../../../recoil/user/userState';
-import { chargeSolvePoint } from '../../../api';
+import { userState } from '../../recoil/user/userState';
+import { chargeSolvePoint } from '../../api';
 import { useNavigate } from 'react-router-dom';
 
 const PointChargePage = () => {

@@ -58,7 +58,7 @@ const HeaderNav = () => {
         <MenuList>
           <MenuItem
             onClick={() => {
-              navigate('/student/mypage/solvepoint');
+              navigate('/mypage/solvepoint');
             }}
             className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
           >
@@ -69,7 +69,7 @@ const HeaderNav = () => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              navigate('/student/mypage/profile');
+              navigate('/mypage/profile');
             }}
             className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
           >

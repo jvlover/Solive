@@ -15,8 +15,14 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../../recoil/user/userState';
+import QuestionManagement from '../Student/QuestionManagement';
+import PointChargePage from './SolvePoint';
 
 const MyPage = () => {
+  const user = useRecoilValue(userState);
+
   const [openNav, setOpenNav] = useState(true);
 
   const { pageName } = useParams();
@@ -27,6 +33,10 @@ const MyPage = () => {
     PageComponent = ProfilePage;
   } else if (pageName === 'privacy') {
     PageComponent = PersonalInfoPage;
+  } else if (pageName === 'questionmanagement') {
+    PageComponent = QuestionManagement;
+  } else if (pageName === 'solvepoint') {
+    PageComponent = PointChargePage;
   }
 
   useEffect(() => {
@@ -51,7 +61,7 @@ const MyPage = () => {
             <List>
               <ListItem
                 onClick={() => {
-                  navigate('/student/mypage/profile');
+                  navigate('/mypage/profile');
                 }}
                 className="font-[pretendard]"
               >
@@ -62,7 +72,7 @@ const MyPage = () => {
               </ListItem>
               <ListItem
                 onClick={() => {
-                  navigate('/student/mypage/privacy');
+                  navigate('/mypage/privacy');
                 }}
                 className="font-[pretendard]"
               >
@@ -73,7 +83,13 @@ const MyPage = () => {
               </ListItem>
               <ListItem
                 onClick={() => {
-                  navigate('/student/mypage/questionmanagement');
+                  navigate(
+                    `${
+                      user.masterCodeId == 1
+                        ? '/mypage/questionmanagement'
+                        : '/teacher/question'
+                    }`,
+                  );
                 }}
                 className="font-[pretendard]"
               >
@@ -84,7 +100,7 @@ const MyPage = () => {
               </ListItem>
               <ListItem
                 onClick={() => {
-                  navigate('/student/mypage/solvepoint');
+                  navigate('/mypage/solvepoint');
                 }}
                 className="font-[pretendard]"
               >

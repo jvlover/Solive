@@ -4,7 +4,6 @@ import Home from './pages/Home';
 import Signup from './pages/Signup/Signup';
 import Login from './pages/Login/Login';
 import QuestionRegistration from './pages/Student/QuestionRegistration';
-import Privacy from './pages/Student/mypage/Privacy';
 import HeaderNav from './components/HeaderNav';
 import Dial from './components/Dial';
 import FooterNav from './components/FooterNav';
@@ -12,11 +11,9 @@ import ArticleList from './pages/Board/ArticleList';
 import ArticleDetail from './pages/Board/ArticleDetail';
 import ArticleRegist from './pages/Board/ArticleRegist';
 import ArticleModify from './pages/Board/ArticleModify';
-import SolvePoint from './pages/Student/mypage/SolvePoint';
-import QuestionManagement from './pages/Student/mypage/QuestionManagement';
 import Teacher from './pages/Teacher/TeacherMain';
 import Error404 from './pages/Error404';
-import MyPage from './pages/Student/mypage/MyPage';
+import MyPage from './pages/MyPage/MyPage';
 import TeacherQuestion from './pages/Teacher/Question';
 
 const App = () => {
@@ -38,13 +35,7 @@ const App = () => {
           path="student/questionregistration"
           element={<QuestionRegistration />}
         />
-        <Route path="/student/mypage/:pageName" element={<MyPage />} />
-        <Route path="/student/mypage/privacy" element={<Privacy />} />
-        <Route path="/student/mypage/solvepoint" element={<SolvePoint />} />
-        <Route
-          path="/student/mypage/questionmanagement"
-          element={<QuestionManagement />}
-        />
+        <Route path="/mypage/:pageName" element={<MyPage />} />
         <Route path="/teacher" element={<Teacher />} />
         <Route path="/teacher/question" element={<TeacherQuestion />} />
       </Routes>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Article, ArticlePage } from './recoil/atoms';
 import { SignupFormData } from './pages/Signup/Signup';
 import { User } from './recoil/user/userState';
-import { UserProfile } from './pages/Student/mypage/Profile';
+import { UserProfile } from './pages/MyPage/Profile';
 
 const BASE_URL = 'http://localhost:8080';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
@@ -252,6 +252,7 @@ export const getProfile = async (
     data: UserProfile;
   }
   try {
+    console.log(accessToken);
     const response = await axios.get<ProfileResponse>(BASE_URL + '/user', {
       headers: { 'access-token': accessToken },
     });
