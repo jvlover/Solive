@@ -4,6 +4,7 @@ import com.ssafy.solive.api.matching.request.ApplyDeletePutReq;
 import com.ssafy.solive.api.matching.request.ApplyFindGetReq;
 import com.ssafy.solive.api.matching.request.ApplyRegistPostReq;
 import com.ssafy.solive.api.matching.response.ApplyFindRes;
+import com.ssafy.solive.api.matching.response.ApplyRegistPostRes;
 import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.db.entity.Apply;
 import com.ssafy.solive.db.entity.Question;
@@ -46,7 +47,7 @@ public class ApplyServiceImpl implements ApplyService {
      * @return user : 요청을 받는 학생의 정보(알림 때문에 필요함)
      */
     @Override
-    public User registApply(ApplyRegistPostReq registInfo) {
+    public ApplyRegistPostRes registApply(ApplyRegistPostReq registInfo) {
 
         log.info("ApplyService_registApply_start: " + registInfo.toString());
 
@@ -74,9 +75,15 @@ public class ApplyServiceImpl implements ApplyService {
         // 요청을 받는 학생에게 알림을 전송하기 위해 요청 받게 되는 학생의 정보 return
         User user = question.getStudent();
 
+        // 컨트롤러에게 보낼 리스폰스
+        ApplyRegistPostRes applyRegistPostRes = ApplyRegistPostRes.builder()
+            .user(user)
+            .questionTitle(question.getTitle())
+            .build();
+
         // 생성한 Apply Entity를 DB에 insert 완료
-        log.info("ApplyService_registApply_end: " + user.toString());
-        return user;
+        log.info("ApplyService_registApply_end: " + applyRegistPostRes.toString());
+        return applyRegistPostRes;
     }
 
     /**

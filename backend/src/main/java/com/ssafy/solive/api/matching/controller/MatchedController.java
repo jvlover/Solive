@@ -3,11 +3,11 @@ package com.ssafy.solive.api.matching.controller;
 import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
+import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.api.matching.service.MatchedService;
 import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.model.CommonResponse;
-import com.ssafy.solive.db.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -59,12 +59,14 @@ public class MatchedController {
 
         registInfo.setStudentId(userId);
 
-        User user = matchedService.registMatched(registInfo);
+        MatchedRegistPostRes matchedRegistPostRes = matchedService.registMatched(registInfo);
+        String sessionId = matchedRegistPostRes.getSessionId();
 
         // 강사에게 알림 전송 코드. title과 content의 내용은 일단 임시
-        String title = "매칭 성사";
-        String content = user.getNickname() + "님, 지원하신 요청이 승낙되어 매칭이 성사되었습니다.";
-        notificationService.send(user, title, content);
+        String title =
+            matchedRegistPostRes.getUser().getNickname() + "님, 지원하신 요청이 승낙되어 매칭이 성사되었습니다. "
+                + "강의 세션 ID는 " + sessionId + " 입니다.";
+        notificationService.send(matchedRegistPostRes.getUser(), title, sessionId);
 
         log.info("MatchedController_regist_end: success");
         return CommonResponse.success(SUCCESS);
@@ -95,4 +97,9 @@ public class MatchedController {
         }
         return CommonResponse.success(findResList);
     }
+
+//    @PostMapping("/start")
+//    public CommonResponse<?> matchingStart(HttpServletRequest request) {
+//
+//    }
 }

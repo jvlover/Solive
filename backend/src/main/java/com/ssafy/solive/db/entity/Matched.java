@@ -64,4 +64,8 @@ public class Matched extends BaseEntity {
     // 매칭 끝나고 영상 저장 시 비디오 url
     @Column(columnDefinition = "VARCHAR(255)")
     private String videoUrl;
+
+    // 강의가 진행 될 Web RTC 세션 Id
+    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    private String sessionId;
 }
