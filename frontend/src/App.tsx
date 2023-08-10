@@ -15,6 +15,7 @@ import Teacher from './pages/Teacher/TeacherMain';
 import Error404 from './pages/Error404';
 import MyPage from './pages/MyPage/MyPage';
 import TeacherQuestion from './pages/Teacher/Question';
+import Student from './pages/Student/StudentMain';
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/mypage/:pageName" element={<MyPage />} />
         <Route path="/teacher" element={<Teacher />} />
         <Route path="/teacher/question" element={<TeacherQuestion />} />
+        <Route path="/student" element={<Student />} />
       </Routes>
       <FooterNav />
     </Router>

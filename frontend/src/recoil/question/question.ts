@@ -12,7 +12,7 @@ export interface Question {
   isMatched: boolean;
   lastUpdateTime: Date;
   deletedAt: Date | null;
-  path_name: string;
+  path: string;
 }
 
 export const latestQuestionsSelector = selector<Question[] | null>({

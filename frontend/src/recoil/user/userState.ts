@@ -25,6 +25,7 @@ export interface TeacherFields {
   solvedCount: number;
   ratingSum: number;
   ratingCount: number;
+  rating: number;
 }
 
 interface StudentFields {

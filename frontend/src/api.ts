@@ -182,13 +182,27 @@ export const loginUser = async (loginData: {
   }
 };
 
-export async function getMyProblems(
-  accessToken: string,
-): Promise<{ success: boolean; data?: any; error?: any }> {
+export async function getMyProblems(accessToken: string) {
+  type Problem = {
+    id: number;
+    path: string;
+    title: string;
+    subject: string;
+    time: string;
+    matching_state: number;
+  };
+  type ApiResponse<T> = {
+    success: boolean;
+    data: T;
+    error?: string;
+  };
   try {
-    const response = await axios.get(BASE_URL + '/matched/my', {
-      headers: { 'access-token': accessToken },
-    });
+    const response = await axios.get<ApiResponse<Problem[]>>(
+      BASE_URL + '/matched/my',
+      {
+        headers: { 'access-token': accessToken },
+      },
+    );
     return {
       success: response.data.success,
       data: response.data.data,
@@ -350,3 +364,37 @@ export const modifyProfile = async (
       console.error('Failed to update profile:', error);
     });
 };
+
+export async function getTeachers(accessToken: string) {
+  type Teacher = {
+    path: string;
+    nickname: string;
+    masterCodeName: string;
+    rating: number;
+  };
+
+  type ApiResponse<T> = {
+    success: boolean;
+    data: T;
+    error?: string;
+  };
+
+  try {
+    const response = await axios.get<ApiResponse<Teacher[]>>(
+      BASE_URL + '/onlineteacher',
+      {
+        headers: { 'access-token': accessToken },
+      },
+    );
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+}
