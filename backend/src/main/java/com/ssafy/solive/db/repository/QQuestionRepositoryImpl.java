@@ -80,8 +80,9 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 student.nickname.as("userNickname"),
                 question.title.as("title"),
                 question.description.as("description"),
-                masterCode.id.as("masterCodeId"),
-                question.time.as("createTime")))
+                masterCode.name.as("masterCodeName"),
+                question.time.as("createTime"),
+                question.matchingState.as("state")))
             .from(question)
             .leftJoin(question.student, student).on(student.id.eq(question.student.id))
             .leftJoin(question.masterCode, masterCode).on(masterCode.id.eq(question.masterCode.id))
