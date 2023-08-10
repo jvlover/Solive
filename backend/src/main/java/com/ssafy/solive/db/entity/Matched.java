@@ -68,4 +68,11 @@ public class Matched extends BaseEntity {
     // 강의가 진행 될 Web RTC 세션 Id
     @Column(nullable = false, columnDefinition = "VARCHAR(100)")
     private String sessionId;
+
+    /**
+     * 매칭이 시작될 때 startTime 설정
+     */
+    public void modifyStartTime() {
+        this.startTime = LocalDateTime.now();
+    }
 }

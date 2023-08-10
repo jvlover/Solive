@@ -2,6 +2,7 @@ package com.ssafy.solive.api.matching.controller;
 
 import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
+import com.ssafy.solive.api.matching.request.MatchedStartPutReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.api.matching.service.MatchedService;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -98,8 +100,19 @@ public class MatchedController {
         return CommonResponse.success(findResList);
     }
 
-//    @PostMapping("/start")
-//    public CommonResponse<?> matchingStart(HttpServletRequest request) {
-//
-//    }
+    /**
+     * 강사가 학생이 열은 세션에 들어가서 강의 시작
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @PutMapping("/start")
+    public CommonResponse<?> start(@RequestBody MatchedStartPutReq sessionInfo) {
+
+        log.info("MatchedController_start_start: " + sessionInfo.toString());
+
+        matchedService.startMatching(sessionInfo);
+
+        log.info("MatchedController_start_end: success");
+        return CommonResponse.success(SUCCESS);
+    }
 }

@@ -2,6 +2,7 @@ package com.ssafy.solive.api.matching.service;
 
 import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
+import com.ssafy.solive.api.matching.request.MatchedStartPutReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.common.exception.NoDataException;
@@ -168,5 +169,22 @@ public class MatchedServiceImpl implements MatchedService {
             }
             return findConditionRes;
         }
+    }
+
+    /**
+     * 강사가 학생이 열은 세션에 들어가서 강의 시작
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @Override
+    public void startMatching(MatchedStartPutReq sessionInfo) {
+
+        log.info("MatchedService_startMatching_start: " + sessionInfo.toString());
+
+        // 시작 시간 설정
+        Matched matched = matchedRepository.findBySessionId(sessionInfo.getSessionId());
+        matched.modifyStartTime();
+
+        log.info("MatchedService_startMatching_end");
     }
 }

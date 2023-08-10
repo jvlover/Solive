@@ -58,15 +58,19 @@ public class Question extends BaseEntity {
     @Column
     private LocalDateTime deletedAt;
 
-    /*
-     *  문제 삭제 시 deletedAt을 현재 시간으로 설정하기 위한 method
+    /**
+     * 문제 삭제 시 deletedAt을 현재 시간으로 설정하기 위한 method
      */
     public void deleteQuestion() {
         this.deletedAt = LocalDateTime.now();
     }
 
-    /*
-     *  문제 수정 시 수정 사항 설정 method
+    /**
+     * 문제 수정 시 수정 사항 설정 method
+     *
+     * @param masterCode  : 문제 분류 수정
+     * @param title       : 문제 제목 수정
+     * @param description : 문제 설명 수정
      */
     public void modifyQuestion(MasterCode masterCode, String title, String description) {
         this.masterCode = masterCode;
@@ -76,6 +80,11 @@ public class Question extends BaseEntity {
         this.lastUpdateTime = LocalDateTime.now();
     }
 
+    /**
+     * 문제의 매칭 상태 변경 method
+     *
+     * @param state : 상태 수정 내용
+     */
     public void modifyMatchingState(int state) {
         this.matchingState = state;
     }
