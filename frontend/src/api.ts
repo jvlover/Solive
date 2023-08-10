@@ -263,7 +263,7 @@ export const getProfile = async (
     let errorCode;
     if (error.response && error.response.data && error.response.data.error) {
       errorCode = error.response.data.error.code;
-    } 
+    }
     return { success: false, error: errorCode || error };
   }
 };
@@ -299,23 +299,26 @@ export async function questionSearch(
     }
     return { success: false, error: errorCode || error };
   }
-};
+}
 
 export const modifyProfile = async (
   nickname: string,
   experience: number,
   introduce: string,
+  gender: number,
   profileImage: File | null,
+  accessToken: string,
 ) => {
   const profileData = {
     nickname: nickname,
     experience: experience,
     introduce: introduce,
+    gender: gender,
   };
   const formData = new FormData();
 
   formData.append(
-    'profile',
+    'userInfo',
     new Blob([JSON.stringify(profileData)], { type: 'application/json' }),
   );
 
@@ -330,6 +333,7 @@ export const modifyProfile = async (
   axios
     .put<{ success: boolean }>(BASE_URL + '/user', formData, {
       headers: {
+        'access-token': accessToken,
         'Content-Type': 'multipart/form-data',
       },
     })
