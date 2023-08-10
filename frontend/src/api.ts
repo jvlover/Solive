@@ -207,7 +207,7 @@ export async function getNewAccessToken(
 ): Promise<string | null> {
   try {
     const response = await axios.post(BASE_URL + '/user/refresh', {
-      refreshToken: refreshToken,
+      'refresh-token': refreshToken,
     });
     if (response.data.success) {
       return response.data.accessToken;
