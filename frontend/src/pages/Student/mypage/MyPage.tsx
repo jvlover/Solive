@@ -47,12 +47,13 @@ const MyPage = () => {
       <hr className="my-2 mx-[25vh] border-2 border-solive-200" />
       <div className={`flex flex-row ${!openNav ? 'justify-center' : ''}`}>
         {openNav ? (
-          <Card className=" max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 ml-[25vh] mr-[5vh] mt-5">
+          <Card className=" max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 ml-[28vh] mr-[3vh] mt-5">
             <List>
               <ListItem
                 onClick={() => {
                   navigate('/student/mypage/profile');
                 }}
+                className="font-[pretendard]"
               >
                 <ListItemPrefix>
                   <UserCircleIcon className="w-5 h-5" />
@@ -63,6 +64,7 @@ const MyPage = () => {
                 onClick={() => {
                   navigate('/student/mypage/privacy');
                 }}
+                className="font-[pretendard]"
               >
                 <ListItemPrefix>
                   <KeyIcon className="w-5 h-5" />
@@ -73,6 +75,7 @@ const MyPage = () => {
                 onClick={() => {
                   navigate('/student/mypage/questionmanagement');
                 }}
+                className="font-[pretendard]"
               >
                 <ListItemPrefix>
                   <PencilSquareIcon className="w-5 h-5" />
@@ -83,6 +86,7 @@ const MyPage = () => {
                 onClick={() => {
                   navigate('/student/mypage/solvepoint');
                 }}
+                className="font-[pretendard]"
               >
                 <ListItemPrefix>
                   <CreditCardIcon className="w-5 h-5" />
