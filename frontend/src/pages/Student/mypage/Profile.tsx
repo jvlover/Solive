@@ -14,6 +14,10 @@ export interface UserProfile {
   experience: number;
   introduce: string;
   gender: number;
+  questionCount: number | null;
+  solvedCount: number | null;
+  ratingSum: number | null;
+  ratingCount: number | null;
 }
 
 const ProfilePage = () => {
@@ -24,8 +28,13 @@ const ProfilePage = () => {
     experience: 0,
     introduce: '',
     gender: 0,
+    questionCount: 0,
+    solvedCount: 0,
+    ratingSum: 0,
+    ratingCount: 0,
   });
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
+  const [profileImageName, setProfileImageName] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
 
   const imageInput = useRef<HTMLInputElement>();
@@ -67,7 +76,7 @@ const ProfilePage = () => {
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return; // 파일이 없는 경우 함수를 종료
-
+    setProfileImageName(file.name);
     const reader = new FileReader();
     reader.onloadend = () => {
       if (typeof reader.result === 'string') {
@@ -128,8 +137,8 @@ const ProfilePage = () => {
                     <input
                       className="w-full p-2 border border-gray-300 rounded bg-opacity-30 bg-solive-200 min-w-[200px] min-h-[42px]"
                       value={
-                        userProfile.path
-                          ? userProfile.path
+                        profileImageName
+                          ? profileImageName
                           : '현재 등록된 사진이 없습니다.'
                       }
                       disabled
@@ -159,17 +168,6 @@ const ProfilePage = () => {
                   className="w-full p-2 mt-4 border border-gray-300 rounded bg-opacity-30 bg-solive-200"
                 />
               </label>
-              <div className="flex items-center justify-between w-full mt-8">
-                <div className="flex items-center font-bold">경험치</div>
-                <div className="flex items-center">
-                  {userProfile.experience}
-                  <img
-                    src={experience}
-                    alt="experience"
-                    className="w-5 h-5 ml-2"
-                  />
-                </div>
-              </div>
               <div className="flex items-center justify-between w-full mt-8">
                 <div className="font-bold">성별</div>
                 <div className="flex gap-5">
@@ -217,6 +215,36 @@ const ProfilePage = () => {
                   ></Radio>
                 </div>
               </div>
+              <div className="flex items-center justify-between w-full mt-8">
+                <div className="flex items-center font-bold">경험치</div>
+                <div className="flex items-center">
+                  {userProfile.experience}
+                  <img
+                    src={experience}
+                    alt="experience"
+                    className="w-5 h-5 ml-2"
+                  />
+                </div>
+              </div>
+              {user.masterCodeId === 1 ? (
+                <div className="flex items-center justify-between w-full mt-8">
+                  <div className="font-bold">등록한 문제 수</div>
+                  <div>{`${userProfile.questionCount} 개`}</div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-center justify-between w-full mt-8">
+                    <div className="font-bold">푼 문제 수</div>
+                    <div>{`${userProfile.solvedCount} 개`}</div>
+                  </div>
+                  <div className="flex items-center justify-between w-full mt-8">
+                    <div className="font-bold">평점</div>
+                    <div>{`${
+                      userProfile.ratingSum / userProfile.ratingCount
+                    }`}</div>
+                  </div>
+                </div>
+              )}
               <label className="w-full mt-8 font-bold">
                 자기소개
                 <textarea
