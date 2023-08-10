@@ -131,4 +131,20 @@ public class MatchedController {
         log.info("MatchedController_extend_end: success");
         return CommonResponse.success(SUCCESS);
     }
+
+    /**
+     * 강의 세션 종료
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @PutMapping("/end")
+    public CommonResponse<?> end(@RequestBody MatchedPutReq sessionInfo) {
+
+        log.info("MatchedController_end_start: " + sessionInfo.toString());
+
+        matchedService.endMatching(sessionInfo);
+
+        log.info("MatchedController_end_end: success");
+        return CommonResponse.success(SUCCESS);
+    }
 }

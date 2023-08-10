@@ -2,12 +2,22 @@ package com.ssafy.solive.db.entity;
 
 import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
 import com.ssafy.solive.common.model.FileDto;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
-
-import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -162,4 +172,19 @@ public class User extends BaseEntity {
         this.solvePoint -= solvePoint;
     }
 
+    /**
+     * 매칭 종료 후 학생과 강사의 경험치 증가
+     */
+    public void addExperience() {
+        this.experience += 100;
+    }
+
+    /**
+     * 강의 매칭에 필요했던 solve point 만큼 학생에겐 마이너스, 강사에겐 플러스 변동
+     *
+     * @param amount : solve point 변동량
+     */
+    public void modifySolvePoint(Integer amount) {
+        this.solvePoint += amount;
+    }
 }

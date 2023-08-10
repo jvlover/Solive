@@ -16,4 +16,6 @@ public interface MatchedService {
     void startMatching(MatchedPutReq sessionInfo);
 
     void extendMatching(MatchedPutReq sessionInfo);
+
+    void endMatching(MatchedPutReq sessionInfo);
 }

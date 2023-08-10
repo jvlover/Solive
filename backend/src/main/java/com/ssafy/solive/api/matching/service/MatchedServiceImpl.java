@@ -204,4 +204,39 @@ public class MatchedServiceImpl implements MatchedService {
 
         log.info("MatchedService_extendMatching_end");
     }
+
+    /**
+     * 강의 세션 종료
+     *
+     * @param sessionInfo : 세션 Id 정보
+     */
+    @Override
+    public void endMatching(MatchedPutReq sessionInfo) {
+
+        log.info("MatchedService_endMatching_start: " + sessionInfo.toString());
+
+        // 종료 시간 설정
+        Matched matched = matchedRepository.findBySessionId(sessionInfo.getSessionId());
+        matched.modifyEndTime();
+
+        // 경험치와 solve point 변동 내용 반영
+        Teacher teacher = teacherRepository.findById(matched.getTeacher().getId())
+            .orElseThrow(NoDataException::new);
+        Student student = studentRepository.findById(matched.getStudent().getId())
+            .orElseThrow(NoDataException::new);
+
+        // 경험치 증가
+        teacher.addExperience();
+        student.addExperience();
+
+        // solve point 변동
+        int point = matched.getSolvePoint() * (matched.getExtensionCount() + 1);
+        teacher.modifySolvePoint(point);
+        student.modifySolvePoint(point * -1);
+
+        // 강사의 푼 문제수 증가
+        teacher.addSolvedCount();
+
+        log.info("MatchedService_endMatching_end");
+    }
 }

@@ -82,4 +82,11 @@ public class Matched extends BaseEntity {
     public void addExtensionCount() {
         this.extensionCount++;
     }
+
+    /**
+     * 매칭이 끝날 때 endTime 설정
+     */
+    public void modifyEndTime() {
+        this.endTime = LocalDateTime.now();
+    }
 }
