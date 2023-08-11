@@ -18,7 +18,7 @@ public class ApplyFindRes {
     String path;
 
     // 강사의 선호 과목 마스터코드
-    Integer teacherSubjectId;
+    String teacherSubjectName;
 
     // 강사가 문제를 풀기 위해 제시한 Solve Point
     Integer solvePoint;
@@ -38,12 +38,12 @@ public class ApplyFindRes {
 
     // Querydsl을 위한 생성자
     public ApplyFindRes(Long applyId, String teacherNickname, String teacherPathName,
-        Integer teacherSubjectId,
+        String teacherSubjectName,
         Integer solvePoint, Integer estimatedTime, Integer ratingSum, Integer ratingCount) {
         this.applyId = applyId;
         this.teacherNickname = teacherNickname;
         this.path = teacherPathName;
-        this.teacherSubjectId = teacherSubjectId;
+        this.teacherSubjectName = teacherSubjectName;
         this.solvePoint = solvePoint;
         this.estimatedTime = estimatedTime;
         this.ratingSum = ratingSum;
