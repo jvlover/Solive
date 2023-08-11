@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/apply")
+@RequestMapping("/apply")
 @CrossOrigin("*")
 public class ApplyController {
 

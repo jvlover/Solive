@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping("/question")
 @CrossOrigin("*")
 public class QuestionController {
 

@@ -27,7 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/notification")
+@RequestMapping("/notification")
 @CrossOrigin("*")
 public class NotificationController {
 
