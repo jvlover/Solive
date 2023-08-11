@@ -4,7 +4,7 @@ import { SignupFormData } from './pages/Signup/Signup';
 import { User } from './recoil/user/userState';
 import { UserProfile } from './pages/MyPage/Profile';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'https://i9a107.p.ssafy.io/api';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
 const CHARGE_URL = `${BASE_URL}/charge`;
 

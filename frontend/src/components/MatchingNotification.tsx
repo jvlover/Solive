@@ -18,7 +18,7 @@ const MatchingNotification = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   useEffect(() => {
     const eventSource = new EventSource(
-      'http://localhost:8080/notification/subscribe',
+      'https://i9a107.p.ssafy.io/api/notification/subscribe',
     );
     eventSource.onmessage = (e) => {
       const newNotification = JSON.parse(e.data);
