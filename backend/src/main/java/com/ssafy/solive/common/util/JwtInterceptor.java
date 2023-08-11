@@ -6,13 +6,15 @@ import com.ssafy.solive.common.exception.user.JwtTokenExpiredException;
 import com.ssafy.solive.config.JwtConfiguration;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
 @Component
-public class JwtInterceptor {
+public class JwtInterceptor implements HandlerInterceptor {
 
     private final UserService userService;
     private final JwtConfiguration jwtConfiguration;
@@ -23,12 +25,8 @@ public class JwtInterceptor {
         this.jwtConfiguration = jwtConfiguration;
     }
 
-    /**
-     * accessToken이 유효하면 true, 만료됐으면 JwtTokenExpiredException, 이외는 false
-     *
-     * @param request current HTTP request
-     */
-    public Long checkValidAndGetUserId(HttpServletRequest request) {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("JwtInterceptor_preHandle_start");
         try {
             String accessToken = request.getHeader("access-token");
@@ -36,17 +34,17 @@ public class JwtInterceptor {
             boolean isLogout = userService.isLogout(accessToken);
             log.info("JwtInterceptor_checkValidAndGetUserId_mid: " + isLogout);
 
-            // accessToken이 유효한지 확인
+            // accessToken 이 유효한지 확인
             boolean checkToken = jwtConfiguration.checkToken(accessToken);
             log.info("JwtInterceptor_checkValidAndGetUserId_end: true");
 
             if (!isLogout && checkToken) {
                 Long userId = userService.getUserIdByToken(accessToken);
-                log.info("JwtInterceptor_checkValidAndGetUserId_end: " + userId);
-                return userId;
+                log.info("JwtInterceptor_checkValidAndGetUserId_end: true");
+                return true;
             } else {
                 log.info("JwtInterceptor_checkValidAndGetUserId_end: Invalid User");
-                return -1L;
+                return false;
             }
         } catch (ExpiredJwtException e) {
             log.info("JwtInterceptor_checkValidAndGetUserId_end: JwtTokenExpiredException");

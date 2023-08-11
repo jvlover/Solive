@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,9 +25,7 @@ public class FileUploader {
 
     public List<FileDto> fileUpload(List<MultipartFile> fileList, String subFolderName) {
         log.info("FileUploader_fileUpload_start: " + fileList + " " + subFolderName);
-        // TODO: "C:/solive/image/" -> S3 주소로 변경
 
-        String s3UploadPath = "C:/solive/image/" + subFolderName;
         List<FileDto> fileDtoList = new ArrayList<FileDto>();
 
         for (MultipartFile file : fileList) {
@@ -42,11 +38,8 @@ public class FileUploader {
                 // 랜덤한 파일 이름 생성
                 String fileName = UUID.randomUUID() + "." + extension;
 
-                // 파일 업로드 경로 디렉토리가 만약 존재하지 않으면 생성
-                Files.createDirectories(Paths.get(s3UploadPath));
-
-                // 파일 절대 경로
-                String path = s3UploadPath + fileName;
+                // S3 파일 경로 설정
+                String path = s3Uploader.upload(file, fileName);
 
                 fileDtoList.add(FileDto.builder()
                         .fileName(fileName)
@@ -54,8 +47,6 @@ public class FileUploader {
                         .path(path)
                         .contentType(file.getContentType())
                         .build());
-
-                s3Uploader.upload(file, fileName);
             } catch (IllegalStateException | IOException e) {
                 log.info("FileUploader_fileUpload_end: false");
                 throw new ImageUploadFailException(); // 이미지 등록 실패 시 Exception

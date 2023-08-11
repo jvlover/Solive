@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @CrossOrigin("*")
 public class UserController {
 
@@ -56,8 +56,7 @@ public class UserController {
      */
     @GetMapping()
     public CommonResponse<?> getUserProfile(HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_getUserProfile_start: " + userId);
 
         UserProfilePostRes userProfile = userService.getUserProfileByUserId(userId);
@@ -73,8 +72,7 @@ public class UserController {
      */
     @GetMapping("/privacy")
     public CommonResponse<?> getUserPrivacy(HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_getUserPrivacy_start: " + userId);
 
         UserPrivacyPostRes userPrivacy = userService.getUserPrivacyByUserId(userId);
@@ -98,8 +96,7 @@ public class UserController {
 
     @PutMapping("/logout")
     public CommonResponse<?> logout(HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_logout_start: " + userId);
 
         userService.logout(userId);
@@ -117,8 +114,7 @@ public class UserController {
     public CommonResponse<?> modifyProfile(@RequestPart UserModifyProfilePutReq userInfo,
                                            @RequestPart(value = "files", required = false) List<MultipartFile> profilePicture,
                                            HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_modifyProfile_start: " + userInfo + ", " + userId);
 
         userService.modifyUserProfile(userId, userInfo, profilePicture);
@@ -136,8 +132,7 @@ public class UserController {
     @PutMapping("/password")
     public CommonResponse<?> modifyPassword(@RequestBody UserModifyPasswordPutReq passwords,
                                             HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_modifyPassword_start: " + passwords + ", " + userId);
 
         userService.modifyUserPassword(userId, passwords);
@@ -152,8 +147,7 @@ public class UserController {
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_delete_start: " + userId);
 
         userService.deleteUser(userId);
@@ -169,8 +163,7 @@ public class UserController {
      */
     @PutMapping("/charge")
     public CommonResponse<?> chargeSolvePoint(Integer solvePoint, HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_chargeSolvePoint_start: " + solvePoint + ", " + userId);
 
         userService.chargeSolvePoint(userId, solvePoint);
@@ -187,8 +180,7 @@ public class UserController {
      */
     @PutMapping("/cashout")
     public CommonResponse<?> cashoutSolvePoint(Integer solvePoint, HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_cashoutSolvePoint_start: " + solvePoint + ", " + userId);
 
         userService.cashOutSolvePoint(userId, solvePoint);
@@ -217,7 +209,7 @@ public class UserController {
      * @param refreshToken 재 생성을 위한 refreshToken
      * @return accessToken 재 생성된 accessToken
      */
-    @PostMapping("/refresh")
+    @PostMapping("/auth/refresh")
     public CommonResponse<?> recreateAccessToken(String refreshToken) {
         Long userId = userService.getUserIdByToken(refreshToken);
         log.info("UserController_recreateAccessToken_start: " + userId);
@@ -227,11 +219,17 @@ public class UserController {
         return CommonResponse.success(accessToken);
     }
 
+    /**
+     * 학생이 선생님 즐겨찾기를 추가하는 api
+     *
+     * @param teacherId 추가하고싶은 선생님의 Id
+     * @param request   request
+     * @return
+     */
     @PostMapping("/favorite/add")
     public CommonResponse<?> addFavorite(@RequestBody Long teacherId,
                                          HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long studentId = userService.getUserIdByToken(accessToken);
+        Long studentId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_addFavorite_start: " + teacherId + studentId);
 
         userService.addFavorite(studentId, teacherId);
@@ -240,11 +238,17 @@ public class UserController {
         return CommonResponse.success(SUCCESS);
     }
 
+    /**
+     * 학생이 선생님 즐겨찾기를 삭제하는 api
+     *
+     * @param teacherId 삭제하고 싶은 선생님의 Id
+     * @param request   request
+     * @return
+     */
     @PutMapping("/favorite/delete")
     public CommonResponse<?> deleteFavorite(@RequestBody Long teacherId,
                                             HttpServletRequest request) {
-        String accessToken = request.getHeader("access-token");
-        Long studentId = userService.getUserIdByToken(accessToken);
+        Long studentId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_deleteFavorite_start: " + teacherId + studentId);
 
         userService.deleteFavorite(studentId, teacherId);
@@ -252,6 +256,11 @@ public class UserController {
         return CommonResponse.success(SUCCESS);
     }
 
+    /**
+     * 유저 main page 를 접속할 떄, 온라인인 선생님 중,
+     *
+     * @return
+     */
     @GetMapping("/onlineteacher")
     public CommonResponse<?> getOnlineTeacher() {
         log.info("UserController_getOnlineTeacher_start");
