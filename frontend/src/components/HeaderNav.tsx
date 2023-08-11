@@ -139,6 +139,10 @@ const HeaderNav = () => {
         <Link to="/">
           <img src={logo} alt="Logo" className="w-auto h-10" />
         </Link>
+        <button
+            onClick={() => {
+              navigate('/testpage');
+            }}>테스트하러뿅</button>
         <div className="flex items-center gap-4">
           <div className="hidden lg:block">{navList}</div>
           <IconButton

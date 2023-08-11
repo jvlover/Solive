@@ -18,6 +18,7 @@ import TeacherQuestion from './pages/Teacher/Question';
 import Student from './pages/Student/StudentMain';
 import StudentQuestionDetail from './pages/Student/QuestionDetail';
 import TeacherQuestionDetail from './pages/Teacher/QuestionDetail';
+import TestPage from './pages/TestPage';
 
 const App = () => {
   return (
@@ -50,6 +51,7 @@ const App = () => {
           path="/teacher/question/:id"
           element={<TeacherQuestionDetail />}
         />
+        <Route path="/testpage" element={<TestPage/>}/>
       </Routes>
       <FooterNav />
     </Router>
