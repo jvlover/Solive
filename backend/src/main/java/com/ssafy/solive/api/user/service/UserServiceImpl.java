@@ -314,7 +314,7 @@ public class UserServiceImpl implements UserService {
 
         if (profilePicture != null) { // 저장할 프로필 사진이 있으면
             // 프로필 사진 정보 수정, 프로필 사진은 항상 length 1
-            FileDto fileDto = fileUploader.fileUpload(profilePicture, "/profile").get(0);
+            FileDto fileDto = fileUploader.fileUpload(profilePicture, "profile").get(0);
             user.modifyProfilePicture(fileDto);
         }
 
