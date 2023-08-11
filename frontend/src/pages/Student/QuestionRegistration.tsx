@@ -235,6 +235,7 @@ const QuestionRegistration = () => {
                 />
                 <button
                   className="ml-5 btn-primary px-0 w-[120px] h-[42px] flex items-center justify-center"
+                  type="button"
                   onClick={() => image.current.click()}
                 >
                   파일 찾기
