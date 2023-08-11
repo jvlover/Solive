@@ -47,7 +47,7 @@ public class QApplyRepositoryImpl implements QApplyRepository {
                 apply.id.as("applyId"),
                 teacher.nickname.as("teacherNickname"),
                 teacher.path.as("teacherPathName"),
-                masterCode.id.as("teacherSubjectId"),
+                masterCode.name.as("teacherSubjectName"),
                 apply.solvePoint.as("solvePoint"),
                 apply.estimatedTime.as("estimatedTime"),
                 teacher.ratingSum.as("ratingSum"),

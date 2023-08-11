@@ -15,14 +15,12 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
  * 매칭 과정 중 알림 API 서비스
  */
 @Slf4j
-@Transactional
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
