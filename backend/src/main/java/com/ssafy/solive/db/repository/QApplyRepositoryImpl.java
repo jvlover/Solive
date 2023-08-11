@@ -60,8 +60,6 @@ public class QApplyRepositoryImpl implements QApplyRepository {
             .where(questionIdEq(findCondition.getQuestionId()),
                 favoriteCodeMatch(findCondition.getIsFavorite()))
             .orderBy(applySort(findCondition.getSort()))
-            .offset(findCondition.getPageNum() * 8)
-            .limit(8)
             .fetch();
     }
 
@@ -105,12 +103,14 @@ public class QApplyRepositoryImpl implements QApplyRepository {
     private OrderSpecifier<?> applySort(String sort) {
         if (sort.equals("TIME")) {  // 예상 풀이시간 순 오름차순 : TIME
             return apply.estimatedTime.asc();
-        } else if (sort.equals("PRICE_ASC")) {  // 가격 순 오름차순 : PRICE_ASC
+        } else if (sort.equals("PRICE")) {  // 가격 순 오름차순 : PRICE
             return apply.solvePoint.asc();
-        } else if (sort.equals("PRICE_DESC")) { // 가격 순 내림차순 : PRICE_DESC
-            return apply.solvePoint.desc();
         } else {    // 평점 내림차순 : RATE
-            return apply.teacher.ratingSum.avg().desc();
+            // teacher.ratingCount가 0일 수 있기 때문에 1을 임의로 더함
+            // 최소값이 0이기 때문에 1만 더해도 절대로 0으로 나눠질 가능성이 없음
+            // 정렬 순서도 원래 목적과 맞게 유지됨
+            return teacher.ratingSum.doubleValue().divide(teacher.ratingCount.add(1).doubleValue())
+                .desc();
         }
     }
 
