@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/board")
 @CrossOrigin("*")
 public class ArticleController {
 

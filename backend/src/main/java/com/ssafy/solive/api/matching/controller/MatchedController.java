@@ -10,24 +10,19 @@ import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 학생이 강사가 지원한 요청들 중 하나를 수락한 후 부터의 과정들 API 컨트롤러
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/matched")
+@RequestMapping("/matched")
 @CrossOrigin("*")
 public class MatchedController {
 
@@ -39,7 +34,7 @@ public class MatchedController {
 
     @Autowired
     public MatchedController(MatchedService matchedService, NotificationService notificationService,
-        UserService userService) {
+                             UserService userService) {
         this.matchedService = matchedService;
         this.notificationService = notificationService;
         this.userService = userService;
@@ -53,7 +48,7 @@ public class MatchedController {
     @Transactional
     @PostMapping()
     public CommonResponse<?> regist(@RequestBody MatchedRegistPostReq registInfo,
-        HttpServletRequest request) {
+                                    HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
@@ -66,8 +61,8 @@ public class MatchedController {
 
         // 강사에게 알림 전송 코드. title과 content의 내용은 일단 임시
         String title =
-            matchedRegistPostRes.getUser().getNickname() + "님, 지원하신 요청이 승낙되어 매칭이 성사되었습니다. "
-                + "강의 세션 ID는 " + sessionId + " 입니다.";
+                matchedRegistPostRes.getUser().getNickname() + "님, 지원하신 요청이 승낙되어 매칭이 성사되었습니다. "
+                        + "강의 세션 ID는 " + sessionId + " 입니다.";
         notificationService.send(matchedRegistPostRes.getUser(), title, sessionId);
 
         log.info("MatchedController_regist_end: success");
@@ -81,12 +76,12 @@ public class MatchedController {
      */
     @GetMapping("/my")
     public CommonResponse<?> findMyMatching(MatchedFindMineGetReq findCondition,
-        HttpServletRequest request) {
+                                            HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
         log.info(
-            "MatchedController_findMyMatching_start: " + findCondition.toString() + ", " + userId);
+                "MatchedController_findMyMatching_start: " + findCondition.toString() + ", " + userId);
 
         findCondition.setUserId(userId);
 

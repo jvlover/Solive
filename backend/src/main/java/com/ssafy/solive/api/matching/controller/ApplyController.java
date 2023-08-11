@@ -11,24 +11,19 @@ import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 강사가 학생이 등록한 문제에 지원할 때 필요한 API를 모은 컨트롤러
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/apply")
+@RequestMapping("/apply")
 @CrossOrigin("*")
 public class ApplyController {
 
@@ -40,7 +35,7 @@ public class ApplyController {
 
     @Autowired
     public ApplyController(ApplyService applyService, NotificationService notificationService,
-        UserService userService) {
+                           UserService userService) {
         this.applyService = applyService;
         this.notificationService = notificationService;
         this.userService = userService;
@@ -54,7 +49,7 @@ public class ApplyController {
     @Transactional
     @PostMapping()
     public CommonResponse<?> regist(@RequestBody ApplyRegistPostReq registInfo,
-        HttpServletRequest request) {
+                                    HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
@@ -66,7 +61,7 @@ public class ApplyController {
 
         // 학생에게 알림 전송
         String title =
-            applyRegistPostRes.getUser().getNickname() + "님, 등록하신 문제에 새로운 풀이 요청이 도착했습니다.";
+                applyRegistPostRes.getUser().getNickname() + "님, 등록하신 문제에 새로운 풀이 요청이 도착했습니다.";
         String content = applyRegistPostRes.getQuestionTitle();
         notificationService.send(applyRegistPostRes.getUser(), title, content);
 
@@ -81,7 +76,7 @@ public class ApplyController {
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(@RequestBody ApplyDeletePutReq deleteInfo,
-        HttpServletRequest request) {
+                                    HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);

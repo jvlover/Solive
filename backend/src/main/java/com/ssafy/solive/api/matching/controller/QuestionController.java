@@ -11,27 +11,20 @@ import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * 학생이 풀이를 원하는 문제를 서버에 등록할 때 필요한 API를 모은 컨트롤러
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping("/question")
 @CrossOrigin("*")
 public class QuestionController {
 
@@ -54,12 +47,12 @@ public class QuestionController {
      */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> regist(@RequestPart QuestionRegistPostReq registInfo,
-        @RequestPart("files") List<MultipartFile> fileList, HttpServletRequest request) {
+                                    @RequestPart("files") List<MultipartFile> fileList, HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
         log.info("QuestionController_regist_start: " + registInfo.toString()
-            + ", " + fileList.toString() + ", " + userId);
+                + ", " + fileList.toString() + ", " + userId);
 
         registInfo.setStudentId(userId);
 
@@ -76,7 +69,7 @@ public class QuestionController {
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(@RequestBody QuestionDeletePutReq deleteInfo,
-        HttpServletRequest request) {
+                                    HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
@@ -100,7 +93,7 @@ public class QuestionController {
      */
     @PutMapping()
     public CommonResponse<?> modify(@RequestBody QuestionModifyPutReq modifyInfo,
-        HttpServletRequest request) {
+                                    HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
