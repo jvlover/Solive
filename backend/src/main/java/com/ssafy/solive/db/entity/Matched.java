@@ -89,4 +89,13 @@ public class Matched extends BaseEntity {
     public void modifyEndTime() {
         this.endTime = LocalDateTime.now();
     }
+
+    /**
+     * 매칭이 끝날 때 강의 영상 Video Url 저장
+     *
+     * @param videoUrl : 강의 영상 Video Url
+     */
+    public void modifyVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
 }

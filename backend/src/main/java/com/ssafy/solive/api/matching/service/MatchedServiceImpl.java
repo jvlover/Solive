@@ -219,6 +219,12 @@ public class MatchedServiceImpl implements MatchedService {
         Matched matched = matchedRepository.findBySessionId(sessionInfo.getSessionId());
         matched.modifyEndTime();
 
+        // video url 생성
+        String videoUrl =
+            "https://i9a107.p.ssafy.io:8447/openvidu/recordings/" + sessionInfo.getSessionId() + "/"
+                + sessionInfo.getSessionId() + ".mp4";
+        matched.modifyVideoUrl(videoUrl);
+
         // 경험치와 solve point 변동 내용 반영
         Teacher teacher = teacherRepository.findById(matched.getTeacher().getId())
             .orElseThrow(NoDataException::new);
