@@ -36,7 +36,7 @@ public class FileUploader {
                         originalName.lastIndexOf(".") + 1);
 
                 // 랜덤한 파일 이름 생성
-                String fileName = UUID.randomUUID() + "." + extension;
+                String fileName = subFolderName + "/" + UUID.randomUUID() + "." + extension;
 
                 // S3 파일 경로 설정
                 String path = s3Uploader.upload(file, fileName);

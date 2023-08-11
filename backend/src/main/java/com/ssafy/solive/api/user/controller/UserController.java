@@ -115,7 +115,7 @@ public class UserController {
                                            @RequestPart(value = "files", required = false) List<MultipartFile> profilePicture,
                                            HttpServletRequest request) {
         Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
-        log.info("UserController_modifyProfile_start: " + userInfo + ", " + userId);
+        log.info("UserController_modifyProfile_start: " + userInfo + ", " + profilePicture + ", " + userId);
 
         userService.modifyUserProfile(userId, userInfo, profilePicture);
         log.info("UserController_modifyProfile_end: success");
