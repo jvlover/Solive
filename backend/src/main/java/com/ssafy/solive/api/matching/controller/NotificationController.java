@@ -8,13 +8,19 @@ import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.List;
 
 /**
  * 매칭 상황에서 유저가 서버로부터 알림을 받기 위한 API를 모은 컨트롤러
@@ -32,7 +38,7 @@ public class NotificationController {
 
     @Autowired
     public NotificationController(UserService userService,
-                                  NotificationService notificationService) {
+        NotificationService notificationService) {
         this.userService = userService;
         this.notificationService = notificationService;
     }
@@ -43,7 +49,7 @@ public class NotificationController {
      * @param userId : 유저의 Id (PK)
      * @return sseEmitter : 프론트에서 알림을 받을 Emitter
      */
-    @GetMapping(value = "/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/auth/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@PathVariable Long userId,
         @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
@@ -70,7 +76,7 @@ public class NotificationController {
         log.info("NotificationController_find_start: " + pageNum.toString() + ", " + userId);
 
         List<NotificationFindRes> findResList = notificationService.findNotification(userId,
-                pageNum);
+            pageNum);
 
         if (findResList.size() == 0) {
             log.info("NotificationController_find_end: No Result");
@@ -103,7 +109,7 @@ public class NotificationController {
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(@RequestBody NotificationDeletePutReq deleteInfo,
-                                    HttpServletRequest request) {
+        HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
