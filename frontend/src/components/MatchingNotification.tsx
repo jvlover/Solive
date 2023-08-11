@@ -7,6 +7,8 @@ import {
   MenuList,
 } from '@material-tailwind/react';
 import { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../recoil/user/userState';
 
 // eslint-disable-next-line no-redeclare
 type Notification = {
@@ -15,10 +17,12 @@ type Notification = {
 };
 
 const MatchingNotification = () => {
+  const user = useRecoilValue(userState);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+
   useEffect(() => {
     const eventSource = new EventSource(
-      'https://i9a107.p.ssafy.io/api/notification/subscribe',
+      `https://i9a107.p.ssafy.io/api/notification/auth/subscribe/${user.userId}`,
     );
     eventSource.onmessage = (e) => {
       const newNotification = JSON.parse(e.data);
@@ -35,7 +39,7 @@ const MatchingNotification = () => {
     return () => {
       eventSource.close();
     };
-  }, [setNotifications]);
+  }, [setNotifications, user.userId]);
 
   return (
     <Menu>

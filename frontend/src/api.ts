@@ -163,7 +163,7 @@ export const signup = async (
   if (response.data.success === true) {
     onSuccess();
   } else {
-    throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    alert(response.data.error.message);
   }
 };
 
@@ -220,8 +220,8 @@ export async function getNewAccessToken(
   refreshToken: string,
 ): Promise<string | null> {
   try {
-    const response = await axios.post(BASE_URL + '/user/refresh', {
-      'refresh-token': refreshToken,
+    const response = await axios.post(BASE_URL + '/user/auth/refresh', {
+      refreshToken: refreshToken,
     });
     if (response.data.success) {
       return response.data.accessToken;
@@ -425,8 +425,8 @@ export const withdrawalUser = async (
   error?: any;
 }> => {
   try {
-    const response = await axios.put(BASE_URL + '/user/delete', {
-      Headers: { 'access-token': accessToken },
+    const response = await axios.put(BASE_URL + '/user/delete', null, {
+      headers: { 'access-token': accessToken },
     });
     return {
       success: response.data.success,
@@ -491,4 +491,3 @@ export async function getTeachers(accessToken: string) {
     return { success: false, error: errorCode || error };
   }
 }
-
