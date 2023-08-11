@@ -40,21 +40,18 @@ public class NotificationController {
     /**
      * 클라이언트가 알림을 구독하기 위한 기능
      *
-     * @param request : userID를 access-token에서 가져와야 함
+     * @param userId : 유저의 Id (PK)
      * @return sseEmitter : 프론트에서 알림을 받을 Emitter
      */
-    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(HttpServletRequest request,
-                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+    @GetMapping(value = "/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PathVariable Long userId,
+        @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
-        log.info("NotificationController_subscribe_start: " + userId);
+        log.info("NotificationController_subscribe_start: " + userId + ", " + lastEventId);
 
         SseEmitter sseEmitter = notificationService.subscribe(userId, lastEventId);
 
-        log.info("NotificationController_subscribe_end: " + userId.toString()
-                + ", " + lastEventId);
+        log.info("NotificationController_subscribe_end: success");
 
         return sseEmitter;
     }
