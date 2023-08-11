@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class UserLoginPostRes {
 
+    Long userId;
     String accessToken;
     String refreshToken;
     Integer masterCodeId;

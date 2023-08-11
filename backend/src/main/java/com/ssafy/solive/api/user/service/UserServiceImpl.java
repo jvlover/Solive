@@ -1,25 +1,44 @@
 package com.ssafy.solive.api.user.service;
 
-import com.ssafy.solive.api.user.request.*;
+import com.ssafy.solive.api.user.request.TeacherRatePostReq;
+import com.ssafy.solive.api.user.request.UserLoginPostReq;
+import com.ssafy.solive.api.user.request.UserModifyPasswordPutReq;
+import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
+import com.ssafy.solive.api.user.request.UserRegistPostReq;
 import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
 import com.ssafy.solive.common.exception.InvalidMasterCodeException;
-import com.ssafy.solive.common.exception.user.*;
+import com.ssafy.solive.common.exception.user.DuplicatedEmailException;
+import com.ssafy.solive.common.exception.user.DuplicatedLoginIdException;
+import com.ssafy.solive.common.exception.user.DuplicatedNicknameException;
+import com.ssafy.solive.common.exception.user.FavoriteNotFoundException;
+import com.ssafy.solive.common.exception.user.InvalidJwtRefreshTokenException;
+import com.ssafy.solive.common.exception.user.JwtTokenExpiredException;
+import com.ssafy.solive.common.exception.user.PasswordMismatchException;
+import com.ssafy.solive.common.exception.user.UserNotFoundException;
 import com.ssafy.solive.common.model.FileDto;
 import com.ssafy.solive.common.util.FileUploader;
 import com.ssafy.solive.config.JwtConfiguration;
-import com.ssafy.solive.db.entity.*;
-import com.ssafy.solive.db.repository.*;
+import com.ssafy.solive.db.entity.Favorite;
+import com.ssafy.solive.db.entity.FavoriteId;
+import com.ssafy.solive.db.entity.MasterCode;
+import com.ssafy.solive.db.entity.Student;
+import com.ssafy.solive.db.entity.Teacher;
+import com.ssafy.solive.db.entity.User;
+import com.ssafy.solive.db.repository.FavoriteRepository;
+import com.ssafy.solive.db.repository.MasterCodeRepository;
+import com.ssafy.solive.db.repository.StudentRepository;
+import com.ssafy.solive.db.repository.TeacherRepository;
+import com.ssafy.solive.db.repository.UserRepository;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Slf4j
 @Transactional
@@ -36,9 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository,
-                           TeacherRepository teacherRepository, MasterCodeRepository masterCodeRepository,
-                           FavoriteRepository favoriteRepository, JwtConfiguration jwtConfiguration,
-                           FileUploader fileUploader) {
+        TeacherRepository teacherRepository, MasterCodeRepository masterCodeRepository,
+        FavoriteRepository favoriteRepository, JwtConfiguration jwtConfiguration,
+        FileUploader fileUploader) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
@@ -58,21 +77,21 @@ public class UserServiceImpl implements UserService {
         String hashedPassword = BCrypt.hashpw(registInfo.getLoginPassword(), BCrypt.gensalt());
         // 마스터 코드 객체 생성
         MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId())
-                .orElseThrow(InvalidMasterCodeException::new);
+            .orElseThrow(InvalidMasterCodeException::new);
         MasterCode logoutState = masterCodeRepository.findById(11) // 로그아웃 상태로 초기화
-                .orElseThrow(InvalidMasterCodeException::new);
+            .orElseThrow(InvalidMasterCodeException::new);
 
         // 학생으로 회원가입 요청한 경우
         if (registInfo.getMasterCodeId() == 1) {
             Student student = Student.builder()
-                    .masterCodeId(masterCode)
-                    .stateId(logoutState)
-                    .loginId(registInfo.getLoginId())
-                    .loginPassword(hashedPassword)
-                    .nickname(registInfo.getNickname())
-                    .email(registInfo.getEmail())
-                    .gender(registInfo.getGender())
-                    .build();
+                .masterCodeId(masterCode)
+                .stateId(logoutState)
+                .loginId(registInfo.getLoginId())
+                .loginPassword(hashedPassword)
+                .nickname(registInfo.getNickname())
+                .email(registInfo.getEmail())
+                .gender(registInfo.getGender())
+                .build();
 
             log.info("UserService_registUser_mid: " + student.toString());
 
@@ -88,14 +107,14 @@ public class UserServiceImpl implements UserService {
             }
         } else {  // 임시로 나머지 경우 다 강사가 회원가입 요청한 경우로 처리함
             Teacher teacher = Teacher.builder()
-                    .masterCodeId(masterCode)
-                    .stateId(logoutState)
-                    .loginId(registInfo.getLoginId())
-                    .loginPassword(hashedPassword)
-                    .nickname(registInfo.getNickname())
-                    .email(registInfo.getEmail())
-                    .gender(registInfo.getGender())
-                    .build();
+                .masterCodeId(masterCode)
+                .stateId(logoutState)
+                .loginId(registInfo.getLoginId())
+                .loginPassword(hashedPassword)
+                .nickname(registInfo.getNickname())
+                .email(registInfo.getEmail())
+                .gender(registInfo.getGender())
+                .build();
 
             log.info("UserService_registUser_end: " + teacher.toString());
 
@@ -132,19 +151,20 @@ public class UserServiceImpl implements UserService {
             String refreshToken = jwtConfiguration.createRefreshToken("userId", userId);
 
             user.setLoginState(masterCodeRepository.findById(12)
-                    .orElseThrow(InvalidMasterCodeException::new)); // 로그인 상태로 변경
+                .orElseThrow(InvalidMasterCodeException::new)); // 로그인 상태로 변경
             // RefreshToken을 user DB에 저장
             user.updateRefreshToken(refreshToken);
 
             // Token들을 return
             UserLoginPostRes userLoginPostRes = UserLoginPostRes.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .masterCodeId(user.getMasterCodeId().getId())
-                    .nickname(user.getNickname())
-                    .solvePoint(user.getSolvePoint())
-                    .path(user.getPath())
-                    .build();
+                .userId(userId)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .masterCodeId(user.getMasterCodeId().getId())
+                .nickname(user.getNickname())
+                .solvePoint(user.getSolvePoint())
+                .path(user.getPath())
+                .build();
             log.info("UserService_loginAndGetAccessToken_end: " + userLoginPostRes);
             return userLoginPostRes;
         } else { // 로그인 실패
@@ -158,7 +178,7 @@ public class UserServiceImpl implements UserService {
         log.info("UserService_logout_start: " + userId);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         MasterCode stateId = masterCodeRepository.findById(11) // 로그아웃 상태 MasterCode 가져오기
-                .orElseThrow(InvalidMasterCodeException::new);
+            .orElseThrow(InvalidMasterCodeException::new);
         user.logout(stateId);
         log.info("UserService_logout_end");
     }
@@ -187,7 +207,7 @@ public class UserServiceImpl implements UserService {
         log.info("UserService_recreateAccessToken_start: " + userId + ", " + refreshToken);
         if (jwtConfiguration.checkToken(refreshToken)) { // refreshToken 유효
             String dbRefreshToken = userRepository.findById(userId)
-                    .orElseThrow(UserNotFoundException::new).getRefreshToken();
+                .orElseThrow(UserNotFoundException::new).getRefreshToken();
 
             if (dbRefreshToken.equals(refreshToken)) { // refreshToken, DB의 refreshToken 일치
                 String accessToken = jwtConfiguration.createAccessToken("userId", userId);
@@ -216,36 +236,38 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Integer type = user.getMasterCodeId().getId();
         if (type == 1) { // 학생일땐
-            Student student = studentRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+            Student student = studentRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
             UserProfilePostRes userProfilePostRes = UserProfilePostRes.builder()
-                    .fileName(user.getFileName())
-                    .originalName(user.getOriginalName())
-                    .path(user.getPath())
-                    .contentType(user.getContentType())
-                    .nickname(user.getNickname())
-                    .gender(user.getGender())
-                    .experience(user.getExperience())
-                    .introduce(user.getIntroduce())
-                    .questionCount(student.getQuestionCount()) // 학생일때만
-                    .build();
+                .fileName(user.getFileName())
+                .originalName(user.getOriginalName())
+                .path(user.getPath())
+                .contentType(user.getContentType())
+                .nickname(user.getNickname())
+                .gender(user.getGender())
+                .experience(user.getExperience())
+                .introduce(user.getIntroduce())
+                .questionCount(student.getQuestionCount()) // 학생일때만
+                .build();
 
             log.info("UserServiceImpl_getUserProfileByUserId_end: student: " + userProfilePostRes);
             return userProfilePostRes;
         } else if (type == 2) {
-            Teacher teacher = teacherRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+            Teacher teacher = teacherRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
             UserProfilePostRes userProfilePostRes = UserProfilePostRes.builder()
-                    .fileName(user.getFileName())
-                    .originalName(user.getOriginalName())
-                    .path(user.getPath())
-                    .contentType(user.getContentType())
-                    .nickname(user.getNickname())
-                    .gender(user.getGender())
-                    .experience(user.getExperience())
-                    .introduce(user.getIntroduce())
-                    .solvedCount(teacher.getSolvedCount()) // 선생님일때만
-                    .ratingSum(teacher.getRatingSum()) // 선생님일때만
-                    .ratingCount(teacher.getRatingCount()) // 선생님일때만
-                    .build();
+                .fileName(user.getFileName())
+                .originalName(user.getOriginalName())
+                .path(user.getPath())
+                .contentType(user.getContentType())
+                .nickname(user.getNickname())
+                .gender(user.getGender())
+                .experience(user.getExperience())
+                .introduce(user.getIntroduce())
+                .solvedCount(teacher.getSolvedCount()) // 선생님일때만
+                .ratingSum(teacher.getRatingSum()) // 선생님일때만
+                .ratingCount(teacher.getRatingCount()) // 선생님일때만
+                .build();
             log.info("UserServiceImpl_getUserProfileByUserId_end: teacher: " + userProfilePostRes);
             return userProfilePostRes;
         }
@@ -265,9 +287,9 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         UserPrivacyPostRes userPrivacyPostRes = UserPrivacyPostRes.builder()
-                .email(user.getEmail())
-                .signinTime(user.getSigninTime())
-                .build();
+            .email(user.getEmail())
+            .signinTime(user.getSigninTime())
+            .build();
 
         log.info("UserServiceImpl_getUserPrivacyByUserId_end" + userPrivacyPostRes);
         return userPrivacyPostRes;
@@ -282,9 +304,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo,
-                                  List<MultipartFile> profilePicture) { // List 로 받지만 length 1
+        List<MultipartFile> profilePicture) { // List 로 받지만 length 1
         log.info("UserService_modifyUserProfile_start: " + userId + ", "
-                + userInfo.toString() + ", " + profilePicture);
+            + userInfo.toString() + ", " + profilePicture);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         user.modifyUserProfile(userInfo);
@@ -308,7 +330,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void modifyUserPassword(Long userId, UserModifyPasswordPutReq passwords) {
         log.info("UserService_modifyUserPassword_start: " + userId + ", "
-                + passwords.toString());
+            + passwords.toString());
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         String oldPassword = passwords.getOldPassword();
         String newPassword = passwords.getNewPassword();
@@ -347,7 +369,7 @@ public class UserServiceImpl implements UserService {
     public void chargeSolvePoint(Long userId, Integer solvePoint) {
         log.info("UserService_chargeSolvePoint_start: " + userId + ", " + solvePoint);
         Student student = studentRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+            .orElseThrow(UserNotFoundException::new);
         student.chargeSolvePoint(solvePoint);
         log.info("UserService_chargeSolvePoint_end");
     }
@@ -362,7 +384,7 @@ public class UserServiceImpl implements UserService {
     public void cashOutSolvePoint(Long userId, Integer solvePoint) {
         log.info("UserService_cashOutSolvePoint_start: " + userId + ", " + solvePoint);
         Teacher teacher = teacherRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+            .orElseThrow(UserNotFoundException::new);
         teacher.cashOutSolvePoint(solvePoint);
         log.info("UserService_cashOutSolvePoint_end");
     }
@@ -376,7 +398,7 @@ public class UserServiceImpl implements UserService {
     public void rateTeacher(TeacherRatePostReq ratingInfo) {
         log.info("UserService_rateTeacher_start: " + ratingInfo);
         Teacher teacher = teacherRepository.findById(ratingInfo.getTeacherId())
-                .orElseThrow(UserNotFoundException::new);
+            .orElseThrow(UserNotFoundException::new);
         teacher.addRating(ratingInfo.getRating());
         log.info("UserService_rateTeacher_end");
     }
@@ -386,23 +408,23 @@ public class UserServiceImpl implements UserService {
         log.info("UserService_addFavorite_start: " + studentId + ", " + teacherId);
 
         FavoriteId favoriteId = FavoriteId.builder()
-                .studentId(studentId)
-                .teacherId(teacherId)
-                .build();
+            .studentId(studentId)
+            .teacherId(teacherId)
+            .build();
 
         Favorite favorite = favoriteRepository.findById(favoriteId).orElse(null);
         log.info("UserService_addFavorite_mid: " + favorite);
 
         if (favorite == null) { // 즐겨찾기 정보가 없는 경우 -> 새 Data 만들어서 등록
             Student student = studentRepository.findById(studentId)
-                    .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
             Teacher teacher = teacherRepository.findById(teacherId)
-                    .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
 
             favoriteRepository.save(Favorite.builder()
-                    .studentId(student)
-                    .teacherId(teacher)
-                    .build());
+                .studentId(student)
+                .teacherId(teacher)
+                .build());
         } else { // 즐겨찾기 정보가 DB에 있지만 다시 등록하는 경우 -> Time Column 갱신
             favorite.addTime();
         }
@@ -414,12 +436,12 @@ public class UserServiceImpl implements UserService {
     public void deleteFavorite(Long studentId, Long teacherId) {
         log.info("UserService_deleteFavorite_start: " + studentId + ", " + teacherId);
         FavoriteId favoriteId = FavoriteId.builder()
-                .studentId(studentId)
-                .teacherId(teacherId)
-                .build();
+            .studentId(studentId)
+            .teacherId(teacherId)
+            .build();
 
         Favorite favorite = favoriteRepository.findById(favoriteId)
-                .orElseThrow(FavoriteNotFoundException::new);
+            .orElseThrow(FavoriteNotFoundException::new);
 
         favorite.addDeleteAt();
         log.info("UserService_deleteFavorite_end");
@@ -444,7 +466,7 @@ public class UserServiceImpl implements UserService {
     public List<TeacherOnlineGetRes> getOnlineTeacher() {
         log.info("UserService_getOnlineTeacher_start");
         List<TeacherOnlineGetRes> teacherOnlineGetResList = teacherRepository.findOnlineTeacher();
-        
+
         log.info("UserService_getOnlineTeacher_end: " + teacherOnlineGetResList);
         return teacherOnlineGetResList;
     }
