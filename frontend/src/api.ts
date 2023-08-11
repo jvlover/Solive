@@ -4,7 +4,7 @@ import { SignupFormData } from './pages/Signup/Signup';
 import { User } from './recoil/user/userState';
 import { UserProfile } from './pages/MyPage/Profile';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'https://i9a107.p.ssafy.io/api';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
 const CHARGE_URL = `${BASE_URL}/charge`;
 
@@ -163,7 +163,7 @@ export const signup = async (
   if (response.data.success === true) {
     onSuccess();
   } else {
-    throw new Error('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+    alert(response.data.error.message);
   }
 };
 
@@ -220,7 +220,7 @@ export async function getNewAccessToken(
   refreshToken: string,
 ): Promise<string | null> {
   try {
-    const response = await axios.post(BASE_URL + '/user/refresh', {
+    const response = await axios.post(BASE_URL + '/user/auth/refresh', {
       refreshToken: refreshToken,
     });
     if (response.data.success) {
