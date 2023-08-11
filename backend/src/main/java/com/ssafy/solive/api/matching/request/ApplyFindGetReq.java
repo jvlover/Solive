@@ -14,7 +14,7 @@ public class ApplyFindGetReq {
     /*
      *  정렬 기준
      *  예상 풀이시간 순 오름차순 : TIME
-     *  가격 순 오름차순 : PRICE_ASC, 내림차순 : PRICE_DESC
+     *  가격 순 오름차순 : PRICE
      *  평점 내림차순 : RATE
      */
     String sort;
