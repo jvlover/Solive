@@ -441,11 +441,11 @@ export const withdrawalUser = async (
 };
 
 export const logoutUser = async (
-  accessToken: string,
+  userId: number,
 ): Promise<{ success: boolean; error?: any }> => {
   try {
-    const response = await axios.put(BASE_URL + '/user/logout', null, {
-      headers: { 'access-token': accessToken },
+    const response = await axios.put(BASE_URL + '/user/auth/logout', {
+      userId: userId,
     });
     return {
       success: response.data.success,

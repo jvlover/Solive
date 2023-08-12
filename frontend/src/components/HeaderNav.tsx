@@ -39,7 +39,7 @@ const HeaderNav = () => {
   }, []);
 
   const handleLogout = async () => {
-    const result = await logoutUser(user.accessToken);
+    const result = await logoutUser(user.userId);
 
     if (result.success) {
       localStorage.removeItem('user');
