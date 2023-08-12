@@ -1,6 +1,10 @@
 package com.ssafy.solive.api.user.controller;
 
-import com.ssafy.solive.api.user.request.*;
+import com.ssafy.solive.api.user.request.TeacherRatePostReq;
+import com.ssafy.solive.api.user.request.UserLoginPostReq;
+import com.ssafy.solive.api.user.request.UserModifyPasswordPutReq;
+import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
+import com.ssafy.solive.api.user.request.UserRegistPostReq;
 import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
@@ -8,13 +12,19 @@ import com.ssafy.solive.api.user.response.UserProfilePostRes;
 import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * 유저 관련 API 요청 처리를 위한 컨트롤러 정의.
@@ -67,7 +77,7 @@ public class UserController {
     /**
      * 유저 개인정보
      *
-     * @param request access-token이 들어있는 request
+     * @param request access-token 이 들어있는 request
      * @return UserPrivacyPostRes
      */
     @GetMapping("/privacy")
@@ -94,9 +104,8 @@ public class UserController {
         return CommonResponse.success(userLoginPostRes);
     }
 
-    @PutMapping("/logout")
-    public CommonResponse<?> logout(HttpServletRequest request) {
-        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
+    @PutMapping("/auth/logout")
+    public CommonResponse<?> logout(Long userId) {
         log.info("UserController_logout_start: " + userId);
 
         userService.logout(userId);
@@ -112,10 +121,11 @@ public class UserController {
      */
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> modifyProfile(@RequestPart UserModifyProfilePutReq userInfo,
-                                           @RequestPart(value = "files", required = false) List<MultipartFile> profilePicture,
-                                           HttpServletRequest request) {
+        @RequestPart(value = "files", required = false) List<MultipartFile> profilePicture,
+        HttpServletRequest request) {
         Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
-        log.info("UserController_modifyProfile_start: " + userInfo + ", " + userId);
+        log.info("UserController_modifyProfile_start: " + userInfo + ", " + profilePicture + ", "
+            + userId);
 
         userService.modifyUserProfile(userId, userInfo, profilePicture);
         log.info("UserController_modifyProfile_end: success");
@@ -131,7 +141,7 @@ public class UserController {
      */
     @PutMapping("/password")
     public CommonResponse<?> modifyPassword(@RequestBody UserModifyPasswordPutReq passwords,
-                                            HttpServletRequest request) {
+        HttpServletRequest request) {
         Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_modifyPassword_start: " + passwords + ", " + userId);
 
@@ -228,7 +238,7 @@ public class UserController {
      */
     @PostMapping("/favorite/add")
     public CommonResponse<?> addFavorite(@RequestBody Long teacherId,
-                                         HttpServletRequest request) {
+        HttpServletRequest request) {
         Long studentId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_addFavorite_start: " + teacherId + studentId);
 
@@ -247,7 +257,7 @@ public class UserController {
      */
     @PutMapping("/favorite/delete")
     public CommonResponse<?> deleteFavorite(@RequestBody Long teacherId,
-                                            HttpServletRequest request) {
+        HttpServletRequest request) {
         Long studentId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("UserController_deleteFavorite_start: " + teacherId + studentId);
 
@@ -257,7 +267,7 @@ public class UserController {
     }
 
     /**
-     * 유저 main page 를 접속할 떄, 온라인인 선생님 중,
+     * 유저 main page 를 접속할 떄, 온라인인 선생님 중, 평점 순으로 Get
      *
      * @return
      */

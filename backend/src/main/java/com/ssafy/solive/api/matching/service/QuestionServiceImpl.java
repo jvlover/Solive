@@ -100,7 +100,7 @@ public class QuestionServiceImpl implements QuestionService {
         /*
          *  files를 바탕으로 QuestionPicture Entity 생성 시작
          */
-        List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "/question");
+        List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "question");
 
         for (FileDto fileDto : fileDtoList) {
             QuestionPicture questionPicture = QuestionPicture.builder()

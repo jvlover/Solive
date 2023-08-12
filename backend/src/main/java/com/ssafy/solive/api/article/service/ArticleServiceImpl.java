@@ -104,7 +104,7 @@ public class ArticleServiceImpl implements ArticleService {
          *  files 를 바탕으로 ArticlePicture Entity 생성 시작
          */
         if (!Objects.isNull(fileList) && fileList.get(0).getSize() > 0) {
-            List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "/article");
+            List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "article");
             for (FileDto fileDto : fileDtoList) {
                 ArticlePicture articlePicture = ArticlePicture.builder()
                     .article(article)
@@ -161,7 +161,7 @@ public class ArticleServiceImpl implements ArticleService {
 
             // 게시글 사진 다시 업로드
             if (!Objects.isNull(fileList) && fileList.get(0).getSize() > 0) {
-                List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "/article");
+                List<FileDto> fileDtoList = fileUploader.fileUpload(fileList, "article");
                 for (FileDto fileDto : fileDtoList) {
                     ArticlePicture articlePicture = ArticlePicture.builder()
                         .article(article)
