@@ -193,8 +193,8 @@ const QuestionRegistration = () => {
       <div className="flex justify-center">
         <div className="flex w-[70vw] min-w-[900px] text-black">
           <div className="w-1/2 px-5">
-            <form className="space-y-3">
-              <div className="flex justify-center mt-4">
+            <form className="space-y-8">
+              <div className="flex justify-center mt-10">
                 {preview ? (
                   <img
                     src={preview}
@@ -207,15 +207,6 @@ const QuestionRegistration = () => {
                   </div>
                 )}
               </div>
-              {/* <label className="block rounded-md">
-                <span className="font-bold text-gray-700">사진</span>
-                <input
-                  className="block w-full h-16 mt-1 border-2 border-gray-300 rounded-md shadow-sm bg-solive-200 bg-opacity-30"
-                  type="file"
-                  onChange={handleFileChange}
-                  multiple
-                />
-              </label> */}
               <div className="flex items-center justify-start">
                 <input
                   className="w-full p-2 border border-gray-300 rounded bg-opacity-30 bg-solive-200 min-w-[200px] min-h-[42px]"
