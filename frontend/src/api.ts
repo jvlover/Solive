@@ -564,3 +564,70 @@ export const applyQuestion = async (
 
   return response.data;
 };
+
+export interface Teacher {
+  applyId: number;
+  teacherSubjectName: string;
+  path: string;
+  teacherNickname: string;
+  solvePoint: string;
+  estimatedTime: string;
+  ratingSum: number;
+  ratingCount: number;
+}
+
+export interface GetTeachersListParams {
+  questionId: string;
+  sort: string;
+  isFavorite: boolean;
+}
+
+export const getTeachersList = async (
+  params: GetTeachersListParams,
+  accessToken: string,
+): Promise<{ success: boolean; data?: Teacher[]; error?: string }> => {
+  try {
+    const response = await axios.get<{ success: boolean; data: Teacher[] }>(
+      BASE_URL + '/question',
+      {
+        headers: { 'access-token': accessToken },
+        params: {
+          questionId: params.questionId,
+          sort: params.sort,
+          isFavorite: params.isFavorite,
+        },
+      },
+    );
+
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode = error?.response?.data?.error?.code;
+
+    return {
+      success: false,
+      error: errorCode || 'UNKNOWN_ERROR',
+    };
+  }
+};
+
+export async function applyToTeacher(applyId: number, accessToken: string) {
+  console.log(applyId);
+  try {
+    const response = await axios.post(
+      BASE_URL + '/matched',
+      { applyId },
+      {
+        headers: {
+          'access-token': accessToken,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error.message };
+  }
+}
