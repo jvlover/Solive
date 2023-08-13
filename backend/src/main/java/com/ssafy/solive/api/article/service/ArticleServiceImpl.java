@@ -6,7 +6,9 @@ import com.ssafy.solive.api.article.request.ArticleModifyPutReq;
 import com.ssafy.solive.api.article.request.ArticleRegistPostReq;
 import com.ssafy.solive.api.article.request.ArticleReportPostReq;
 import com.ssafy.solive.api.article.response.ArticleFindRes;
+import com.ssafy.solive.common.exception.InvalidMasterCodeException;
 import com.ssafy.solive.common.exception.NoDataException;
+import com.ssafy.solive.common.exception.user.UserNotFoundException;
 import com.ssafy.solive.common.model.FileDto;
 import com.ssafy.solive.common.util.FileUploader;
 import com.ssafy.solive.db.entity.Article;
@@ -25,7 +27,6 @@ import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * 유저가 게시판을 이용할 때의 API에 대한 서비스
+ * 유저가 게시판을 이용할 때의 API 에 대한 서비스
  */
 @Slf4j
 @Transactional
@@ -67,7 +68,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 게시판에서 게시글 Regist API에 대한 서비스
+     * 게시판에서 게시글 Regist API 에 대한 서비스
      *
      * @param registInfo : 게시글 등록할 때 입력한 정보
      * @param fileList   : 게시글 사진, 게시글에는 사진이 반드시 있을 필요가 없음
@@ -83,11 +84,10 @@ public class ArticleServiceImpl implements ArticleService {
             log.info("ArticleService_registArticle_start: " + registInfo.toString());
         }
 
-        // user가 null일 수 있으므로 controller로 exception throw
         User user = userRepository.findById(registInfo.getUserId())
-            .orElseThrow(NoDataException::new);
+            .orElseThrow(UserNotFoundException::new);
         MasterCode masterCode = masterCodeRepository.findById(registInfo.getMasterCodeId())
-            .orElseThrow(NoDataException::new);
+            .orElseThrow(InvalidMasterCodeException::new);
         String title = registInfo.getTitle();
         String content = registInfo.getContent();
 
@@ -146,10 +146,8 @@ public class ArticleServiceImpl implements ArticleService {
         if (article.getUser().getId().equals(modifyInfo.getUserId())) {
             // 게시글 수정
             MasterCode masterCode = masterCodeRepository.findById(modifyInfo.getMasterCodeId())
-                .orElseThrow(NoDataException::new);
-            String title = modifyInfo.getTitle();
-            String content = modifyInfo.getContent();
-            article.modifyArticle(masterCode, title, content);
+                .orElseThrow(InvalidMasterCodeException::new);
+            article.modifyArticle(masterCode, modifyInfo.getTitle(), modifyInfo.getContent());
 
             // 게시글 기존 사진 전부 삭제
             List<ArticlePicture> articlePictureList = articlePictureRepository.findByArticle(
@@ -183,7 +181,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 게시글 delete API에 대한 서비스
+     * 게시글 delete API 에 대한 서비스
      *
      * @param deleteInfo : 게시글을 삭제하기 위해 필요한 정보
      */
@@ -194,7 +192,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article article = articleRepository.findById(deleteInfo.getArticleId())
             .orElseThrow(NoDataException::new);
-        // deleteInfo의 유저 정보와 해당 문제의 실제 유저 정보가 같아야만 삭제
+        // deleteInfo 의 유저 정보와 해당 문제의 실제 유저 정보가 같아야만 삭제
         if (article.getUser().getId().equals(deleteInfo.getUserId())) {
             // 게시글 삭제
             article.deleteArticle();
@@ -216,7 +214,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * like API에 대한 서비스
+     * like API 에 대한 서비스
      *
      * @param likeInfo : 게시글을 좋아요하기 위해 필요한 정보
      */
@@ -230,15 +228,15 @@ public class ArticleServiceImpl implements ArticleService {
             .article(likeInfo.getArticleId())
             .build();
 
-        Optional<ArticleLike> optionalArticleLike = articleLikeRepsitory.findById(articleLikeId);
+        ArticleLike articleLike = articleLikeRepsitory.findById(articleLikeId).orElse(null);
 
-        if (optionalArticleLike.isEmpty()) {
+        if (articleLike == null) {
             User user = userRepository.findById(likeInfo.getUserId())
-                .orElseThrow(NoDataException::new);
+                .orElseThrow(UserNotFoundException::new);
             Article article = articleRepository.findById(likeInfo.getArticleId())
                 .orElseThrow(NoDataException::new);
 
-            ArticleLike articleLike = ArticleLike.builder()
+            articleLike = ArticleLike.builder()
                 .user(user)
                 .article(article)
                 .build();
@@ -256,7 +254,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 게시글 신고 API에 대한 서비스
+     * 게시글 신고 API 에 대한 서비스
      *
      * @param reportInfo : 게시글을 신고하기 위해 필요한 정보
      */
@@ -270,10 +268,9 @@ public class ArticleServiceImpl implements ArticleService {
             .article(reportInfo.getArticleId())
             .build();
 
-        Optional<ArticleReport> optionalArticleReport = articleReportRepository.findById(
-            articleReportId);
+        ArticleReport articleReport = articleReportRepository.findById(articleReportId).orElse(null);
 
-        if (optionalArticleReport.isEmpty()) {
+        if (articleReport == null) {
             User reportUser = userRepository.findById(reportInfo.getUserReportId())
                 .orElseThrow(NoDataException::new);
             User reportedUser = userRepository.findById(reportInfo.getUserReportedId())
@@ -282,7 +279,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .orElseThrow(NoDataException::new);
             String content = reportInfo.getContent();
 
-            ArticleReport articleReport = ArticleReport.builder()
+            articleReport = ArticleReport.builder()
                 .userReportId(reportUser)
                 .userReportedId(reportedUser)
                 .article(article)
@@ -357,8 +354,7 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("ArticleService_findAllArticle_start: " + keyword + ", "
             + pageable.toString());
 
-        Page<ArticleFindRes> articleFindRes = articleRepository.findByTitleContaining(keyword,
-                pageable)
+        Page<ArticleFindRes> articleFindRes = articleRepository.findByTitleContaining(keyword, pageable)
             .map(m -> ArticleFindRes.builder()
                 .id(m.getId())
                 .userId(m.getUser().getId())
@@ -370,8 +366,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .reportCount(m.getReportCount())
                 .time(m.getTime().toString())
                 .lastUpdateTime(m.getLastUpdateTime().toString())
-                .articlePicturePathNames(articlePictureRepository.findPathNameByArticle(
-                    m.getId()))
+                .articlePicturePathNames(articlePictureRepository.findPathNameByArticle(m.getId()))
                 .build());
 
         // 게시글 조회 결과 리스트
