@@ -3,19 +3,19 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import { chargeSolvePoint } from '../../api';
 import { useNavigate } from 'react-router-dom';
+import sp from '../../assets/sp.png';
 
 const PointChargePage = () => {
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
   const [selectedAmount, setSelectedAmount] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
   const amounts = [10000, 30000, 50000, 100000];
 
-  // 화면 보려면 여기 주석
   const navigate = useNavigate();
 
-  // 화면 보려면 여기 주석
   if (!user) {
     navigate('/login');
     return null;
@@ -30,7 +30,6 @@ const PointChargePage = () => {
     setShowModal(true);
   };
 
-  // 화면 보려면 아래 주석
   const handleCharge = async () => {
     if (!user || !user.accessToken) return;
 
@@ -50,46 +49,75 @@ const PointChargePage = () => {
 
   return (
     <div className="pt-4">
-      <div>
-        <h1 className="ml-36 font-semibold">마이페이지</h1>
-      </div>
-      <hr className="mt-4 mx-auto w-7/10 border-none h-1 bg-blue-200" />
-
-      <div className="flex justify-center mt-20 items-start">
-        <div className="border-4 border-blue-200 p-4 flex flex-wrap justify-center gap-5 w-1/2 h-96">
+      <div className="flex justify-center mt-5 items-start">
+        <div className="p-4 flex flex-wrap w-1/2 h-96">
           {amounts.map((amount, index) => (
             <button
               key={index}
-              className="bg-white border-2 border-gray-400 text-black font-bold w-56 h-12"
-              onClick={() => handleClick(amount)}
+              className={`bg-white border-2 border-gray-400 text-black font-bold w-48 h-12 relative ${
+                index % 2 === 0 ? 'mr-5' : ''
+              }`}
+              onClick={() => {
+                handleClick(amount);
+                setSelectedIndex(index);
+              }}
             >
               {amount}원
+              <span
+                className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 ${
+                  selectedIndex === index
+                    ? 'border-4 border-blue-400'
+                    : 'border-2 border-black'
+                } rounded-full bg-white`}
+              ></span>
             </button>
           ))}
-          <input
-            type="text"
-            placeholder="직접 입력"
-            className="block w-56 h-12 border-2 border-gray-400 p-2 rounded-md"
-            onChange={(e) => handleClick(Number(e.target.value))}
-          />
+          <div className="flex items-center">
+            <span
+              className={`mr-2 w-6 h-6 ${
+                selectedIndex === amounts.length
+                  ? 'border-4 border-blue-400'
+                  : 'border-2 border-black'
+              } rounded-full bg-white`}
+              onClick={() => setSelectedIndex(amounts.length)}
+            ></span>
+            <input
+              type="text"
+              placeholder="직접 입력"
+              className="block w-40 h-12 border-2 border-gray-400 p-2 rounded-md"
+              onChange={(e) => {
+                handleClick(Number(e.target.value));
+                setSelectedIndex(amounts.length);
+              }}
+            />
+          </div>
         </div>
-        <div>
-          <div className="ml-4 border-4 border-blue-200 w-96 h-72 p-4">
+        <div className="flex flex-col items-center ml-4">
+          <div className="w-96 h-72 p-4 rounded-md border border-gray-200 flex flex-col justify-center items-center">
             <div>
-              <p className="mb-2 text-3xl">
+              <p className="mb-2 text-2xl flex items-centes">
                 {user?.nickname} 님의 SolvePoint는 {user?.solvePoint}
               </p>
             </div>
-            <div className="text-lg border-4 border-blue-200 w-80 h-48 gap-5 pt-5">
-              <p>현재 보유 SP: {user?.solvePoint}</p>
-              <p className="mt-4">충전 금액: {selectedAmount}</p>
-              <p className="mt-4">
+            <div className="text-lg w-80 h-48 bg-blue-50 rounded-md flex flex-col justify-center gap-2">
+              <p className="flex items-center bg-solve-200 p-2 rounded-md">
+                현재 보유 SP: {user?.solvePoint}
+                <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
+              </p>
+              <p className="flex items-center bg-solve-200 p-2 rounded-md">
+                충전 금액: {selectedAmount}
+                <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
+              </p>
+              <hr className="border-t-2 border-solive-200" />
+              <p className="flex items-center bg-solve-200 p-2 rounded-md">
                 충전 후 금액: {user?.solvePoint + selectedAmount}
+                <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
               </p>
             </div>
           </div>
-          <div className="ml-4 border-4 border-blue-200 w-96 h-44 p-4 mt-8 text-lg">
-            <label className="flex items-center">
+
+          <div className="w-96 h-44 p-4 mt-4 text-lg flex flex-col items-center">
+            <label className="flex items-center mb-4">
               <input
                 type="checkbox"
                 checked={isAgreed}
@@ -99,7 +127,7 @@ const PointChargePage = () => {
               내용을 확인하였으며 금액에 동의하겠습니까?
             </label>
             <button
-              className="bg-blue-200 text-white font-bold p-2 mt-4 w-full"
+              className="bg-solive-200 text-white font-bold p-2 mt-4 w-full"
               onClick={Click}
             >
               SolvePoint 충전하기

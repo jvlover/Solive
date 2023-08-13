@@ -18,7 +18,7 @@ import TeacherQuestion from './pages/Teacher/Question';
 import Student from './pages/Student/StudentMain';
 import StudentQuestionDetail from './pages/Student/QuestionDetail';
 import TeacherQuestionDetail from './pages/Teacher/QuestionDetail';
-
+import TeacherRating from './pages/popup/rating';
 const App = () => {
   return (
     <Router>
@@ -50,6 +50,7 @@ const App = () => {
           path="/teacher/question/:id"
           element={<TeacherQuestionDetail />}
         />
+        <Route path="/rating" element={<TeacherRating />} />
       </Routes>
       <FooterNav />
     </Router>
