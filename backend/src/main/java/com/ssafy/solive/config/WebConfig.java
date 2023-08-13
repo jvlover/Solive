@@ -23,5 +23,4 @@ public class WebConfig implements WebMvcConfigurer {
             .addPathPatterns("/**")
             .excludePathPatterns("/user/auth/**", "/board/auth/**", "/notification/auth/**");
     }
-
 }
