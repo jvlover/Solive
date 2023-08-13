@@ -3,6 +3,7 @@ package com.ssafy.solive.config;
 import com.ssafy.solive.common.exception.user.JwtTokenExpiredException;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.UnsupportedEncodingException;
@@ -12,9 +13,8 @@ import java.util.Date;
 @Configuration
 public class JwtConfiguration {
 
-    // SALT는 임의 생성 문자열
-    // TODO: 아마 SALT 정보 분리 저장 및 공유가 필요해 보임
-    private static final String SALT = "ssafySecret";
+    @Value("${security.jwt.salt}")
+    private String SALT;
     private static final int ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 9; // 분단위
     private static final int REFRESH_TOKEN_EXPIRE_MINUTES = 2; // 주단위
 
