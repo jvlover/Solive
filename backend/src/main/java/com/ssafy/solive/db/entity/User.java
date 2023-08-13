@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 @Getter
 @ToString
@@ -27,6 +28,7 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
+@Where(clause = "deleted_at is null")
 @Entity
 public class User extends BaseEntity {
 
@@ -151,7 +153,7 @@ public class User extends BaseEntity {
 
     public void logout(MasterCode stateId) {
         this.stateId = stateId;
-        this.refreshToken = "";
+        this.refreshToken = null;
     }
 
     /**

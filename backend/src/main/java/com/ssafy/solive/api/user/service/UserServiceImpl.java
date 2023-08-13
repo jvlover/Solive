@@ -209,7 +209,7 @@ public class UserServiceImpl implements UserService {
             String dbRefreshToken = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new).getRefreshToken();
 
-            if (dbRefreshToken.equals(refreshToken)) { // refreshToken, DB의 refreshToken 일치
+            if (dbRefreshToken != null && dbRefreshToken.equals(refreshToken)) { // refreshToken, DB의 refreshToken 일치
                 String accessToken = jwtConfiguration.createAccessToken("userId", userId);
                 log.info("UserService_recreateAccessToken_end: " + accessToken);
                 return accessToken;
