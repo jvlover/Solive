@@ -8,6 +8,7 @@ import com.ssafy.solive.api.article.request.ArticleReportPostReq;
 import com.ssafy.solive.api.article.response.ArticleFindRes;
 import com.ssafy.solive.common.exception.InvalidMasterCodeException;
 import com.ssafy.solive.common.exception.NoDataException;
+import com.ssafy.solive.common.exception.article.ArticleNotFoundException;
 import com.ssafy.solive.common.exception.user.UserNotFoundException;
 import com.ssafy.solive.common.model.FileDto;
 import com.ssafy.solive.common.util.FileUploader;
@@ -141,7 +142,7 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         Article article = articleRepository.findById(modifyInfo.getArticleId())
-            .orElseThrow(NoDataException::new);
+            .orElseThrow(ArticleNotFoundException::new);
         // 현재 로그인 유저의 id와 글쓴이의 id가 일치할 때
         if (article.getUser().getId().equals(modifyInfo.getUserId())) {
             // 게시글 수정
@@ -191,7 +192,7 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("ArticleService_deleteArticle_start: " + deleteInfo.toString());
 
         Article article = articleRepository.findById(deleteInfo.getArticleId())
-            .orElseThrow(NoDataException::new);
+            .orElseThrow(ArticleNotFoundException::new);
         // deleteInfo 의 유저 정보와 해당 문제의 실제 유저 정보가 같아야만 삭제
         if (article.getUser().getId().equals(deleteInfo.getUserId())) {
             // 게시글 삭제
@@ -234,7 +235,7 @@ public class ArticleServiceImpl implements ArticleService {
             User user = userRepository.findById(likeInfo.getUserId())
                 .orElseThrow(UserNotFoundException::new);
             Article article = articleRepository.findById(likeInfo.getArticleId())
-                .orElseThrow(NoDataException::new);
+                .orElseThrow(ArticleNotFoundException::new);
 
             articleLike = ArticleLike.builder()
                 .user(user)
@@ -276,7 +277,7 @@ public class ArticleServiceImpl implements ArticleService {
             User reportedUser = userRepository.findById(reportInfo.getUserReportedId())
                 .orElseThrow(NoDataException::new);
             Article article = articleRepository.findById(reportInfo.getArticleId())
-                .orElseThrow(NoDataException::new);
+                .orElseThrow(ArticleNotFoundException::new);
             String content = reportInfo.getContent();
 
             articleReport = ArticleReport.builder()
@@ -319,7 +320,7 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("ArticleService_findArticle_start: " + articleId);
 
         Article article = articleRepository.findById(articleId)
-            .orElseThrow(NoDataException::new);
+            .orElseThrow(ArticleNotFoundException::new);
         List<String> articlePicturePathNames = articlePictureRepository.findPathNameByArticle(
             articleId);
 
