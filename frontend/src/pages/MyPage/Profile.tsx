@@ -240,7 +240,9 @@ const ProfilePage = () => {
                   <div className="flex items-center justify-between w-full mt-8">
                     <div className="font-bold">평점</div>
                     <div>{`${
-                      userProfile.ratingSum / userProfile.ratingCount
+                      userProfile.ratingCount === 0
+                        ? '신규 선생님입니다'
+                        : userProfile.ratingSum / userProfile.ratingCount
                     }`}</div>
                   </div>
                 </div>

@@ -20,26 +20,37 @@ const MatchingNotification = () => {
   const user = useRecoilValue(userState);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
+  const [listening, setListening] = useState<boolean>(false);
+
   useEffect(() => {
-    const eventSource = new EventSource(
-      `https://i9a107.p.ssafy.io/api/notification/auth/subscribe/${user.userId}`,
-    );
-    eventSource.onmessage = (e) => {
-      const newNotification = JSON.parse(e.data);
-      setNotifications((prevNotification) => [
-        newNotification,
-        ...prevNotification,
-      ]);
-    };
+    if (!listening) {
+      const eventSource = new EventSource(
+        `https://i9a107.p.ssafy.io/api/notification/auth/subscribe/${user.userId}`,
+      );
 
-    eventSource.onerror = (error) => {
-      console.error('SSE error: ', error);
-    };
+      eventSource.onmessage = async (e) => {
+        const data = await e.data;
+        const newNotification = JSON.parse(data);
+        console.log(e.data);
+        setNotifications((prevNotification) => [
+          newNotification,
+          ...prevNotification,
+        ]);
+      };
 
-    return () => {
-      eventSource.close();
-    };
-  }, [setNotifications, user.userId]);
+      eventSource.onerror = (error) => {
+        console.error('SSE error: ', error);
+        eventSource.close();
+        setListening(false);
+      };
+
+      setListening(true);
+
+      return () => {
+        eventSource.close();
+      };
+    }
+  }, []);
 
   return (
     <Menu>
