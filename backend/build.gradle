@@ -32,18 +32,20 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+    //  https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
-    // Bcrypt
+    //  Bcrypt
     implementation 'org.mindrot:jbcrypt:0.4'
-    // querydsl
+    //  querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
     //  aws s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    //  json parsing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 }
 
 tasks.named('test') {
