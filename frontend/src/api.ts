@@ -292,7 +292,7 @@ export async function questionSearch(
 ): Promise<{ success: boolean; data?: any; error?: any }> {
   try {
     const response = await axios.get(
-      `${BASE_URL}/question/?masterCodeMiddle=${subjectNum}&smasterCodeLow=${subSubjectNum}&keyword=${searchKeyword}&order=${order}&page=${pageNum}`,
+      `${BASE_URL}/question?masterCodeMiddle=${subjectNum}&smasterCodeLow=${subSubjectNum}&keyword=${searchKeyword}&order=${order}&page=${pageNum}`,
       {
         headers: { 'access-token': accessToken },
       },
