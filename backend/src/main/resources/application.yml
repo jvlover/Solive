@@ -9,6 +9,7 @@ spring:
       hibernate:
         # show_sql: true
         format_sql: true
+    open-in-view: false
 
 logging.level:
   root: info
