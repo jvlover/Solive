@@ -8,6 +8,7 @@ import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +51,15 @@ public class NotificationController {
      * @return sseEmitter : 프론트에서 알림을 받을 Emitter
      */
     @GetMapping(value = "/auth/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@PathVariable Long userId,
+    public SseEmitter subscribe(HttpServletResponse response, @PathVariable Long userId,
         @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
         log.info("NotificationController_subscribe_start: " + userId + ", " + lastEventId);
 
         SseEmitter sseEmitter = notificationService.subscribe(userId, lastEventId);
 
+        // SSE 버퍼링 설정 비활성화
+        response.setHeader("X-Accel-Buffering", "no");
         log.info("NotificationController_subscribe_end: success");
 
         return sseEmitter;
