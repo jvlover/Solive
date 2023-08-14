@@ -20,7 +20,7 @@ import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import QuestionManagement from '../Student/QuestionManagement';
 import PointChargePage from './SolvePoint';
-import FavoritePage from './favorite';
+import FavoritePage from './Favorite';
 
 const MyPage = () => {
   const user = useRecoilValue(userState);
