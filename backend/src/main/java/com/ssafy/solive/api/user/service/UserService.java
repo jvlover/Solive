@@ -1,6 +1,7 @@
 package com.ssafy.solive.api.user.service;
 
 import com.ssafy.solive.api.user.request.*;
+import com.ssafy.solive.api.user.response.StudentFavoriteGetRes;
 import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
@@ -26,7 +27,7 @@ public interface UserService {
     UserPrivacyPostRes getUserPrivacyByUserId(Long userId);
 
     void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo,
-                           List<MultipartFile> profilePicture);
+        List<MultipartFile> profilePicture);
 
     void modifyUserPassword(Long userId, UserModifyPasswordPutReq userInfo);
 
@@ -41,6 +42,8 @@ public interface UserService {
     void addFavorite(Long studentId, Long teacherId);
 
     void deleteFavorite(Long studentId, Long teacherId);
+
+    List<StudentFavoriteGetRes> findAllFavorite(Long studentId);
 
     boolean isLogout(String accessToken);
 

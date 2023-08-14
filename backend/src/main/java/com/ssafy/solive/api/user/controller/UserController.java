@@ -11,6 +11,7 @@ import com.ssafy.solive.api.user.request.UserModifyPasswordPutReq;
 import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
 import com.ssafy.solive.api.user.request.UserRecreateRefreshTokenPostReq;
 import com.ssafy.solive.api.user.request.UserRegistPostReq;
+import com.ssafy.solive.api.user.response.StudentFavoriteGetRes;
 import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
@@ -184,10 +185,11 @@ public class UserController {
      * 학생 Solve Point 충전
      *
      * @param userChargePutReq 충전 금액
-     * @param request    access-token 이 들어있는 request
+     * @param request          access-token 이 들어있는 request
      */
     @PutMapping("/charge")
-    public CommonResponse<?> chargeSolvePoint(@RequestBody UserChargePutReq userChargePutReq, HttpServletRequest request) {
+    public CommonResponse<?> chargeSolvePoint(@RequestBody UserChargePutReq userChargePutReq,
+        HttpServletRequest request) {
         Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         Integer solvePoint = userChargePutReq.getSolvePoint();
         log.info("UserController_chargeSolvePoint_start: " + solvePoint + ", " + userId);
@@ -202,10 +204,11 @@ public class UserController {
      * 강사 Solve Point 출금
      *
      * @param userCashOutPutReq 출금 금액
-     * @param request    access-token 이 들어있는 request
+     * @param request           access-token 이 들어있는 request
      */
     @PutMapping("/cashout")
-    public CommonResponse<?> cashoutSolvePoint(@RequestBody UserCashOutPutReq userCashOutPutReq, HttpServletRequest request) {
+    public CommonResponse<?> cashoutSolvePoint(@RequestBody UserCashOutPutReq userCashOutPutReq,
+        HttpServletRequest request) {
         Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         Integer solvePoint = userCashOutPutReq.getSolvePoint();
         log.info("UserController_cashoutSolvePoint_start: " + solvePoint + ", " + userId);
@@ -237,7 +240,8 @@ public class UserController {
      * @return accessToken 재 생성된 accessToken
      */
     @PostMapping("/auth/refresh")
-    public CommonResponse<?> recreateAccessToken(@RequestBody UserRecreateRefreshTokenPostReq userRecreateRefreshTokenPostReq) {
+    public CommonResponse<?> recreateAccessToken(
+        @RequestBody UserRecreateRefreshTokenPostReq userRecreateRefreshTokenPostReq) {
         String refreshToken = userRecreateRefreshTokenPostReq.getRefreshToken();
         Long userId = userService.getUserIdByToken(refreshToken);
         log.info("UserController_recreateAccessToken_start: " + userId);
@@ -251,7 +255,7 @@ public class UserController {
      * 학생이 선생님 즐겨찾기를 추가하는 api
      *
      * @param userAddFavoritePostReq 추가하고싶은 선생님의 Id
-     * @param request   request
+     * @param request                request
      * @return
      */
     @PostMapping("/favorite/add")
@@ -271,11 +275,12 @@ public class UserController {
      * 학생이 선생님 즐겨찾기를 삭제하는 api
      *
      * @param userDeleteFavoritePutReq 삭제하고 싶은 선생님의 Id
-     * @param request   request
+     * @param request                  request
      * @return
      */
     @PutMapping("/favorite/delete")
-    public CommonResponse<?> deleteFavorite(@RequestBody UserDeleteFavoritePutReq userDeleteFavoritePutReq,
+    public CommonResponse<?> deleteFavorite(
+        @RequestBody UserDeleteFavoritePutReq userDeleteFavoritePutReq,
         HttpServletRequest request) {
         Long studentId = userService.getUserIdByToken(request.getHeader("access-token"));
         Long teacherId = userDeleteFavoritePutReq.getTeacherId();
@@ -284,6 +289,24 @@ public class UserController {
         userService.deleteFavorite(studentId, teacherId);
         log.info("UserController_deleteFavorite_end: success");
         return CommonResponse.success(SUCCESS);
+    }
+
+    /**
+     * 학생이 선생님 즐겨찾기 목록을 불러오는 api
+     *
+     * @param request request
+     * @return studentFavoriteGetResList
+     */
+    @GetMapping("/favorite")
+    public CommonResponse<?> findAllFavorite(HttpServletRequest request) {
+        Long studentId = userService.getUserIdByToken(request.getHeader("access-token"));
+        log.info("UserController_findAllFavorite_start: " + studentId);
+
+        List<StudentFavoriteGetRes> studentFavoriteGetResList = userService.findAllFavorite(
+            studentId);
+
+        log.info("UserController_findAllFavorite_end: " + studentFavoriteGetResList);
+        return CommonResponse.success(studentFavoriteGetResList);
     }
 
     /**
