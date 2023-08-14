@@ -5,6 +5,7 @@ import com.ssafy.solive.api.user.request.UserLoginPostReq;
 import com.ssafy.solive.api.user.request.UserModifyPasswordPutReq;
 import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
 import com.ssafy.solive.api.user.request.UserRegistPostReq;
+import com.ssafy.solive.api.user.response.StudentFavoriteGetRes;
 import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
@@ -33,6 +34,8 @@ import com.ssafy.solive.db.repository.StudentRepository;
 import com.ssafy.solive.db.repository.TeacherRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -455,6 +458,33 @@ public class UserServiceImpl implements UserService {
 
         favorite.addDeleteAt();
         log.info("UserService_deleteFavorite_end");
+    }
+
+    @Override
+    public List<StudentFavoriteGetRes> findAllFavorite(Long studentId) {
+        log.info("UserService_findAllFavorite_start: " + studentId);
+
+        Student student = studentRepository.findById(studentId)
+            .orElseThrow(UserNotFoundException::new);
+        List<Favorite> favoriteList = favoriteRepository.findByStudentId(student);
+
+        log.info("UserService_findAllFavorite_mid: " + favoriteList);
+
+        List<StudentFavoriteGetRes> studentFavoriteGetResList = new ArrayList<>();
+        for (Favorite favorite : favoriteList) {
+            Teacher teacher = teacherRepository.findById(favorite.getTeacherId().getId())
+                .orElseThrow(UserNotFoundException::new);
+            studentFavoriteGetResList.add(StudentFavoriteGetRes.builder()
+                .teacherSubjectName(teacher.getMasterCode().getName())
+                .path(teacher.getPath())
+                .teacherNickname(teacher.getNickname())
+                .ratingSum(teacher.getRatingSum())
+                .ratingCount(teacher.getRatingCount())
+                .build());
+        }
+
+        log.info("UserService_findAllFavorite_end: " + studentFavoriteGetResList);
+        return studentFavoriteGetResList;
     }
 
     @Override
