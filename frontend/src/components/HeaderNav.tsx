@@ -91,14 +91,24 @@ const HeaderNav = () => {
             </Typography>
           </MenuItem>
           {user.masterCodeId === 1 ? (
-            <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+            <MenuItem
+              onClick={() => {
+                navigate('/student/questionregistration');
+              }}
+              className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
+            >
               <PencilSquareIcon className="w-5 h-5" />
               <Typography variant="small" className="font-normal">
                 문제 등록하기
               </Typography>
             </MenuItem>
           ) : (
-            <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+            <MenuItem
+              onClick={() => {
+                navigate('/teacher/question');
+              }}
+              className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
+            >
               <DocumentTextIcon className="w-5 h-5" />
               <Typography variant="small" className="font-normal">
                 문제 보기
