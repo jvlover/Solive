@@ -4,17 +4,18 @@ class UserModel {
     videoActive;
     screenShareActive;
     nickname;
+    picture;
     streamManager;
     type; // 'remote' | 'local'
 
     // 여기서 방 입장했을 때 기본 설정사항 정할 수 있다.
-    // 닉네임 바꾸는거 없애고 type을 student랑 teacher로 구분하자
     constructor() {
         this.connectionId = "";
         this.audioActive = false;
         this.videoActive = false;
         this.screenShareActive = false;
         this.nickname = "";
+        this.picture = "";
         this.streamManager = null;
         this.type = "local";
     }
@@ -37,6 +38,10 @@ class UserModel {
 
     getNickname() {
         return this.nickname;
+    }
+
+    getPicture() {
+        return this.picture;
     }
 
     getStreamManager() {
@@ -73,6 +78,10 @@ class UserModel {
 
     setNickname(nickname) {
         this.nickname = nickname;
+    }
+
+    setPicture(picture){
+        this.picture = picture;
     }
 
     setType(type) {

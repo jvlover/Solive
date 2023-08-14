@@ -42,13 +42,14 @@
     padding: 0;
 }
 
+/*백그라운드 색깔*/
 .bounds {
     background-color: #494949;
     overflow: hidden;
     position: absolute;
     left: 0;
     right: 0;
-    top: 40px;
+    top: 80px;
     bottom: 0;
     height: inherit;
     min-width: 400px !important;
@@ -76,7 +77,6 @@
     padding: 0;
     border: 0;
     font-size: 100%;
-    font-family: Arial, Helvetica, sans-serif;
     vertical-align: baseline;
 }
 
@@ -99,13 +99,11 @@
     margin-left: auto;
 
     color: #fff;
-    font-family: "Didact Gothic", sans-serif;
     font-size: 13px;
     line-height: 1.4;
 }
 
 .OT_dialog * {
-    font-family: inherit;
     -webkit-box-sizing: inherit;
     box-sizing: inherit;
 }

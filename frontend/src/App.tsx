@@ -18,7 +18,7 @@ import TeacherQuestion from './pages/Teacher/Question';
 import Student from './pages/Student/StudentMain';
 import StudentQuestionDetail from './pages/Student/QuestionDetail';
 import TeacherQuestionDetail from './pages/Teacher/QuestionDetail';
-import TestPage from './pages/TestPage';
+import Match from './pages/MatchPage';
 
 const App = () => {
   return (
@@ -51,7 +51,7 @@ const App = () => {
           path="/teacher/question/:id"
           element={<TeacherQuestionDetail />}
         />
-        <Route path="/testpage" element={<TestPage/>}/>
+        <Route path="/matchpage" element={<Match/>}/>
       </Routes>
       <FooterNav />
     </Router>

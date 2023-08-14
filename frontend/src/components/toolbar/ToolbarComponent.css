@@ -1,12 +1,12 @@
 #header {
     color: #ffffff;
-    height: 40px;
-    background-color: #333333;
+    height: 80px;
+    background-color: black;
     padding: 0 14px 0 0;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 999999;
+    z-index: 999;
     min-width: 400px !important;
   }
   .toolbar{
@@ -26,41 +26,24 @@
     position: absolute;
     left: 0;
     right: 0;
-    min-width: 400px;
+    min-width: 500px;
   }
+
   #navChatButton {
     position: absolute;
     right: 10px;
-    top: 0;
+    top: 20px;
   }
-  
-  #titleContent{
-    max-width: 100px;
-    background-color: #494949;
-    margin: 5px -18px;
-    padding: 0px 15px;
-    font-size: 16px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    float: right;
-    margin-top: 20px;
-  }
-  
+
   .titleContentLight{
-    background-color: #dfdfdf !important; 
+    background-color: #dfdfdf !important;
     color: #000;
   }
   
   #header_img {
-    max-width: 135px;
-    margin-right: 10px;
-    margin-top: 10px;
+    height: 40px;
+    margin-left: 32px;
   }
-
-  #session-title{
-    font-family: 'Open Sans', sans-serif; 
-  }
-
 
 #point{
   width: 10px;
@@ -71,8 +54,9 @@
   border-radius: 50%;
   background-color: #ffa600;
   border: 1px solid #000;
-  z-index: 99999;
+  z-index: 9999;
 }
+
 .pointLight{
   border: 1px solid #ffffff !important;
 }

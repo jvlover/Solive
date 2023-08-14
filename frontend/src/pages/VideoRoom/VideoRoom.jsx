@@ -4,7 +4,6 @@ import React, {Component} from "react";
 import ChatComponent from "../../components/chat/ChatComponent.jsx";
 import DialogExtensionComponent from "../../components/dialog-extension/DialogExtension.jsx";
 import StreamComponent from "../../components/stream/StreamComponent.jsx";
-// import CanvasComponent from "../../components/canvas/CanvasComponent.jsx";
 import "./VideoRoom.css";
 
 import OpenviduLayout from "../../layout/openvidu-layout.jsx";
@@ -13,8 +12,6 @@ import ToolbarComponent from "../../components/toolbar/ToolbarComponent.jsx";
 
 const localUser = new UserModel();
 const APPLICATION_SERVER_URL = "https://i9a107.p.ssafy.io:8447/openvidu/api/";
-
-// var CircularJSON = require('circular-json');
 
 class VideoRoomComponent extends Component {
     constructor(props) {
@@ -26,7 +23,6 @@ class VideoRoomComponent extends Component {
         this.localUserAccessAllowed = false;
         this.state = {
             sessionId: null,
-            myUserName: this.props.userName,
             session: undefined,
             localUser: undefined,
             subscribers: [],
@@ -126,7 +122,7 @@ class VideoRoomComponent extends Component {
                         status: error.status
                     });
                 }
-                alert('토큰 가져오다가 오류 생겼어요' + error.message);
+                alert('세션 연결 중 오류가 발생했습니다.' + error.message);
             }
         }
     }
@@ -136,13 +132,13 @@ class VideoRoomComponent extends Component {
         this.state.session
         .connect(
             token,
-            {clientData: this.state.myUserName}, // 클라이언트 데이터로 사용자 이름을 보냅니다.
+            {clientData: this.props.userName}, // 클라이언트 데이터로 사용자 이름을 보냅니다.
         )
         .then(() => {
             this.connectWebCam(); // 웹캠 연결을 시작합니다.
         })
         .catch((error) => {
-            alert('세션 연결 중에 오류 발생!' +
+            alert('세션 연결 중 오류가 발생했습니다.' +
                 error.message);
         });
     }
@@ -181,7 +177,7 @@ class VideoRoomComponent extends Component {
             });
         }
         // 로컬 사용자 모델 정보를 등록하고 이벤트 리스너를 등록합니다.
-        localUser.setNickname(this.state.myUserName);
+        localUser.setNickname(this.props.userName);
         localUser.setConnectionId(this.state.session.connection.connectionId);
         localUser.setScreenShareActive(false);
         localUser.setStreamManager(publisher);
@@ -234,6 +230,7 @@ class VideoRoomComponent extends Component {
 
     // 세션에서 퇴장합니다.
     leaveSession() {
+        // 나가기전에 경고창 모달 띄우고 확인 누르면 나가기
         const mySession = this.state.session;
 
         if (this.state.subscribers.length === 0) {
@@ -250,12 +247,10 @@ class VideoRoomComponent extends Component {
             session: undefined,
             subscribers: [],
             sessionId: null,
-            myUserName: null,
             localUser: undefined,
         });
-        if (this.props.leaveSession) {
-            this.props.leaveSession();
-        }
+
+        location.href="/";
     }
 
     // 웹캠 상태 변경 이벤트 핸들러입니다.
@@ -318,7 +313,7 @@ class VideoRoomComponent extends Component {
             newUser.setStreamManager(subscriber);
             newUser.setConnectionId(e.stream.connection.connectionId);
             newUser.setType("remote");
-            // 여기 닉네임도 나중에 상대방 닉네임으로 받아오게하자
+            newUser.setPicture(this.props.picture);
             const nickname = e.stream.connection.data.split("%")[0];
             newUser.setNickname(JSON.parse(nickname).clientData);
             // 새로운 유저를 remotes에 넣습니다
@@ -464,7 +459,7 @@ class VideoRoomComponent extends Component {
                     alert("화면공유 설정을 확인해주세요");
                 } else if (error && error.name === "SCREEN_CAPTURE_DENIED") {
                     alert(
-                        "화면공유 설정을 확인해주세요!"
+                        "화면공유 설정을 확인해주세요"
                     );
                 }
             }
@@ -596,13 +591,12 @@ class VideoRoomComponent extends Component {
                     stopRecording={this.stopRecording}
                 />
 
-                {/*이건 아마 화면공유창?*/}
+                {/*이건 아마 화면공유창*/}
                 <DialogExtensionComponent
                     showDialog={this.state.showExtensionDialog}
                     cancelClicked={this.closeDialogExtension}
                 />
                 <div id="layout" className="bounds">
-                    {/*<CanvasComponent/>*/}
                     {localUser !== undefined &&
                         localUser.getStreamManager() !== undefined && (
                             <div
@@ -658,7 +652,7 @@ class VideoRoomComponent extends Component {
             APPLICATION_SERVER_URL + "sessions",
             {
                 customSessionId: this.props.sessionName,
-                recordingMode: "ALWAYS",
+                // recordingMode: "ALWAYS",
                 defaultRecordingProperties: {
                     outputMode: "COMPOSED",
                     resolution: "640x480",
@@ -684,9 +678,7 @@ class VideoRoomComponent extends Component {
             }
         )
         .then(res => {
-            console.log(res.data.id+"아이디는 주나?");
              this.state.sessionId = res.data.id;
-            console.log(this.state.sessionId+"아이디는 받나?");
         })
         .catch(async error => {
             // 에러 코드가 404라면 = 검색된 세션 없으면 세션을 만듭니다
@@ -706,7 +698,6 @@ class VideoRoomComponent extends Component {
     }
 
     async createToken() {
-        console.log(this.state.sessionId + "세션아이디용")
         const res = await axios.post(
             APPLICATION_SERVER_URL + "tokens",
             {

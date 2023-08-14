@@ -6,10 +6,11 @@ import Send from "@mui/icons-material/Send";
 
 import "./ChatComponent.css";
 import {Tooltip} from "@mui/material";
-// 여기 지금은 그냥 성호 사진 넣었는데 나중에 유저 사진 받아오는 걸로 바꾸자
-import student from "../../assets/404.png";
+// 기본 사진이 들어갈 곳입니다.
+import profile from "../../assets/404.png"
 
 export default class ChatComponent extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -60,7 +61,8 @@ export default class ChatComponent extends Component {
     sendMessage() {
         if (this.props.user && this.state.message) {
             let message = this.state.message.replace(/ +(?= )/g, "");
-            let messageTime = new Date();
+            let now = new Date();
+            let messageTime = now.toLocaleDateString()+" "+now.toLocaleTimeString();
             // 문자열에서 연속된 공백을 찾고, 그러한 연속된 공백을 하나의 공백으로 대체
             if (message !== "" && message !== " " && messageTime !== null) {
                 const data = {
@@ -102,7 +104,7 @@ export default class ChatComponent extends Component {
                         <span>채팅창</span>
                         {/* 이건 채팅창 닫기 버튼 */}
                         <IconButton id="closeButton" onClick={this.close}>
-                            <HighlightOff color="secondary"/>
+                            <HighlightOff color="error"/>
                         </IconButton>
                     </div>
                     <div className="message-wrap" ref={this.chatScroll}>
@@ -121,7 +123,7 @@ export default class ChatComponent extends Component {
                             >
                                 {/* 실제로 사진이 들어가는 곳 */}
                                 <img
-                                    src={student}
+                                    src={this.props.user.picture !== ""? this.props.user.picture:profile}
                                     alt="face"
                                     className="user-img"
                                 />
@@ -132,8 +134,10 @@ export default class ChatComponent extends Component {
                                     <div className="msg-content">
                                         <span className="triangle"/>
                                         <p className="text">{data.message}</p>
-                                        <p className="text">{data.messageTime}</p>
                                     </div>
+                                </div>
+                                <div className="msg-date">
+                                    <p className="text">{data.messageTime}</p>
                                 </div>
                             </div>
                         ))}

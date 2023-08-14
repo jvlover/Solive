@@ -57,7 +57,7 @@ export default class ToolbarComponent extends Component {
 
     leaveSession() {
         this.props.leaveSession();
-        // 여기 조건문 들어서 세션에 있을 때만 뜨게 해야함
+        // 나가기전에 모달로 물어보자!
         if (this.props.sessionId !== null) {
             alert(this.props.sessionId + "에서 나가버렸어요");
         } else {
@@ -75,22 +75,17 @@ export default class ToolbarComponent extends Component {
         const localUser = this.props.user;
         return (
             <AppBar className="toolbar" id="header">
-                <Toolbar className="toolbar">
+                <Toolbar className="toolbar" style={{height:80}}>
                     <div id="navSessionInfo">
                         {/* 여기는 로고 */}
                         <img id="header_img" alt="Solive Logo" src={logo}/>
-                        {this.props.sessionId && (
-                            <div id="titleContent">
-                                <span id="session-title">{sessionId}</span>
-                            </div>
-                            // 여기는 세션 있으면 세션 이름 보여줍니다.
-                        )}
                     </div>
                     <div className="buttonsContent">
                         {/*마이크버튼*/}
                         <IconButton
                             // micon일 때 설정들
                             color="inherit"
+                            size="large"
                             className="navButton"
                             id="navMicButton"
                             onClick={this.micStatusChanged}
@@ -98,84 +93,111 @@ export default class ToolbarComponent extends Component {
                             {/* 유저 있고 마이크 온이면 mic 아이콘 아니면 micoff 아이콘 */}
                             {localUser !== undefined &&
                             localUser.isAudioActive() ? (
-                                <Mic/>
+                                <Tooltip title="음성공유 중지">
+                                    <Mic/>
+                                </Tooltip>
                             ) : (
-                                <MicOff color="secondary"/>
+                                <Tooltip title="음성공유">
+                                    <MicOff color="inherit"/>
+                                </Tooltip>
                             )}
                         </IconButton>
 
                         {/*카메라 버튼*/}
                         <IconButton
                             color="inherit"
+                            size="large"
                             className="navButton"
                             id="navCamButton"
                             onClick={this.camStatusChanged}
                         >
                             {localUser !== undefined &&
                             localUser.isVideoActive() ? (
-                                <Videocam/>
+                                <Tooltip title="화상공유 중지">
+                                    <Videocam/>
+                                </Tooltip>
                             ) : (
-                                <VideocamOff color="secondary"/>
+                                <Tooltip title="화상공유">
+                                    <VideocamOff color="inherit"/>
+                                </Tooltip>
                             )}
                         </IconButton>
 
                         {/*화면공유버튼*/}
                         <IconButton
                             color="inherit"
+                            size="large"
                             className="navButton"
                             onClick={this.screenShare}
                         >
                             {localUser !== undefined &&
                             localUser.isScreenShareActive() ? (
                                 // 이미 화면 공유 중일 때는 다른 화면으로 바꾸는 버튼
-                                <PictureInPicture/>
+                                <Tooltip title="다른화면공유">
+                                    <PictureInPicture/>
+                                </Tooltip>
                             ) : (
-                                <ScreenShare/>
+                                <Tooltip title="화면공유">
+                                    <ScreenShare/>
+                                </Tooltip>
                             )}
                         </IconButton>
 
-                        {/*화면공유 그만 버튼*/}
+                        {/*화면공유 중지 버튼*/}
                         {localUser !== undefined &&
                             localUser.isScreenShareActive() && (
                                 <IconButton
+                                    color="inherit"
                                     onClick={this.stopScreenShare}
+                                    size="large"
                                     id="navScreenButton"
                                 >
-                                    <StopScreenShare color="secondary"/>
+                                    <Tooltip title="화면공유 중지">
+                                        <StopScreenShare/>
+                                    </Tooltip>
                                 </IconButton>
                             )}
 
                         {/*전체화면 버튼*/}
                         <IconButton
                             color="inherit"
+                            size="large"
                             className="navButton"
                             onClick={this.toggleFullscreen}
                         >
                             {localUser !== undefined &&
                             this.state.fullscreen ? (
-                                <FullscreenExit/>
+                                <Tooltip title="전체화면 중지">
+                                    <FullscreenExit/>
+                                </Tooltip>
                             ) : (
-                                <Fullscreen/>
+                                <Tooltip title="전체화면">
+                                    <Fullscreen/>
+                                </Tooltip>
                             )}
                         </IconButton>
 
                         {/*세션 떠나기 버튼 */}
                         <IconButton
-                            color="secondary"
+                            color="error"
+                            size="large"
                             className="navButton"
                             onClick={this.leaveSession}
                             id="navLeaveButton"
                         >
-                            <PowerSettingsNew/>
+                            <Tooltip title="나가기">
+                                <PowerSettingsNew/>
+                            </Tooltip>
                         </IconButton>
                         {/*채팅창 버튼*/}
                         <IconButton
                             color="inherit"
+                            size="large"
                             onClick={this.toggleChat}
                             id="navChatButton"
                         >
                             {this.props.showNotification && (
-                                <div id="point" className=""/>
+                                <div id="point"/>
                             )}
                             {/*마우스 올리면 뜨는거*/}
                             <Tooltip title="채팅창">
