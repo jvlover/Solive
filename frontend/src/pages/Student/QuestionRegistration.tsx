@@ -3,6 +3,8 @@ import { userState } from '../../recoil/user/userState';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { submitQuestion, getNewAccessToken } from '../../api';
 import { Typography } from '@material-tailwind/react';
+import { useNavigate } from 'react-router-dom';
+
 
 type Subject = {
   label: string;
@@ -108,9 +110,14 @@ const QuestionRegistration = () => {
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
 
+
   const image = useRef<HTMLInputElement>();
 
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: FormEvent) => {
+    setShowModal(true);
     e.preventDefault();
 
     if (!user) {
@@ -138,7 +145,7 @@ const QuestionRegistration = () => {
       formData.append(`file${index}`, file);
     });
 
-    const result = await submitQuestion(formData, user.accessToken); // 이 부분을 수정
+    const result = await submitQuestion(formData, user.accessToken);
 
     if (result.success) {
       alert('문제가 등록되었습니다.');
@@ -178,6 +185,11 @@ const QuestionRegistration = () => {
       setFiles([]);
       setPreview('');
     }
+  };
+
+  const handleConfirm = () => {
+    setShowModal(false);
+    navigate('/student');
   };
 
   const selectedSubject = subjects.find((s) => s.value === Number(subject));
@@ -314,6 +326,20 @@ const QuestionRegistration = () => {
           등록
         </button>
       </div>
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-8 rounded-lg relative w-72 h-60">
+            <h3>문제 등록이 완료되었습니다!</h3>
+            <h3> 매칭이 완료 될 때 까지 잠시만 기다려주세요.</h3>
+            <button
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              onClick={handleConfirm}
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

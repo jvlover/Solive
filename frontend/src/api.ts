@@ -511,3 +511,143 @@ export async function getTeachers(accessToken: string) {
     return { success: false, error: errorCode || error };
   }
 }
+
+export async function getQuestionById(id: string, accessToken: string) {
+  type Question = {
+    userNickname: string;
+    title: string;
+    description: string;
+    path: string[];
+    subject: number;
+    subSubject: string;
+    createTime: string;
+    state: string;
+  };
+
+  type ApiResponse<T> = {
+    success: boolean;
+    data: T;
+    error?: string;
+  };
+
+  try {
+    const response = await axios.get<ApiResponse<Question>>(
+      BASE_URL + `/question/${id}`,
+      {
+        headers: { 'access-token': accessToken },
+      },
+    );
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+}
+
+type ApplyData = {
+  solvePoint: string;
+  estimatedTime: string;
+  questionId: string;
+};
+
+type ApplyResponse = {
+  success: boolean;
+  message?: string;
+};
+
+export const applyQuestion = async (
+  applyData: ApplyData,
+  accessToken: string,
+): Promise<ApplyResponse> => {
+  const formData = new FormData();
+  formData.append(
+    'applyData',
+    new Blob([JSON.stringify(applyData)], { type: 'application/json' }),
+  );
+
+  const response = await axios.post<ApplyResponse>(
+    BASE_URL + '/apply',
+    formData,
+    {
+      headers: {
+        'access-token': accessToken,
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  );
+
+  return response.data;
+};
+
+export interface Teacher {
+  applyId: number;
+  teacherSubjectName: string;
+  path: string;
+  teacherNickname: string;
+  solvePoint: string;
+  estimatedTime: string;
+  ratingSum: number;
+  ratingCount: number;
+}
+
+export interface GetTeachersListParams {
+  questionId: string;
+  sort: string;
+  isFavorite: boolean;
+}
+
+export const getTeachersList = async (
+  params: GetTeachersListParams,
+  accessToken: string,
+): Promise<{ success: boolean; data?: Teacher[]; error?: string }> => {
+  try {
+    const response = await axios.get<{ success: boolean; data: Teacher[] }>(
+      BASE_URL + '/question',
+      {
+        headers: { 'access-token': accessToken },
+        params: {
+          questionId: params.questionId,
+          sort: params.sort,
+          isFavorite: params.isFavorite,
+        },
+      },
+    );
+
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode = error?.response?.data?.error?.code;
+
+    return {
+      success: false,
+      error: errorCode || 'UNKNOWN_ERROR',
+    };
+  }
+};
+
+export async function applyToTeacher(applyId: number, accessToken: string) {
+  console.log(applyId);
+  try {
+    const response = await axios.post(
+      BASE_URL + '/matched',
+      { applyId },
+      {
+        headers: {
+          'access-token': accessToken,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error.message };
+  }
+}

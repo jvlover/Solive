@@ -16,14 +16,6 @@ export type SignupFormData = {
 };
 
 const schema = yup.object().shape({
-  nickname: yup
-    .string()
-    .required('닉네임은 필수입니다.')
-    .matches(
-      /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]{1,10}$/,
-      '1~10자의 한글, 영문 대/소문자, 숫자를 사용해주세요.',
-    )
-    .max(10, '10글자 이하로 입력해주세요.'),
   loginId: yup
     .string()
     .required('아이디는 필수입니다.')
@@ -41,6 +33,14 @@ const schema = yup.object().shape({
     .string()
     .oneOf([yup.ref('loginPassword'), ''], '비밀번호가 일치하지 않습니다.')
     .required('비밀번호 확인은 필수입니다.'),
+  nickname: yup
+    .string()
+    .required('닉네임은 필수입니다.')
+    .matches(
+      /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]{1,10}$/,
+      '1~10자의 한글, 영문 대/소문자, 숫자를 사용해주세요.',
+    )
+    .max(10, '10글자 이하로 입력해주세요.'),
   email: yup
     .string()
     .required('이메일은 필수입니다.')
@@ -99,30 +99,6 @@ const Signup = () => {
           {`${userType === 'student' ? '학생' : '선생님'} 회원가입`}
         </h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Controller
-            control={control}
-            name="nickname"
-            render={({ field }) => (
-              <Input
-                {...field}
-                variant="standard"
-                label="닉네임"
-                labelProps={{
-                  className:
-                    'peer-focus:text-solive-200 after:border-solive-200 peer-focus:after:border-solive-200',
-                }}
-                className="focus:border-solive-200 "
-              />
-            )}
-          />
-          {errors.nickname?.message ? (
-            <p className="my-2 text-xs text-blue-gray-400">
-              {errors.nickname?.message}
-            </p>
-          ) : (
-            <div className="my-8"></div>
-          )}
-
           <Controller
             control={control}
             name="loginId"
@@ -192,6 +168,30 @@ const Signup = () => {
           {errors.passwordConfirm?.message ? (
             <p className="my-2 text-xs text-blue-gray-400">
               {errors.passwordConfirm?.message}
+            </p>
+          ) : (
+            <div className="my-8"></div>
+          )}
+
+          <Controller
+            control={control}
+            name="nickname"
+            render={({ field }) => (
+              <Input
+                {...field}
+                variant="standard"
+                label="닉네임"
+                labelProps={{
+                  className:
+                    'peer-focus:text-solive-200 after:border-solive-200 peer-focus:after:border-solive-200',
+                }}
+                className="focus:border-solive-200 "
+              />
+            )}
+          />
+          {errors.nickname?.message ? (
+            <p className="my-2 text-xs text-blue-gray-400">
+              {errors.nickname?.message}
             </p>
           ) : (
             <div className="my-8"></div>
