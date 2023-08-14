@@ -182,7 +182,17 @@ export const loginUser = async (loginData: {
   }
 };
 
-export async function getMyProblems(accessToken: string) {
+export async function getMyProblems(
+  userId: number,
+  userState: number,
+  masterCodeMiddle: number,
+  masterCodeLow: number,
+  matchingState: number,
+  keyword: string,
+  sort: string,
+  pageNum: number,
+  accessToken: string,
+) {
   type Problem = {
     id: number;
     path: string;
@@ -201,6 +211,16 @@ export async function getMyProblems(accessToken: string) {
       BASE_URL + '/matched/my',
       {
         headers: { 'access-token': accessToken },
+        params: {
+          userId: userId,
+          userState: userState,
+          masterCodeMiddle: masterCodeMiddle,
+          masterCodeLow: masterCodeLow,
+          matchingState: matchingState,
+          keyword: keyword,
+          sort: sort,
+          pageNum: pageNum,
+        },
       },
     );
     return {
