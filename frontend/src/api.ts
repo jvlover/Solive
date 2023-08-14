@@ -6,7 +6,7 @@ import { UserProfile } from './pages/MyPage/Profile';
 
 const BASE_URL = 'https://i9a107.p.ssafy.io/api';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
-const CHARGE_URL = `${BASE_URL}/charge`;
+const CHARGE_URL = `${BASE_URL}/user/charge`;
 
 export const fetchArticles = async (
   keyword: string,
@@ -651,3 +651,30 @@ export async function applyToTeacher(applyId: number, accessToken: string) {
     return { success: false, error: error.message };
   }
 }
+
+export const getFavorites = async (
+  accessToken: string,
+): Promise<{ success: boolean; data?: any; error?: any }> => {
+  interface FavoritesResponse {
+    success: boolean;
+    data: any;
+  }
+  try {
+    const response = await axios.get<FavoritesResponse>(
+      BASE_URL + '/favorite',
+      {
+        headers: { 'access-token': accessToken },
+      },
+    );
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+};

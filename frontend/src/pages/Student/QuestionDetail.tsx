@@ -13,6 +13,7 @@ import { userState } from '../../recoil/user/userState';
 // import a from '../../assets/logo.png';
 // import b from '../../assets/logo_white.png';
 // import c from '../../assets/home-teacher.png';
+import StarRating from '../star';
 
 const StudentQuestionDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,7 +44,7 @@ const StudentQuestionDetail = () => {
   //     teacherNickname: '더도리2',
   //     solvePoint: '10',
   //     estimatedTime: '10',
-  //     ratingSum: 50,
+  //     ratingSum: 20,
   //     ratingCount: 4,
   //   },
   //   {
@@ -53,7 +54,7 @@ const StudentQuestionDetail = () => {
   //     teacherNickname: '더도리1',
   //     solvePoint: '10',
   //     estimatedTime: '10',
-  //     ratingSum: 50,
+  //     ratingSum: 10,
   //     ratingCount: 4,
   //   },
   //   {
@@ -63,7 +64,7 @@ const StudentQuestionDetail = () => {
   //     teacherNickname: '더도리3',
   //     solvePoint: '10',
   //     estimatedTime: '10',
-  //     ratingSum: 50,
+  //     ratingSum: 15,
   //     ratingCount: 4,
   //   },
   // ];
@@ -298,9 +299,11 @@ const StudentQuestionDetail = () => {
                   선호과목: {teacher.teacherSubjectName}
                 </p>
                 <p className="text-center">
-                  {teacher.solvePoint} SP {teacher.estimatedTime}분{' '}
-                  {(teacher.ratingSum / teacher.ratingCount).toFixed(2)}점
+                  {teacher.solvePoint} SP {teacher.estimatedTime}분
                 </p>
+                <StarRating
+                  rating={(teacher.ratingSum / teacher.ratingCount).toFixed(2)}
+                />
 
                 <button
                   className="mt-8 w-full p-2 bg-solive-200 text-white rounded hover:bg-blue-600 transition duration-300"

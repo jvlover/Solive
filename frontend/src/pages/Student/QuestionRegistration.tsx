@@ -131,7 +131,6 @@ const QuestionRegistration = () => {
       subSubject: subSubject,
       detail: detail,
       description: description,
-      studentId: user.id.toString(),
     };
 
     const formData = new FormData();

@@ -3,10 +3,10 @@ import { Select, Option as MOption } from '@material-tailwind/react';
 import { questionSearch, getNewAccessToken } from '../../api';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
+// import que from '../../assets/full_heart.svg';
 
 // 페이지 보려면 아래 한줄 주석하세요.
 // 페이지 보려면 아래 주석 해제하세요.
-// import que from '../../assets/404.png';
 
 interface Subject {
   label: string;
@@ -55,7 +55,7 @@ const TeacherQuestion = () => {
   // const questionList = [
   //   {
   //     id: 1,
-  //     path_name: 'que',
+  //     path_name: que,
   //     title: '기하와 벡터',
   //     subject: '수학',
   //     time: '2023-08-02',
@@ -243,7 +243,7 @@ const TeacherQuestion = () => {
         <h1 className="text-black text-3xl">전체 문제 목록 보기</h1>
       </div>
       <div className="w-full flex space-x-2 mt-4 justify-center">
-        <div className="flex-1 flex items-center space-x-2 justify-center ml-4">
+        <div className="flex-1 flex items-center space-x-2 justify-center ml-4 ">
           <span>과목 선택: </span>
           <Select
             color="blue"
@@ -290,7 +290,7 @@ const TeacherQuestion = () => {
         </div>
         <div className="flex-initial text-center mx-2">
           <button
-            className="px-3 py-2 border rounded text-black border-black"
+            className="px-3 py-2 border rounded text-black border-solive-200"
             onClick={() =>
               questionSearch(
                 subjectNum,
@@ -333,27 +333,36 @@ const TeacherQuestion = () => {
           getPageNumQuestions().map((question) => (
             <div
               key={question.id}
-              className="w-1/5 m-2 border-2 border-blue-200 rounded-md h-96"
+              className="w-1/5 m-2 border-2 border-solive-200 rounded-md h-72"
             >
               <img
                 src={question.path_name}
                 alt={question.title}
-                className="w-full h-72 object-contain"
+                className="w-full h-52 object-contain"
               />
 
-              <div className="p-2 h-20 overflow-hidden">
-                <h2 className="font-bold truncate">{question.title}</h2>
-                <p className="truncate">{question.time.toString()}</p>
+              <div className="flex p-2 h-20 overflow-hidden items-center space-x-2">
+                <div className="border rounded px-2 py-1 border-solive-200">
+                  <h2 className="font-bold truncate">{question.title}</h2>
+                </div>
+                <div className="border rounded px-2 py-1 border-solive-200">
+                  <p className="truncate">{question.time.toString()}</p>
+                </div>
               </div>
             </div>
           ))
         )}
       </div>
-      <div className="mt-4">
-        <button onClick={handlePrevPage} disabled={pageNum === 0}>
+      <div className="mt-4 ">
+        <button
+          className="bg-solive-200"
+          onClick={handlePrevPage}
+          disabled={pageNum === 0}
+        >
           이전
         </button>
         <button
+          className="bg-solive-200"
           onClick={handleNextPage}
           disabled={
             pageNum >= Math.ceil(questionList.length / itemsPerPage) - 1
