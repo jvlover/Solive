@@ -27,8 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  // 허용할 URL 패턴 설정
-            .allowedOrigins("https://i9a107.p.ssafy.io/api")  // 허용할 오리진(도메인) 설정
+        registry.addMapping("/api/**")  // 허용할 URL 패턴 설정
+            .allowedOrigins("https://i9a107.p.ssafy.io")  // 허용할 오리진(도메인) 설정
             .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메소드 설정
             .allowedHeaders("*");  // 허용할 헤더 설정(임시)
     }
