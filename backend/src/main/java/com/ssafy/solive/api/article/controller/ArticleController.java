@@ -48,7 +48,7 @@ public class ArticleController {
 
         if (fileList != null) { // 게시물에 파일 있으면
             log.info("ArticleController_regist_start: " + registInfo.toString() + ", "
-                    + fileList.toString());
+                    + fileList);
         } else {
             log.info("ArticleController_regist_start: " + registInfo.toString());
         }
@@ -94,7 +94,7 @@ public class ArticleController {
 
         if (fileList != null) {
             log.info("ArticleController_modify_start: " + modifyInfo.toString() + ", "
-                    + fileList.toString());
+                    + fileList);
         } else {
             log.info("ArticleController_modify_start: " + modifyInfo.toString());
         }

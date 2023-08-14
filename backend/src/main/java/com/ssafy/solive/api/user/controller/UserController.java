@@ -289,7 +289,7 @@ public class UserController {
     /**
      * 유저 main page 를 접속할 떄, 온라인인 선생님 중, 평점 순으로 Get
      *
-     * @return
+     * @return 평점 높은 3명의 선생님 List
      */
     @GetMapping("/onlineteacher")
     public CommonResponse<?> getOnlineTeacher() {

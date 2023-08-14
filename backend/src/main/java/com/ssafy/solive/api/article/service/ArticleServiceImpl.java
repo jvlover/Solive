@@ -20,7 +20,7 @@ import com.ssafy.solive.db.entity.ArticleReport;
 import com.ssafy.solive.db.entity.ArticleReportId;
 import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.User;
-import com.ssafy.solive.db.repository.ArticleLikeRepsitory;
+import com.ssafy.solive.db.repository.ArticleLikeRepository;
 import com.ssafy.solive.db.repository.ArticlePictureRepository;
 import com.ssafy.solive.db.repository.ArticleReportRepository;
 import com.ssafy.solive.db.repository.ArticleRepository;
@@ -49,7 +49,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final MasterCodeRepository masterCodeRepository;
     private final ArticleRepository articleRepository;
     private final ArticlePictureRepository articlePictureRepository;
-    private final ArticleLikeRepsitory articleLikeRepsitory;
+    private final ArticleLikeRepository articleLikeRepository;
     private final ArticleReportRepository articleReportRepository;
     private final FileUploader fileUploader;
 
@@ -57,13 +57,13 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleServiceImpl(UserRepository userRepository,
         MasterCodeRepository masterCodeRepository,
         ArticleRepository articleRepository, ArticlePictureRepository articlePictureRepository,
-        ArticleLikeRepsitory articleLikeRepsitory, ArticleReportRepository articleReportRepository,
+        ArticleLikeRepository articleLikeRepository, ArticleReportRepository articleReportRepository,
         FileUploader fileUploader) {
         this.userRepository = userRepository;
         this.masterCodeRepository = masterCodeRepository;
         this.articleRepository = articleRepository;
         this.articlePictureRepository = articlePictureRepository;
-        this.articleLikeRepsitory = articleLikeRepsitory;
+        this.articleLikeRepository = articleLikeRepository;
         this.articleReportRepository = articleReportRepository;
         this.fileUploader = fileUploader;
     }
@@ -229,7 +229,7 @@ public class ArticleServiceImpl implements ArticleService {
             .article(likeInfo.getArticleId())
             .build();
 
-        ArticleLike articleLike = articleLikeRepsitory.findById(articleLikeId).orElse(null);
+        ArticleLike articleLike = articleLikeRepository.findById(articleLikeId).orElse(null);
 
         if (articleLike == null) {
             User user = userRepository.findById(likeInfo.getUserId())
@@ -242,7 +242,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .article(article)
                 .build();
 
-            articleLikeRepsitory.save(articleLike);
+            articleLikeRepository.save(articleLike);
 
             article.likeArticle();
 

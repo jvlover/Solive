@@ -32,7 +32,9 @@ import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.StudentRepository;
 import com.ssafy.solive.db.repository.TeacherRepository;
 import com.ssafy.solive.db.repository.UserRepository;
+
 import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -209,7 +211,8 @@ public class UserServiceImpl implements UserService {
             String dbRefreshToken = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new).getRefreshToken();
 
-            if (dbRefreshToken.equals(refreshToken)) { // refreshToken, DB의 refreshToken 일치
+            if (dbRefreshToken != null
+                && dbRefreshToken.equals(refreshToken)) { // refreshToken, DB의 refreshToken 일치
                 String accessToken = jwtConfiguration.createAccessToken("userId", userId);
                 log.info("UserService_recreateAccessToken_end: " + accessToken);
                 return accessToken;
@@ -308,6 +311,12 @@ public class UserServiceImpl implements UserService {
         log.info("UserService_modifyUserProfile_start: " + userId + ", "
             + userInfo.toString() + ", " + profilePicture);
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        if (!user.getNickname().equals(userInfo.getNickname()) && userRepository.existsByNickname(
+            userInfo.getNickname())) {
+            // 닉네임이 변경됐고 변경된 닉네임이 DB 에 있다면
+            throw new DuplicatedNicknameException(); // 닉네임 중복 Exception
+        }
 
         user.modifyUserProfile(userInfo);
         log.info("UserService_modifyUserProfile_mid: " + user);
