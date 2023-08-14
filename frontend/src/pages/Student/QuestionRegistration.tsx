@@ -1,8 +1,10 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { userState } from '../../recoil/user/userState';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { submitQuestion, getNewAccessToken } from '../../api';
+import { Typography } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
+
 
 type Subject = {
   label: string;
@@ -107,8 +109,13 @@ const QuestionRegistration = () => {
 
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
+
+
+  const image = useRef<HTMLInputElement>();
+
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
   const handleSubmit = async (e: FormEvent) => {
     setShowModal(true);
     e.preventDefault();
@@ -165,7 +172,6 @@ const QuestionRegistration = () => {
         alert('파일은 최대 5개까지 업로드 할 수 있습니다.');
         return;
       }
-
       const fileList = Array.from(e.target.files);
       setFiles(fileList);
 
@@ -191,123 +197,133 @@ const QuestionRegistration = () => {
   );
 
   return (
-    <div className="flex w-screen min-h-screen pt-24 text-black">
-      <div className="w-1/2 p-5">
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <label className="block p-3 rounded-md">
-            <span className="text-gray-700" style={{ fontWeight: '900' }}>
-              제목
-            </span>
-            <input
-              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </label>
-          <label className="block p-3 rounded-md">
-            <span className="text-gray-700" style={{ fontWeight: '900' }}>
-              사진
-            </span>
-            <input
-              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
-              type="file"
-              onChange={handleFileChange}
-              multiple
-            />
-          </label>
-          {preview && (
-            <div className="flex justify-center mt-3">
-              <img
-                src={preview}
-                alt="Preview"
-                className="object-contain h-[500px] w-[600px]"
-              />
-            </div>
-          )}
-          <button
-            className="px-4 py-2 mt-3 text-white rounded border-light-blue-500 bg-light-blue-500"
-            type="submit"
-          >
-            등록
-          </button>
-        </form>
+    <div>
+      <Typography variant="h2" className="ml-[18vw] mt-4 font-[Pretendard]">
+        문제 등록
+      </Typography>
+      <div className="flex justify-center">
+        <div className="flex w-[70vw] min-w-[900px] text-black">
+          <div className="w-1/2 px-5">
+            <form className="space-y-8">
+              <div className="flex justify-center mt-10">
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="object-contain h-[373px] w-full border-2 border-gray-300 rounded-md"
+                  />
+                ) : (
+                  <div className="flex justify-center items-center h-[373px] w-full border-2 border-gray-300 rounded-md text-blue-gray-700 text-2xl">
+                    사진을 등록해주세요
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center justify-start">
+                <input
+                  className="w-full p-2 border border-gray-300 rounded bg-opacity-30 bg-solive-200 min-w-[200px] min-h-[42px]"
+                  value={
+                    files.length > 0
+                      ? files[0].name
+                      : '현재 등록된 사진이 없습니다.'
+                  }
+                  disabled
+                ></input>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  ref={image}
+                  className="hidden"
+                  multiple
+                />
+                <button
+                  className="ml-5 btn-primary px-0 w-[120px] h-[42px] flex items-center justify-center"
+                  type="button"
+                  onClick={() => image.current.click()}
+                >
+                  파일 찾기
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className="w-1/2 px-5">
+            <form className="flex flex-col justify-end space-y-3">
+              <label className="block p-3 rounded-md">
+                <span className="font-bold text-gray-700">제목</span>
+                <input
+                  className="block w-full h-16 p-2 mt-1 border-2 border-gray-300 rounded-md shadow-sm bg-solive-200 bg-opacity-30"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </label>
+              <div className="flex justify-between">
+                <label className="block w-full p-3 rounded-md">
+                  <span className="font-bold text-gray-700">과목</span>
+                  <select
+                    className="block w-full h-16 p-2 mt-1 border-2 border-gray-300 rounded-md shadow-sm bg-solive-200 bg-opacity-30"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                  >
+                    <option value="">--</option>
+                    {subjects.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block w-full p-3 rounded-md">
+                  <span className="font-bold text-gray-700">세부 과목</span>
+                  <select
+                    className="block w-full h-16 p-2 mt-1 border-2 border-gray-300 rounded-md shadow-sm bg-solive-200 bg-opacity-30"
+                    value={subSubject}
+                    onChange={(e) => setSubSubject(e.target.value)}
+                  >
+                    <option value="">--</option>
+                    {selectedSubject &&
+                      selectedSubject.subSubjects.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label className="block w-full p-3 rounded-md">
+                  <span className="font-bold text-gray-700">세부 주제</span>
+                  <select
+                    className="block w-full h-16 p-2 mt-1 border-2 border-gray-300 rounded-md shadow-sm bg-solive-200 bg-opacity-30 "
+                    value={detail}
+                    onChange={(e) => setDetail(e.target.value)}
+                  >
+                    <option value="">--</option>
+                    {selectedSubSubject &&
+                      selectedSubSubject?.details.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+              </div>
+              <label className="block p-3 rounded-md">
+                <span className="font-bold text-gray-700">설명</span>
+                <textarea
+                  className="block w-full h-48 p-2 mt-1 border-2 border-gray-300 rounded-md shadow-sm resize-none bg-solive-200 bg-opacity-30"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </label>
+            </form>
+          </div>
+        </div>
       </div>
-      <div className="w-1/2 p-5">
-        <form className="space-y-3">
-          <label className="block p-3 rounded-md">
-            <span className="text-gray-700" style={{ fontWeight: '900' }}>
-              닉네임
-            </span>
-            <div
-              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm
-              border-light-blue-500"
-            >
-              {user.nickname}
-            </div>
-          </label>
-          <label className="block p-3 rounded-md">
-            <span className="text-gray-700" style={{ fontWeight: '900' }}>
-              과목
-            </span>
-            <select
-              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-            >
-              <option value="">-- 과목을 선택해주세요 --</option>
-              {subjects.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          {selectedSubject && (
-            <label className="block p-3 rounded-md">
-              <span className="text-gray-700">세부 과목:</span>
-              <select
-                className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
-                value={subSubject}
-                onChange={(e) => setSubSubject(e.target.value)}
-              >
-                <option value="">-- 세부 과목을 선택해주세요 --</option>
-                {selectedSubject.subSubjects.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-          {selectedSubSubject && (
-            <label className="block p-3 rounded-md">
-              <span className="text-gray-700">세부 주제:</span>
-              <select
-                className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500 "
-                value={detail}
-                onChange={(e) => setDetail(e.target.value)}
-              >
-                <option value="">-- 세부 주제를 선택해주세요 --</option>
-                {selectedSubSubject.details.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-          <label className="block p-3 rounded-md">
-            <span className="text-gray-700" style={{ fontWeight: '900' }}>
-              설명
-            </span>
-            <textarea
-              className="block w-full h-48 mt-1 border-2 rounded-md shadow-sm border-light-blue-500 "
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </label>
-        </form>
+      <div className="flex justify-center">
+        <button
+          className="w-[300px] px-4 py-2 mt-5 mb-10 text-white border-gray-300 rounded  bg-solive-200"
+          onClick={handleSubmit}
+        >
+          등록
+        </button>
       </div>
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
