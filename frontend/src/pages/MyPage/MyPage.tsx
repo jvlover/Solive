@@ -13,12 +13,14 @@ import {
   KeyIcon,
   PencilSquareIcon,
   UserCircleIcon,
+  StarIcon,
 } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import QuestionManagement from '../Student/QuestionManagement';
 import PointChargePage from './SolvePoint';
+import FavoritePage from './favorite';
 
 const MyPage = () => {
   const user = useRecoilValue(userState);
@@ -37,6 +39,8 @@ const MyPage = () => {
     PageComponent = QuestionManagement;
   } else if (pageName === 'solvepoint') {
     PageComponent = PointChargePage;
+  } else if (pageName === 'favorite') {
+    PageComponent = FavoritePage;
   }
 
   useEffect(() => {
@@ -108,6 +112,17 @@ const MyPage = () => {
                   <CreditCardIcon className="w-5 h-5" />
                 </ListItemPrefix>
                 솔브포인트 관리
+              </ListItem>
+              <ListItem
+                onClick={() => {
+                  navigate('/mypage/favorite');
+                }}
+                className="font-[pretendard]"
+              >
+                <ListItemPrefix>
+                  <StarIcon className="w-5 h-5" />
+                </ListItemPrefix>
+                즐겨찾기
               </ListItem>
             </List>
           </Card>

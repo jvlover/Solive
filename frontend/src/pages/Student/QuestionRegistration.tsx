@@ -99,7 +99,6 @@ const subjects: Subject[] = [
 const QuestionRegistration = () => {
   const [title, setTitle] = useState('');
   const [files, setFiles] = useState<File[]>([]);
-  const [nickname, setNickname] = useState('');
   const [subject, setSubject] = useState('');
   const [subSubject, setSubSubject] = useState('');
   const [detail, setDetail] = useState('');
@@ -125,7 +124,6 @@ const QuestionRegistration = () => {
       subSubject: subSubject,
       detail: detail,
       description: description,
-      studentId: user.id.toString(),
     };
 
     const formData = new FormData();
@@ -241,12 +239,12 @@ const QuestionRegistration = () => {
             <span className="text-gray-700" style={{ fontWeight: '900' }}>
               닉네임
             </span>
-            <input
-              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
-              type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-            />
+            <div
+              className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm
+              border-light-blue-500"
+            >
+              {user.nickname}
+            </div>
           </label>
           <label className="block p-3 rounded-md">
             <span className="text-gray-700" style={{ fontWeight: '900' }}>

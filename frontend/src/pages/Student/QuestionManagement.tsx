@@ -17,7 +17,7 @@ const QuestionManagement = () => {
   // const problems = [
   //   {
   //     id: 1,
-  //     path_name: que,
+  //     path: que,
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -25,7 +25,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 2,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -33,7 +33,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 3,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -41,7 +41,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 4,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -49,7 +49,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 5,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -57,7 +57,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 6,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -65,7 +65,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 7,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -73,7 +73,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 8,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -81,7 +81,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 9,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -89,7 +89,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 10,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -97,7 +97,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 11,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -105,7 +105,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 12,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -113,7 +113,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 13,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -121,7 +121,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 14,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -129,7 +129,7 @@ const QuestionManagement = () => {
   //   },
   //   {
   //     id: 15,
-  //     path_name: 'path1',
+  //     path: 'path1',
   //     title: 'title1',
   //     subject: 'subject1',
   //     time: 'time1',
@@ -196,7 +196,7 @@ const QuestionManagement = () => {
             >
               <img
                 className="h-[140px] w-[250px]"
-                src={problem.path_name}
+                src={problem.path}
                 alt="problem"
               />
               <span>
