@@ -26,8 +26,11 @@ public class JwtInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+        Object handler) throws Exception {
         log.info("JwtInterceptor_preHandle_start");
+        log.info("RequestURI: " + request.getRequestURI());
+
         try {
             String accessToken = request.getHeader("access-token");
             // 로그아웃 상태가 아닌지 확인
