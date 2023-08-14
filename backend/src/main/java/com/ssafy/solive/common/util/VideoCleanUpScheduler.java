@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class VideoCleanUpScheduler {
 
     @Scheduled(cron = "0 0 0 * * *")
-    public void method() throws IOException {
+    public void cleanUp() throws IOException {
         URL url = new URL("https://i9a107.p.ssafy.io:8447/openvidu/api/recordings/");
         String line;
         StringBuilder sb = new StringBuilder();
