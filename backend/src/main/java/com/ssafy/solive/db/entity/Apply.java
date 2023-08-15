@@ -5,12 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
@@ -35,7 +38,7 @@ public class Apply extends BaseEntity {
     private Teacher teacher;
 
     // 지원 신청 시간
-    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreationTimestamp
     private LocalDateTime time;
 
     // 강사가 문제를 푸는 데 예상 시간으로 작성한 내용

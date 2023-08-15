@@ -5,13 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
@@ -41,7 +44,7 @@ public class ArticlePicture extends BaseEntity {
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
     private String contentType; // 확장자명
 
-    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreationTimestamp
     private LocalDateTime time; // 업로드 시간
 
     @Column

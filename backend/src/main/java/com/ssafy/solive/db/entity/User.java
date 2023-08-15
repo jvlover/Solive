@@ -10,13 +10,16 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
@@ -91,8 +94,9 @@ public class User extends BaseEntity {
     private Integer solvePoint;
 
     // 회원가입 시간
-    @Column(columnDefinition = "DATETIME DEFAULT NOW()")
-    private LocalDateTime signinTime;
+    @CreationTimestamp
+    private LocalDateTime signinTime; // 한국 시간 (UTC+9)으로 초기화
+
 
     // 성별
     @Column(nullable = false)

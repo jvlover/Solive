@@ -5,13 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 @Getter
@@ -46,6 +49,6 @@ public class QuestionPicture extends BaseEntity {
     private String contentType;
 
     // 이미지 올린 시간
-    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreationTimestamp
     private LocalDateTime time;
 }

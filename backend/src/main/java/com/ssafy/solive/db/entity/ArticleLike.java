@@ -7,14 +7,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 
@@ -38,6 +41,6 @@ public class ArticleLike implements Serializable {
     @JoinColumn(name = "article_id")
     private Article article;
 
-    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreationTimestamp
     private LocalDateTime time;
 }

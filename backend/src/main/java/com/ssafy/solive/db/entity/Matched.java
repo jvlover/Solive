@@ -5,12 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 @Getter
@@ -38,7 +41,7 @@ public class Matched extends BaseEntity {
     private Question question;
 
     // 매칭 생성 시간
-    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreationTimestamp
     private LocalDateTime matchedTime;
 
     // 실제 강의 시작 시간 (강의 준비 시간 = startTime - matchedTime)
