@@ -34,6 +34,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         // error 페이지 요청 시 jwt토큰 인터셉터 제외
         if ("/error".equals(requestPath)) {
+            log.info("JwtInterceptor_preHandle_end: error page");
             return true;
         }
 
@@ -42,14 +43,14 @@ public class JwtInterceptor implements HandlerInterceptor {
             // 로그아웃 상태가 아닌지 확인
             boolean isLogout = userService.isLogout(accessToken);
             if (isLogout) {
-                log.info("JwtInterceptor_checkValidAndGetUserId_mid: isLogout: " + isLogout);
+                log.info("JwtInterceptor_preHandle_mid: isLogout: " + isLogout);
             } else {
-                log.info("JwtInterceptor_checkValidAndGetUserId_mid: isLogout: " + isLogout);
+                log.info("JwtInterceptor_preHandle_mid: isLogout: " + isLogout);
             }
 
             // accessToken 이 유효한지 확인
             boolean checkToken = jwtConfiguration.checkToken(accessToken);
-            log.info("JwtInterceptor_checkValidAndGetUserId_end: true");
+            log.info("JwtInterceptor_preHandle_end: true");
 
             if (!isLogout && checkToken) {
                 Long userId = userService.getUserIdByToken(accessToken);
