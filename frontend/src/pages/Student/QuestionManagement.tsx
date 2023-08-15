@@ -5,9 +5,10 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
-// import que from '../../../assets/404.png';
+// import que from '../../assets/404.png';
 import { getMyProblems, getNewAccessToken } from '../../api';
 import { Select, Option as MOption } from '@material-tailwind/react';
+import { useNavigate } from 'react-router-dom';
 
 interface Subject {
   label: string;
@@ -174,12 +175,17 @@ const QuestionManagement = () => {
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
   const [problems, setProblems] = useState([]);
-  //const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
+  // const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const getProblems = async (accessToken: string): Promise<void> => {
+    const getProblems = async (): Promise<void> => {
+      if (!user) {
+        console.error('User is not defined');
+        return;
+      }
+
       const result = await getMyProblems(
-        user.userId,
         user.masterCodeId,
         subjectNum,
         subSubjectNum,
@@ -187,8 +193,9 @@ const QuestionManagement = () => {
         searchKeyword,
         order,
         pageNum,
-        accessToken,
+        user.accessToken,
       );
+
       if (result.success) {
         setProblems(result.data);
       } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
@@ -198,16 +205,14 @@ const QuestionManagement = () => {
             ...user,
             accessToken: newAccessToken,
           });
-          getProblems(newAccessToken);
+          getProblems();
         }
       } else {
         console.error('Failed to load problems:', result.error);
       }
     };
 
-    if (user !== null) {
-      getProblems(user.accessToken);
-    }
+    getProblems();
   }, [
     matchingState,
     order,
@@ -259,6 +264,10 @@ const QuestionManagement = () => {
   const handleNextPage = () => {
     if (pageNum < Math.ceil(problems.length / 8) - 1)
       setPageNum((prev) => prev + 1);
+  };
+
+  const handleDetailPage = (id) => {
+    navigate(`/student/question/${id}`);
   };
 
   return (
@@ -338,7 +347,6 @@ const QuestionManagement = () => {
               className="px-3 py-2 text-black border border-black rounded"
               onClick={() =>
                 getMyProblems(
-                  user.userId,
                   user.masterCodeId,
                   subjectNum,
                   subSubjectNum,
@@ -381,6 +389,7 @@ const QuestionManagement = () => {
               className="flex flex-col items-center p-2 border-2 border-solive-200"
             >
               <img
+                onClick={() => handleDetailPage(problem.id)}
                 className="h-[140px] w-[250px]"
                 src={problem.path}
                 alt="problem"

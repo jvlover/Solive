@@ -5,7 +5,6 @@ import { submitQuestion, getNewAccessToken } from '../../api';
 import { Typography } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 
-
 type Subject = {
   label: string;
   value: number;
@@ -110,14 +109,12 @@ const QuestionRegistration = () => {
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
 
-
   const image = useRef<HTMLInputElement>();
 
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
-    setShowModal(true);
     e.preventDefault();
 
     if (!user) {
@@ -140,13 +137,14 @@ const QuestionRegistration = () => {
       new Blob([JSON.stringify(data)], { type: 'application/json' }),
     );
 
-    files.forEach((file, index) => {
-      formData.append(`file${index}`, file);
+    files.forEach((file) => {
+      formData.append(`files`, file);
     });
 
     const result = await submitQuestion(formData, user.accessToken);
 
     if (result.success) {
+      setShowModal(true);
       alert('문제가 등록되었습니다.');
     } else if (result.error === 'NO_IMAGE') {
       alert('문제 등록에 실패했습니다. 이미지 파일이 없습니다.');
@@ -159,7 +157,7 @@ const QuestionRegistration = () => {
           ...user,
           accessToken: newAccessToken,
         });
-        submitQuestion(formData, user.accessToken);
+        submitQuestion(formData, newAccessToken);
       }
     } else {
       console.error('Failed to load problems:', result.error);
@@ -188,7 +186,7 @@ const QuestionRegistration = () => {
 
   const handleConfirm = () => {
     setShowModal(false);
-    navigate('/student');
+    navigate(`/student/question/{id}`);
   };
 
   const selectedSubject = subjects.find((s) => s.value === Number(subject));

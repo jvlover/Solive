@@ -81,7 +81,6 @@ const Student = () => {
     const fetchProblems = async () => {
       try {
         const result = await getMyProblems(
-          user.userId,
           1,
           1100,
           0,
@@ -98,7 +97,6 @@ const Student = () => {
           if (newAccessToken) {
             setUser({ ...user, accessToken: newAccessToken });
             const newResult = await getMyProblems(
-              user.userId,
               1,
               1100,
               0,
@@ -163,6 +161,10 @@ const Student = () => {
     }
   }, [user, setUser]);
 
+  const handleDetailPage = (id) => {
+    navigate(`/student/question/${id}`);
+  };
+
   return (
     <div className="flex flex-col items-center">
       {isLoading}
@@ -215,6 +217,7 @@ const Student = () => {
                   className="border-2 border-blue-200 p-2 flex flex-col items-center h-[300px] w-[220px]"
                 >
                   <img
+                    onClick={() => handleDetailPage(problem.id)}
                     className="h-[200px] w-[250px]"
                     src={problem.path}
                     alt="problem"
