@@ -35,6 +35,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         // error 페이지 요청 시 jwt토큰 인터셉터 제외
         if ("/error".equals(requestPath)) {
             log.info("JwtInterceptor_preHandle_end: error page");
+            log.info("=====================================     JWT Interceptor End     =====================================");
             return true;
         }
 
