@@ -38,7 +38,7 @@ public class QuestionPicture extends BaseEntity {
     private String originalName;
 
     // 문제 이미지 절대 경로
-    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String path;
 
     // 이미지 타입

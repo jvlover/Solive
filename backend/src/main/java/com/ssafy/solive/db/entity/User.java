@@ -71,7 +71,7 @@ public class User extends BaseEntity {
     private String originalName;
 
     // 프로필 사진의 업로드 경로
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String path;
 
     // 프로필 사진의 확장자명
