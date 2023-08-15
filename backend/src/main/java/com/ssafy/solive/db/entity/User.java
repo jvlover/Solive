@@ -63,7 +63,7 @@ public class User extends BaseEntity {
     private String email;
 
     // 프로필 사진의 이름
-    @Column(columnDefinition = "VARCHAR(100)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String fileName;
 
     // 프로필 사진의 실제 업로드 된 파일이름
@@ -75,7 +75,7 @@ public class User extends BaseEntity {
     private String path;
 
     // 프로필 사진의 확장자명
-    @Column(columnDefinition = "VARCHAR(10)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String contentType;
 
     // 소개글

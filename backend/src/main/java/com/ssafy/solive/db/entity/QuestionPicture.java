@@ -30,7 +30,7 @@ public class QuestionPicture extends BaseEntity {
     private Question question;
 
     // 경로에 저장된 이미지 파일 이름
-    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
+    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String fileName;
 
     // 유저가 제출한 이미지 오리지널 이름
