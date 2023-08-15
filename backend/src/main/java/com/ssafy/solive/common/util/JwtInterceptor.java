@@ -29,7 +29,13 @@ public class JwtInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) throws Exception {
         log.info("=====================================     JWT Interceptor Start     =====================================");
-        log.info("JwtInterceptor_preHandle_start" + request.getRequestURI());
+        String requestPath = request.getRequestURI();
+        log.info("JwtInterceptor_preHandle_start: " + requestPath);
+
+        // error 페이지 요청 시 jwt토큰 인터셉터 제외
+        if ("/error".equals(requestPath)) {
+            return true;
+        }
 
         try {
             String accessToken = request.getHeader("access-token");
