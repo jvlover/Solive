@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './StreamComponent.css';
+import './MatchStream.css';
 
 export default class OvVideoComponent extends Component {
     constructor(props) {

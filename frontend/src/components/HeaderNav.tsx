@@ -141,7 +141,9 @@ const HeaderNav = () => {
         </Link>
         <button
             onClick={() => {
-              navigate('/matchpage');
+              navigate('/matchpage',{
+                // state:{applyId},
+              });
             }}>테스트하러뿅</button>
         <div className="flex items-center gap-4">
           <div className="hidden lg:block">{navList}</div>

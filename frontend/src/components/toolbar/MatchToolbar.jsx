@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import "./ToolbarComponent.css";
+import { useState } from 'react';
+import "./MatchToolbar.css";
 
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -20,59 +20,54 @@ import QuestionAnswer from "@mui/icons-material/QuestionAnswer";
 import IconButton from "@mui/material/IconButton";
 
 import logo from "../../assets/logo_white.png";
+import { Box, Modal } from '@mui/material';
+import { Typography } from '@material-tailwind/react';
+import Button from '@mui/material/Button';
 
-export default class ToolbarComponent extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {fullscreen: false};
-        this.camStatusChanged = this.camStatusChanged.bind(this);
-        this.micStatusChanged = this.micStatusChanged.bind(this);
-        this.screenShare = this.screenShare.bind(this);
-        this.stopScreenShare = this.stopScreenShare.bind(this);
-        this.toggleFullscreen = this.toggleFullscreen.bind(this);
-        this.leaveSession = this.leaveSession.bind(this);
-        this.toggleChat = this.toggleChat.bind(this);
+const MatchToolbar = (props) => {
+    const [fullscreen, setFullscreen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const modalToggle = () => {
+        setModalOpen(!modalOpen)
     }
 
-    micStatusChanged() {
-        this.props.micStatusChanged();
+    const micStatusChanged = () => {
+        props.micStatusChanged();
     }
 
-    camStatusChanged() {
-        this.props.camStatusChanged();
+    const camStatusChanged = () => {
+        props.camStatusChanged();
     }
 
-    screenShare() {
-        this.props.screenShare();
+    const screenShare = () => {
+        props.screenShare();
     }
 
-    stopScreenShare() {
-        this.props.stopScreenShare();
+    const stopScreenShare = () => {
+        props.stopScreenShare();
     }
 
-    toggleFullscreen() {
-        this.setState({fullscreen: !this.state.fullscreen});
-        this.props.toggleFullscreen();
+    const toggleFullscreen = () => {
+        setFullscreen(!fullscreen);
+        props.toggleFullscreen();
     }
 
-    leaveSession() {
-        this.props.leaveSession();
-        // 나가기전에 모달로 물어보자!
-        if (this.props.sessionId !== null) {
-            alert(this.props.sessionId + "에서 나가버렸어요");
+    const leaveSession = () => {
+        props.leaveSession();
+        if (props.sessionId !== null) {
+            alert("강의방에서 퇴장하셨습니다.");
         } else {
-            alert("이미 세션에서 나간 상태입니다")
-            // 아예 다른 창으로 옮겨야 하지 않을까
+            alert("이미 퇴장하신 상태입니다.")
         }
     }
 
-    toggleChat() {
-        this.props.toggleChat();
+    const toggleChat =() => {
+        props.toggleChat();
     }
 
-    render() {
-        const sessionId = this.props.sessionId;
-        const localUser = this.props.user;
+    const localUser = props.user;
+
         return (
             <AppBar className="toolbar" id="header">
                 <Toolbar className="toolbar" style={{height:80}}>
@@ -88,7 +83,7 @@ export default class ToolbarComponent extends Component {
                             size="large"
                             className="navButton"
                             id="navMicButton"
-                            onClick={this.micStatusChanged}
+                            onClick={micStatusChanged}
                         >
                             {/* 유저 있고 마이크 온이면 mic 아이콘 아니면 micoff 아이콘 */}
                             {localUser !== undefined &&
@@ -109,7 +104,7 @@ export default class ToolbarComponent extends Component {
                             size="large"
                             className="navButton"
                             id="navCamButton"
-                            onClick={this.camStatusChanged}
+                            onClick={camStatusChanged}
                         >
                             {localUser !== undefined &&
                             localUser.isVideoActive() ? (
@@ -128,7 +123,7 @@ export default class ToolbarComponent extends Component {
                             color="inherit"
                             size="large"
                             className="navButton"
-                            onClick={this.screenShare}
+                            onClick={screenShare}
                         >
                             {localUser !== undefined &&
                             localUser.isScreenShareActive() ? (
@@ -148,7 +143,7 @@ export default class ToolbarComponent extends Component {
                             localUser.isScreenShareActive() && (
                                 <IconButton
                                     color="inherit"
-                                    onClick={this.stopScreenShare}
+                                    onClick={stopScreenShare}
                                     size="large"
                                     id="navScreenButton"
                                 >
@@ -163,10 +158,10 @@ export default class ToolbarComponent extends Component {
                             color="inherit"
                             size="large"
                             className="navButton"
-                            onClick={this.toggleFullscreen}
+                            onClick={toggleFullscreen}
                         >
                             {localUser !== undefined &&
-                            this.state.fullscreen ? (
+                            fullscreen ? (
                                 <Tooltip title="전체화면 중지">
                                     <FullscreenExit/>
                                 </Tooltip>
@@ -182,9 +177,33 @@ export default class ToolbarComponent extends Component {
                             color="error"
                             size="large"
                             className="navButton"
-                            onClick={this.leaveSession}
+                            onClick={modalToggle}
                             id="navLeaveButton"
                         >
+                            <Modal
+                              open={modalOpen}
+                              onClose={modalToggle}
+                            >
+                                <Box sx={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 400,
+                                    bgcolor: 'background.paper',
+                                    border: '2px solid #000',
+                                    borderRadius: 2,
+                                    boxShadow: 24,
+                                    p: 4,
+                                }}>
+                                    <Typography class="text-center">
+                                        정말 강의실에서 나가시겠습니까?
+                                    </Typography>
+                                    <div id="modalText">
+                                        <Button onClick={leaveSession}>나가기</Button> <Button onClick={modalToggle}>취소</Button>
+                                    </div>
+                                </Box>
+                            </Modal>
                             <Tooltip title="나가기">
                                 <PowerSettingsNew/>
                             </Tooltip>
@@ -193,10 +212,10 @@ export default class ToolbarComponent extends Component {
                         <IconButton
                             color="inherit"
                             size="large"
-                            onClick={this.toggleChat}
+                            onClick={toggleChat}
                             id="navChatButton"
                         >
-                            {this.props.showNotification && (
+                            {props.showNotification && (
                                 <div id="point"/>
                             )}
                             {/*마우스 올리면 뜨는거*/}
@@ -209,4 +228,5 @@ export default class ToolbarComponent extends Component {
             </AppBar>
         );
     }
-}
+
+    export default MatchToolbar;

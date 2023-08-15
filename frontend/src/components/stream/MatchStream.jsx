@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './StreamComponent.css';
+import './MatchStream.css';
 import OvVideoComponent from './OvVideo.jsx';
 
 import MicOff from '@mui/icons-material/MicOff';
@@ -9,7 +9,7 @@ import VolumeOff from '@mui/icons-material/VolumeOff';
 import IconButton from '@mui/material/IconButton';
 
 // 나 혹은 구독자의 stream 이 뜨는 창
-export default class StreamComponent extends Component {
+export default class MatchStream extends Component {
     constructor(props) {
         super(props);
         this.state = {

@@ -1,14 +1,14 @@
 import axios from "axios";
 import {OpenVidu} from "openvidu-browser";
 import React, {Component} from "react";
-import ChatComponent from "../../components/chat/ChatComponent.jsx";
-import DialogExtensionComponent from "../../components/dialog-extension/DialogExtension.jsx";
-import StreamComponent from "../../components/stream/StreamComponent.jsx";
+import MatchChat from "../chat/MatchChat.jsx";
+import DialogExtensionComponent from "../dialog-extension/DialogExtension.jsx";
+import MatchStream from "../stream/MatchStream.jsx";
 import "./VideoRoom.css";
 
-import OpenviduLayout from "../../layout/openvidu-layout.jsx";
-import UserModel from "../../models/user-model.jsx";
-import ToolbarComponent from "../../components/toolbar/ToolbarComponent.jsx";
+import OpenviduLayout from "../../layout/OpenviduLayout.jsx";
+import UserModel from "../../pages/Match/UserModel.jsx";
+import Toolbar from "../toolbar/MatchToolbar.jsx";
 
 const localUser = new UserModel();
 const APPLICATION_SERVER_URL = "https://i9a107.p.ssafy.io:8447/openvidu/api/";
@@ -577,7 +577,7 @@ class VideoRoomComponent extends Component {
         return (
             <div className="container" id="container">
                 {/*위에 툴바*/}
-                <ToolbarComponent
+                <Toolbar
                     sessionId={this.state.sessionId}
                     user={localUser}
                     showNotification={this.state.messageReceived}
@@ -604,7 +604,7 @@ class VideoRoomComponent extends Component {
                                 id="localUser"
                             >
                                 {/*이건 내 stream 뜨는 창*/}
-                                <StreamComponent
+                                <MatchStream
                                     user={localUser}
                                 />
                             </div>
@@ -616,7 +616,7 @@ class VideoRoomComponent extends Component {
                             id="remoteUser"
                         >
                             {/*아마 구독자들 stream 뜨는 창*/}
-                            <StreamComponent
+                            <MatchStream
                                 user={sub}
                                 streamId={sub.streamManager.stream.streamId}
                             />
@@ -629,7 +629,7 @@ class VideoRoomComponent extends Component {
                                 className="OT_root OT_publisher custom-class"
                                 style={chatDisplay}
                             >
-                                <ChatComponent
+                                <MatchChat
                                     user={localUser}
                                     chatDisplay={this.state.chatDisplay}
                                     close={this.toggleChat}

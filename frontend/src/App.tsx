@@ -18,7 +18,7 @@ import TeacherQuestion from './pages/Teacher/Question';
 import Student from './pages/Student/StudentMain';
 import StudentQuestionDetail from './pages/Student/QuestionDetail';
 import TeacherQuestionDetail from './pages/Teacher/QuestionDetail';
-import Match from './pages/MatchPage';
+import Match from './pages/Match/Match';
 
 const App = () => {
   return (

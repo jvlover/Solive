@@ -4,12 +4,12 @@ import Fab from "@mui/material/Fab";
 import HighlightOff from "@mui/icons-material/HighlightOff";
 import Send from "@mui/icons-material/Send";
 
-import "./ChatComponent.css";
+import "./MatchChat.css";
 import {Tooltip} from "@mui/material";
 // 기본 사진이 들어갈 곳입니다.
 import profile from "../../assets/404.png"
 
-export default class ChatComponent extends Component {
+export default class MatchChat extends Component {
 
     constructor(props) {
         super(props);
