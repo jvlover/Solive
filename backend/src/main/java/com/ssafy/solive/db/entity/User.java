@@ -102,6 +102,10 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Integer gender;
 
+    // 회원탈퇴 여부, 회원탈퇴시 탈퇴시간 부여
+    @Column
+    private LocalDateTime deletedAt;
+
     /**
      * 로그인 시 사용자의 state를 로그인 상태(12)로 변경
      *
@@ -110,9 +114,6 @@ public class User extends BaseEntity {
     public void setLoginState(MasterCode masterCode) {
         this.stateId = masterCode;
     }
-
-    // 회원탈퇴 여부, 회원탈퇴시 탈퇴시간 부여
-    private LocalDateTime deletedAt;
 
     /**
      * @param userInfo userInfo
