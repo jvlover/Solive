@@ -3,6 +3,7 @@ package com.ssafy.solive.db.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.io.Serializable;
@@ -29,7 +30,7 @@ public class Favorite implements Serializable {
     private Teacher teacherId;
 
     // 즐겨찾기 한 시간
-    @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreationTimestamp
     LocalDateTime time;
 
     // 즐겨찾기 취소 시간
