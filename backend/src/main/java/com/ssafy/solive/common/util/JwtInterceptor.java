@@ -27,15 +27,19 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-        Object handler) throws Exception {
-        log.info("JwtInterceptor_preHandle_start");
-        log.info("RequestURI: " + request.getRequestURI());
+                             Object handler) throws Exception {
+        log.info("=====================================     JWT Interceptor Start     =====================================");
+        log.info("JwtInterceptor_preHandle_start" + request.getRequestURI());
 
         try {
             String accessToken = request.getHeader("access-token");
             // 로그아웃 상태가 아닌지 확인
             boolean isLogout = userService.isLogout(accessToken);
-            log.info("JwtInterceptor_checkValidAndGetUserId_mid: " + isLogout);
+            if (isLogout) {
+                log.info("JwtInterceptor_checkValidAndGetUserId_mid: isLogout: " + isLogout);
+            } else {
+                log.info("JwtInterceptor_checkValidAndGetUserId_mid: isLogout: " + isLogout);
+            }
 
             // accessToken 이 유효한지 확인
             boolean checkToken = jwtConfiguration.checkToken(accessToken);
@@ -43,18 +47,22 @@ public class JwtInterceptor implements HandlerInterceptor {
 
             if (!isLogout && checkToken) {
                 Long userId = userService.getUserIdByToken(accessToken);
-                log.info("JwtInterceptor_checkValidAndGetUserId_end: true");
+                log.info("JwtInterceptor_preHandle_end: true");
+                log.info("=====================================     JWT Interceptor End     =====================================");
                 return true;
             } else {
-                log.info("JwtInterceptor_checkValidAndGetUserId_end: Invalid User");
+                log.info("JwtInterceptor_preHandle_end: Invalid User");
+                log.info("=====================================     JWT Interceptor End     =====================================");
                 return false;
             }
         } catch (ExpiredJwtException e) {
-            log.info("JwtInterceptor_checkValidAndGetUserId_end: JwtTokenExpiredException");
+            log.info("JwtInterceptor_preHandle_end: JwtTokenExpiredException");
+            log.info("=====================================     JWT Interceptor End     =====================================");
             throw new JwtTokenExpiredException();
         } catch (Exception e) {
             e.printStackTrace();
-            log.info("JwtInterceptor_checkValidAndGetUserId_end: JwtInvalidException");
+            log.info("JwtInterceptor_preHandle_end: JwtInvalidException");
+            log.info("=====================================     JWT Interceptor End     =====================================");
             throw new JwtInvalidException();
         }
     }
