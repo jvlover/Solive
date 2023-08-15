@@ -183,7 +183,6 @@ export const loginUser = async (loginData: {
 };
 
 export async function getMyProblems(
-  userId: number,
   userState: number,
   masterCodeMiddle: number,
   masterCodeLow: number,
@@ -212,7 +211,6 @@ export async function getMyProblems(
       {
         headers: { 'access-token': accessToken },
         params: {
-          userId: userId,
           userState: userState,
           masterCodeMiddle: masterCodeMiddle,
           masterCodeLow: masterCodeLow,
@@ -494,7 +492,7 @@ export async function getTeachers(accessToken: string) {
 
   try {
     const response = await axios.get<ApiResponse<Teacher[]>>(
-      BASE_URL + '/onlineteacher',
+      BASE_URL + 'user/onlineteacher',
       {
         headers: { 'access-token': accessToken },
       },

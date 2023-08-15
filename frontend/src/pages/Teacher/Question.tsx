@@ -3,6 +3,7 @@ import { Select, Option as MOption } from '@material-tailwind/react';
 import { questionSearch, getNewAccessToken } from '../../api';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
+import { useNavigate } from 'react-router-dom';
 // import que from '../../assets/full_heart.svg';
 
 // 페이지 보려면 아래 한줄 주석하세요.
@@ -50,6 +51,7 @@ const TeacherQuestion = () => {
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
   const itemsPerPage = 8;
+  const navigate = useNavigate();
 
   // 페이지 보려면 아래 주석 해제하세요.
   // const questionList = [
@@ -237,6 +239,10 @@ const TeacherQuestion = () => {
     return questionList.slice(start, end);
   };
 
+  const handleDetailPage = (id) => {
+    navigate(`/teacher/question/${id}`);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center pt-28">
       <div className="w-full mb-4 text-center">
@@ -336,6 +342,7 @@ const TeacherQuestion = () => {
               className="w-1/5 m-2 border-2 border-solive-200 rounded-md h-72"
             >
               <img
+                onClick={() => handleDetailPage(question.id)}
                 src={question.path_name}
                 alt={question.title}
                 className="w-full h-52 object-contain"

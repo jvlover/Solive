@@ -19,15 +19,15 @@ const TeacherQuestionDetail = () => {
   const [solvePoint, setSolvePoint] = useState('');
   const [expectedTime, setExpectedTime] = useState('');
 
-  //   const question = {
-  //     path: [que, ques],
-  //     title: 'title1',
-  //     userNickname: '더도리',
-  //     description: '어려운 문제',
-  //     subject: '수학',
-  //     subSubject: '수학1',
-  //     state: '대기중',
-  //   };
+  // const question = {
+  //   path: [que, ques],
+  //   title: 'title1',
+  //   userNickname: '더도리',
+  //   description: '어려운 문제',
+  //   subject: '수학',
+  //   subSubject: '수학1',
+  //   state: '대기중',
+  // };
 
   useEffect(() => {
     const fetchQuestion = async () => {
