@@ -38,7 +38,7 @@ public class ArticlePicture extends BaseEntity {
     @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String path; // 파일 업로드 경로
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    @Column(nullable = false, columnDefinition = "VARCHAR(100)")
     private String contentType; // 확장자명
 
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT NOW()")
