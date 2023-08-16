@@ -7,7 +7,7 @@ import lombok.Data;
  * 문제 검색 API에 대한 Response
  */
 @Data
-public class QuestionFindConditionRes {
+public class QuestionFindRes {
 
     // 각 Question들의 id(PK). 상세 조회할 때 api 요청하기 위해 필요
     Long questionId;
@@ -27,12 +27,12 @@ public class QuestionFindConditionRes {
     // 문제 마스터코드 분류명
     String masterCodeName;
 
-    public QuestionFindConditionRes() {
+    public QuestionFindRes() {
 
     }
 
     // Querydsl을 위한 생성자
-    public QuestionFindConditionRes(Long questionId, String userNickname,
+    public QuestionFindRes(Long questionId, String userNickname,
         String title, LocalDateTime createTime, String masterCodeName) {
         this.questionId = questionId;
         this.userNickname = userNickname;

@@ -4,20 +4,26 @@ import com.ssafy.solive.api.matching.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.matching.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.matching.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.matching.request.QuestionRegistPostReq;
-import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
+import com.ssafy.solive.api.matching.response.QuestionFindRes;
 import com.ssafy.solive.api.matching.service.QuestionService;
 import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.exception.matching.MatchingPossessionFailException;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * 학생이 풀이를 원하는 문제를 서버에 등록할 때 필요한 API를 모은 컨트롤러
@@ -119,7 +125,7 @@ public class QuestionController {
 
         log.info("QuestionController_findByCondition_start: " + findCondition.toString());
 
-        List<QuestionFindConditionRes> findResList = questionService.findByCondition(findCondition);
+        List<QuestionFindRes> findResList = questionService.findByCondition(findCondition);
 
         if (findResList.size() == 0) {
             log.info("QuestionController_findByCondition_end: No Result");
@@ -147,5 +153,23 @@ public class QuestionController {
             log.info("QuestionController_findDetail_end: " + findDetailRes);
         }
         return CommonResponse.success(findDetailRes);
+    }
+
+    /**
+     * 강사가 접속 시 등록 최신 순으로 문제 12개 조회하기
+     */
+    @GetMapping("/init/time")
+    public CommonResponse<?> findLatestQuestionForTeacher() {
+
+        log.info("QuestionController_findLatestQuestionForTeacher_start");
+
+        List<QuestionFindRes> findResList = questionService.findLatestQuestionForTeacher();
+
+        if (findResList.size() == 0) {
+            log.info("QuestionController_findLatestQuestionForTeacher_end: No Result");
+        } else {
+            log.info("QuestionController_findLatestQuestionForTeacher_end: " + findResList);
+        }
+        return CommonResponse.success(findResList);
     }
 }

@@ -4,8 +4,8 @@ import com.ssafy.solive.api.matching.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.matching.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.matching.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.matching.request.QuestionRegistPostReq;
-import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
+import com.ssafy.solive.api.matching.response.QuestionFindRes;
 import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.exception.matching.QuestionNoImageException;
 import com.ssafy.solive.common.exception.matching.QuestionNotFoundException;
@@ -181,13 +181,13 @@ public class QuestionServiceImpl implements QuestionService {
      * @param findCondition : 검색 조건. 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @Override
-    public List<QuestionFindConditionRes> findByCondition(
+    public List<QuestionFindRes> findByCondition(
         QuestionFindConditionGetReq findCondition) {
 
         log.info("QuestionService_findByCondition_start: " + findCondition.toString());
 
         // 문제 리스트 DB에서 얻어 오기
-        List<QuestionFindConditionRes> findConditionRes = questionRepository.findByCondition(
+        List<QuestionFindRes> findConditionRes = questionRepository.findByCondition(
             findCondition);
 
         // 문제 리스트의 각 문제에 썸네일 이미지 Setting
@@ -229,5 +229,31 @@ public class QuestionServiceImpl implements QuestionService {
 
         log.info("QuestionService_findDetail_end: " + findDetailRes);
         return findDetailRes;
+    }
+
+    /**
+     * 강사가 접속 시 등록 최신 순으로 문제 12개 조회하기
+     */
+    @Override
+    public List<QuestionFindRes> findLatestQuestionForTeacher() {
+
+        log.info("QuestionService_findLatestQuestionForTeacher_start");
+
+        // 문제 리스트 DB에서 얻어 오기
+        List<QuestionFindRes> findRes = questionRepository.findLatestQuestionForTeacher();
+
+        // 문제 리스트의 각 문제에 썸네일 이미지 Setting
+        for (int i = 0; i < findRes.size(); i++) {
+            String questionImage = questionRepository.findQuestionImage(
+                findRes.get(i).getQuestionId());
+            findRes.get(i).setPath(questionImage);
+        }
+
+        if (findRes.size() == 0) {
+            log.info("QuestionService_findLatestQuestionForTeacher_end: No Result");
+        } else {
+            log.info("QuestionService_findLatestQuestionForTeacher_end: " + findRes);
+        }
+        return findRes;
     }
 }
