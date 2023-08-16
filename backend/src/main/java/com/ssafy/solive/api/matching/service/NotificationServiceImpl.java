@@ -66,7 +66,10 @@ public class NotificationServiceImpl implements NotificationService {
 
         // 연결 생성 초기에 503 에러 방지하기 위한 더미 이벤트 데이터를 클라이언트에 전송
         String eventID = includeTimeToEmitterId(Long.toString(userId));
-        sendNotification(sseEmitter, eventID, emitterId, "EventStream Created.");
+        sendNotification(sseEmitter, eventID, emitterId, NotificationRes.builder()
+            .title("EventStream Created.")
+            .content("EventStream Created.")
+            .build());
 
         // 클라이언트가 수신하지 않은 event 존재할 경우 전송해서 event 유실 방지
         if (hasLostData(lastEventId)) {
@@ -104,7 +107,7 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             sseEmitter.send(SseEmitter.event()
                 .id(eventId)
-                .name("sse")
+                .name("message")
                 .data(data));
         } catch (IOException ioException) {
             emitterRepository.delete(emitterId);
