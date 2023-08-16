@@ -160,7 +160,7 @@ const QuestionRegistration = () => {
         submitQuestion(formData, newAccessToken);
       }
     } else {
-      console.error('Failed to load problems:', result.error);
+      navigate('/error');
     }
   };
 

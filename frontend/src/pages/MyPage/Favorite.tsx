@@ -3,6 +3,7 @@ import { useRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import { getFavorites, getNewAccessToken } from '../../api';
 import StarRating from '../star';
+import { useNavigate } from 'react-router-dom';
 
 export interface Teacher {
   path: string;
@@ -16,6 +17,7 @@ const FavoritePage = () => {
   const [user, setUser] = useRecoilState(userState);
   const [favorites, setFavorites] = useState<Teacher[]>([]);
   const [pageIndex, setPageIndex] = useState<number>(0);
+  const navigate = useNavigate();
 
   const displayedFavorites = favorites.slice(
     pageIndex * 3,
@@ -37,11 +39,11 @@ const FavoritePage = () => {
           getFavorites(newAccessToken);
         }
       } else {
-        console.error('Failed to load favorites:', result.error);
+        navigate('/error');
       }
     };
     fetchFavorites();
-  }, [setUser, user]);
+  }, [navigate, setUser, user]);
 
   return (
     <div className="container mx-auto px-4 mt-12 h-full min-h-[70vh]">

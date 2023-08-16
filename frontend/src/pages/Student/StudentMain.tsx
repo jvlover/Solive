@@ -109,24 +109,22 @@ const Student = () => {
             if (newResult.success) {
               setProblems(newResult.data);
             } else {
-              console.error(
-                'Failed to load problems after token refresh:',
-                newResult.error,
-              );
+              alert('다시 로그인 해주세요');
+              navigate('/login');
             }
           } else {
-            console.error('Failed to refresh token');
+            navigate('/error');
           }
         }
       } catch (error) {
-        console.error('Error fetching problems:', error);
+        navigate('/error');
       }
     };
 
     if (user) {
       fetchProblems();
     }
-  }, [user, setUser]);
+  }, [user, setUser, navigate]);
 
   useEffect(() => {
     const fetchTeachers = async () => {
@@ -142,24 +140,21 @@ const Student = () => {
             if (newResult.success) {
               setTeachers(newResult.data);
             } else {
-              console.error(
-                'Failed to load problems after token refresh:',
-                newResult.error,
-              );
+              navigate('/error');
             }
           } else {
-            console.error('Failed to refresh token');
+            navigate('/error');
           }
         }
       } catch (error) {
-        console.error('Error fetching problems:', error);
+        navigate('/error');
       }
     };
 
     if (user) {
       fetchTeachers();
     }
-  }, [user, setUser]);
+  }, [user, setUser, navigate]);
 
   const handleDetailPage = (id) => {
     navigate(`/student/question/${id}`);

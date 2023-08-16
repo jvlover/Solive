@@ -11,7 +11,6 @@ const TeacherRating = () => {
   };
 
   const handleSubmit = () => {
-    console.log(rating);
     setShowPopup(true);
   };
 
