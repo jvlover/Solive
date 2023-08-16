@@ -262,7 +262,7 @@ const QuestionManagement = () => {
                   className="flex flex-col items-center p-2 border-2 border-solive-200"
                 >
                   <img
-                    onClick={() => handleDetailPage(problem.id)}
+                    onClick={() => handleDetailPage(problem.questionId)}
                     className="h-[140px] w-[250px]"
                     src={problem.path}
                     alt="problem"

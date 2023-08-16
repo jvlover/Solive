@@ -606,7 +606,7 @@ export const getTeachersList = async (
 ): Promise<{ success: boolean; data?: Teacher[]; error?: string }> => {
   try {
     const response = await axios.get<{ success: boolean; data: Teacher[] }>(
-      BASE_URL + '/question',
+      BASE_URL + '/apply',
       {
         headers: { 'access-token': accessToken },
         params: {
