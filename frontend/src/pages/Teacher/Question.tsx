@@ -244,139 +244,128 @@ const TeacherQuestion = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center pt-28">
-      <div className="w-full mb-4 text-center">
-        <h1 className="text-black text-3xl">전체 문제 목록 보기</h1>
-      </div>
-      <div className="w-full flex space-x-2 mt-4 justify-center">
-        <div className="flex-1 flex items-center space-x-2 justify-center ml-4 ">
-          <span>과목 선택: </span>
-          <Select
-            color="blue"
-            size="md"
-            onChange={handleSubjectChange}
-            placeholder="과목 선택"
-          >
-            {subjects.map((subject) => (
-              <MOption key={subject.value} value={subject.value.toString()}>
-                {subject.label}
-              </MOption>
-            ))}
-          </Select>
+    <div className="flex justify-center pt-8">
+      <div className="flex flex-col items-center justify-center w-[70vw]">
+        <div className="w-full mb-4 text-center">
+          <h1 className="text-3xl text-black">전체 문제 목록 보기</h1>
         </div>
-        <div className="flex-1 flex items-center space-x-2 justify-center mx-2">
-          <span>세부 과목 선택: </span>
-          <Select
-            color="blue"
-            size="md"
-            onChange={handleSubSubjectChange}
-            placeholder="세부 과목 선택"
-          >
-            {(
-              subjects.find((subject) => subject.value === subjectNum)
-                ?.subSubjects || []
-            ).map((subSubject) => (
-              <MOption
-                key={subSubject.value}
-                value={subSubject.value.toString()}
-              >
-                {subSubject.label}
-              </MOption>
-            ))}
-          </Select>
-        </div>
-        <div className="flex-1 flex items-center space-x-2 justify-center mx-2">
-          <span>검색어: </span>
-          <input
-            type="text"
-            value={searchKeyword}
-            onChange={questionSearchKeywordChange}
-            placeholder="검색어 입력"
-          />
-        </div>
-        <div className="flex-initial text-center mx-2">
-          <button
-            className="px-3 py-2 border rounded text-black border-solive-200"
-            onClick={() =>
-              questionSearch(
-                subjectNum,
-                subSubjectNum,
-                searchKeyword,
-                order,
-                pageNum,
-                user.accessToken,
-              )
-            }
-          >
-            검색
-          </button>
-        </div>
-        <div className="flex-initial ml-4 inline-block mx-2">
-          <label>
-            <input
-              type="radio"
-              value="TIME_ASC"
-              checked={order === 'TIME_ASC'}
-              onChange={(e) => setOrder(e.target.value)}
-            />
-            최신순
-          </label>
-          <label className="ml-2">
-            <input
-              type="radio"
-              value="TIME_DESC"
-              checked={order === 'TIME_DESC'}
-              onChange={(e) => setOrder(e.target.value)}
-            />
-            오래된순
-          </label>
-        </div>
-      </div>
-      <div className="flex flex-wrap justify-center w-full mt-4">
-        {questionList.length === 0 ? (
-          <div className="text-gray-500 text-xl">등록된 문제가 없습니다.</div>
-        ) : (
-          getPageNumQuestions().map((question) => (
-            <div
-              key={question.id}
-              className="w-1/5 m-2 border-2 border-solive-200 rounded-md h-72"
-            >
-              <img
-                onClick={() => handleDetailPage(question.id)}
-                src={question.path_name}
-                alt={question.title}
-                className="w-full h-52 object-contain"
+        <div className="flex items-center justify-center w-full mt-4 space-x-2">
+          <div className="flex-initial inline-block mx-2 ml-4">
+            <label>
+              <input
+                type="radio"
+                value="TIME_ASC"
+                checked={order === 'TIME_ASC'}
+                onChange={(e) => setOrder(e.target.value)}
               />
+              최신순
+            </label>
+            <label className="ml-2">
+              <input
+                type="radio"
+                value="TIME_DESC"
+                checked={order === 'TIME_DESC'}
+                onChange={(e) => setOrder(e.target.value)}
+              />
+              오래된순
+            </label>
+          </div>
+          <div className="flex justify-center gap-x-2">
+            <Select onChange={handleSubjectChange}>
+              {subjects.map((subject) => (
+                <MOption key={subject.value} value={subject.value.toString()}>
+                  {subject.label}
+                </MOption>
+              ))}
+            </Select>
+            <Select onChange={handleSubSubjectChange}>
+              {(
+                subjects.find((subject) => subject.value === subjectNum)
+                  ?.subSubjects || []
+              ).map((subSubject) => (
+                <MOption
+                  key={subSubject.value}
+                  value={subSubject.value.toString()}
+                >
+                  {subSubject.label}
+                </MOption>
+              ))}
+            </Select>
+          </div>
+          <div className="flex items-center justify-center flex-1 mx-2 space-x-2">
+            <input
+              type="text"
+              value={searchKeyword}
+              onChange={questionSearchKeywordChange}
+              placeholder="검색어 입력"
+              className="w-full py-[0.5rem] px-4 border-2 rounded focus:outline-none"
+            />
+          </div>
+          <div className="flex-initial mx-2 text-center">
+            <button
+              className="px-5 py-2 btn-primary"
+              onClick={() =>
+                questionSearch(
+                  subjectNum,
+                  subSubjectNum,
+                  searchKeyword,
+                  order,
+                  pageNum,
+                  user.accessToken,
+                )
+              }
+            >
+              검색
+            </button>
+          </div>
+        </div>
 
-              <div className="flex p-2 h-20 overflow-hidden items-center space-x-2">
-                <div className="border rounded px-2 py-1 border-solive-200">
-                  <h2 className="font-bold truncate">{question.title}</h2>
-                </div>
-                <div className="border rounded px-2 py-1 border-solive-200">
-                  <p className="truncate">{question.time.toString()}</p>
+        <div className="flex flex-wrap justify-center w-full mt-8">
+          {questionList.length === 0 ? (
+            <div className="text-xl text-gray-500">등록된 문제가 없습니다.</div>
+          ) : (
+            getPageNumQuestions().map((question) => (
+              <div
+                key={question.id}
+                className="w-1/5 m-2 border-2 rounded-md border-solive-200 h-72"
+              >
+                <img
+                  onClick={() => handleDetailPage(question.id)}
+                  src={question.path_name}
+                  alt={question.title}
+                  className="object-contain w-full h-52"
+                />
+
+                <div className="flex items-center h-20 p-2 space-x-2 overflow-hidden">
+                  <div className="px-2 py-1 border rounded border-solive-200">
+                    <h2 className="font-bold truncate">{question.title}</h2>
+                  </div>
+                  <div className="px-2 py-1 border rounded border-solive-200">
+                    <p className="truncate">{question.time.toString()}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        )}
-      </div>
-      <div className="mt-4 ">
-        <button
-          className="bg-solive-200"
-          onClick={handlePrevPage}
-          disabled={pageNum === 0}
-        >
-          이전
-        </button>
-        <button
-          className="bg-solive-200"
-          onClick={handleNextPage}
-          disabled={
-            pageNum >= Math.ceil(questionList.length / itemsPerPage) - 1
-          }
-        >
-          다음
-        </button>
+            ))
+          )}
+        </div>
+        <div className="flex mt-10 mb-8 gap-x-6">
+          <button
+            className="px-5 btn-primary"
+            onClick={handlePrevPage}
+            disabled={pageNum === 0}
+          >
+            이전
+          </button>
+          <button
+            className="px-5 btn-primary"
+            onClick={handleNextPage}
+            disabled={
+              pageNum >= Math.ceil(questionList.length / itemsPerPage) - 1
+            }
+          >
+            다음
+          </button>
+        </div>
       </div>
     </div>
   );

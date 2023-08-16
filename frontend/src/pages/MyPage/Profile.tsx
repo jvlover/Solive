@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 export interface UserProfile {
   path: string;
+  originalName: string;
   nickname: string;
   experience: number;
   introduce: string;
@@ -23,6 +24,7 @@ const ProfilePage = () => {
   const [user, setUser] = useRecoilState(userState);
   const [userProfile, setUserProfile] = useState<UserProfile>({
     path: '',
+    originalName: '',
     nickname: '',
     experience: 0,
     introduce: '',
@@ -130,6 +132,8 @@ const ProfilePage = () => {
                       value={
                         profileImageName
                           ? profileImageName
+                          : userProfile.originalName
+                          ? userProfile.originalName
                           : '현재 등록된 사진이 없습니다.'
                       }
                       disabled
