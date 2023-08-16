@@ -272,79 +272,96 @@ const QuestionManagement = () => {
 
   return (
     <div className="pt-4">
-      <div className="mx-auto mt-8 mb-8 h-[650px] w-[800px] p-6 border-2 border-solive-200">
-        <p className="text-[18px] font-bold">내가 등록한 문제</p>
-        <p className="text-[12px] mt-4">
-          저장된 강의는 7일동안 다시 볼 수 있습니다.
-        </p>
-        <div className="flex justify-center w-full mt-4 space-x-2">
-          <div className="flex items-center justify-center flex-1 ml-4 space-x-2">
-            <span>과목 선택: </span>
-            <Select
-              color="blue"
-              size="md"
-              onChange={handleSubjectChange}
-              placeholder="과목 선택"
-            >
-              {subjects.map((subject) => (
-                <MOption key={subject.value} value={subject.value.toString()}>
-                  {subject.label}
+      <div className="mx-auto mt-8 mb-8 h-[650px] w-[800px] p-6 border-2 border-solive-200 flex flex-col justify-between">
+        <div>
+          <p className="text-[18px] font-bold">내가 등록한 문제</p>
+          <p className="text-[12px] mt-4">
+            저장된 강의는 7일동안 다시 볼 수 있습니다.
+          </p>
+          <div className="flex justify-center w-full mt-4">
+            <div className="flex items-center justify-center flex-1 space-x-2">
+              <Select
+                color="blue"
+                size="md"
+                onChange={handleSubjectChange}
+                placeholder="과목 선택"
+              >
+                {subjects.map((subject) => (
+                  <MOption key={subject.value} value={subject.value.toString()}>
+                    {subject.label}
+                  </MOption>
+                ))}
+              </Select>
+            </div>
+            <div className="flex items-center justify-center flex-1 mx-2 space-x-2">
+              <Select
+                color="blue"
+                size="md"
+                onChange={handleSubSubjectChange}
+                placeholder="세부 과목 선택"
+              >
+                {(
+                  subjects.find((subject) => subject.value === subjectNum)
+                    ?.subSubjects || []
+                ).map((subSubject) => (
+                  <MOption
+                    key={subSubject.value}
+                    value={subSubject.value.toString()}
+                  >
+                    {subSubject.label}
+                  </MOption>
+                ))}
+              </Select>
+            </div>
+            <div className="flex items-center justify-center flex-1 space-x-2">
+              <Select
+                color="blue"
+                size="md"
+                onChange={handleMatchingStateChange}
+                placeholder="매칭 여부 선택"
+              >
+                <MOption key={0} value={'0'}>
+                  {'등록됨'}
                 </MOption>
-              ))}
-            </Select>
-          </div>
-          <div className="flex items-center justify-center flex-1 mx-2 space-x-2">
-            <span>세부 과목 선택: </span>
-            <Select
-              color="blue"
-              size="md"
-              onChange={handleSubSubjectChange}
-              placeholder="세부 과목 선택"
-            >
-              {(
-                subjects.find((subject) => subject.value === subjectNum)
-                  ?.subSubjects || []
-              ).map((subSubject) => (
-                <MOption
-                  key={subSubject.value}
-                  value={subSubject.value.toString()}
-                >
-                  {subSubject.label}
+                <MOption key={1} value={'1'}>
+                  {'요청됨'}
                 </MOption>
-              ))}
-            </Select>
+                <MOption key={2} value={'2'}>
+                  {'완료됨'}
+                </MOption>
+              </Select>
+            </div>
           </div>
-          <div className="flex items-center justify-center flex-1 mx-2 space-x-2">
-            <span>매칭 여부 선택: </span>
-            <Select
-              color="blue"
-              size="md"
-              onChange={handleMatchingStateChange}
-              placeholder="매칭 여부 선택"
-            >
-              <MOption key={0} value={'0'}>
-                {'등록됨'}
-              </MOption>
-              <MOption key={1} value={'1'}>
-                {'요청됨'}
-              </MOption>
-              <MOption key={2} value={'2'}>
-                {'완료됨'}
-              </MOption>
-            </Select>
-          </div>
-          <div className="flex items-center justify-center flex-1 mx-2 space-x-2">
-            <span>검색어: </span>
+          <div className="flex items-center justify-end my-4">
+            <label className="flex justify-center mx-2">
+              <input
+                type="radio"
+                value="TIME_ASC"
+                checked={order === 'TIME_ASC'}
+                onChange={(e) => setOrder(e.target.value)}
+                className="mr-1"
+              />
+              <div>최신순</div>
+            </label>
+            <label className="flex justify-center ml-2 mr-3">
+              <input
+                type="radio"
+                value="TIME_DESC"
+                checked={order === 'TIME_DESC'}
+                onChange={(e) => setOrder(e.target.value)}
+                className="mr-1"
+              />
+              <div>등록순</div>
+            </label>
             <input
               type="text"
               value={searchKeyword}
               onChange={questionSearchKeywordChange}
               placeholder="검색어 입력"
+              className="mr-5 w-[480px] py-[0.5rem] focus:outline-none border-2 rounded px-4"
             />
-          </div>
-          <div className="flex-initial mx-2 text-center">
             <button
-              className="px-3 py-2 text-black border border-black rounded"
+              className="px-8 py-3 btn-primary"
               onClick={() =>
                 getMyProblems(
                   user.masterCodeId,
@@ -361,52 +378,46 @@ const QuestionManagement = () => {
               검색
             </button>
           </div>
-          <div className="flex-initial inline-block mx-2 ml-4">
-            <label>
-              <input
-                type="radio"
-                value="TIME_ASC"
-                checked={order === 'TIME_ASC'}
-                onChange={(e) => setOrder(e.target.value)}
-              />
-              최신순
-            </label>
-            <label className="ml-2">
-              <input
-                type="radio"
-                value="TIME_DESC"
-                checked={order === 'TIME_DESC'}
-                onChange={(e) => setOrder(e.target.value)}
-              />
-              오래된순
-            </label>
-          </div>
         </div>
-        <div className="grid grid-cols-3 gap-4 pt-12">
-          {problems.map((problem) => (
-            <div
-              key={problem.id}
-              className="flex flex-col items-center p-2 border-2 border-solive-200"
-            >
-              <img
-                onClick={() => handleDetailPage(problem.id)}
-                className="h-[140px] w-[250px]"
-                src={problem.path}
-                alt="problem"
-              />
-              <span>
-                {problem.title} {matchingStateToString(problem.matchingState)}
-              </span>
+        <div>
+          {problems.length ? (
+            <div className="grid grid-cols-3 gap-4 pt-12">
+              {problems.map((problem) => (
+                <div
+                  key={problem.id}
+                  className="flex flex-col items-center p-2 border-2 border-solive-200"
+                >
+                  <img
+                    onClick={() => handleDetailPage(problem.id)}
+                    className="h-[140px] w-[250px]"
+                    src={problem.path}
+                    alt="problem"
+                  />
+                  <span>
+                    {problem.title}{' '}
+                    {matchingStateToString(problem.matchingState)}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <div className="flex justify-center text-xl text-blue-gray-500">
+              등록한 문제가 없습니다.
+            </div>
+          )}
         </div>
-        <div className="flex justify-between pt-8">
-          <button onClick={handlePrevPage} disabled={pageNum === 0}>
+        <div className="flex justify-center pt-8 gap-x-3">
+          <button
+            onClick={handlePrevPage}
+            disabled={pageNum === 0}
+            className="btn-primary"
+          >
             이전
           </button>
           <button
             onClick={handleNextPage}
             disabled={pageNum >= Math.ceil(problems.length / 8) - 1}
+            className="btn-primary"
           >
             다음
           </button>
