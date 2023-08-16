@@ -38,7 +38,7 @@ const TeacherRating = () => {
       </div>
       <button
         onClick={handleSubmit}
-        className="px-4 py-2 text-white bg-blue-600 rounded"
+        className="px-4 py-2 text-white bg-solive-200"
         disabled={rating === null}
       >
         확인
@@ -53,7 +53,7 @@ const TeacherRating = () => {
             </p>
             <button
               onClick={handlePopupConfirm}
-              className="px-4 py-2 text-white bg-blue-600 rounded"
+              className="px-4 py-2 text-white bg-solive-200"
             >
               확인
             </button>

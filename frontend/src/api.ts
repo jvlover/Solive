@@ -676,3 +676,23 @@ export const getFavorites = async (
     return { success: false, error: errorCode || error };
   }
 };
+
+export const teacherSolvePoint = async (
+  amount: number,
+  token: string,
+): Promise<{ success: boolean; solvePoint?: number }> => {
+  try {
+    const response = await axios.put(
+      `${CHARGE_URL}`,
+      { amount },
+      { headers: { 'access-token': token } },
+    );
+    return {
+      success: response.data.success,
+      solvePoint: response.data.data.solvePoint,
+    };
+  } catch (error) {
+    console.error('Error charging: ', error);
+    return { success: false };
+  }
+};

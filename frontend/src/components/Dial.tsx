@@ -77,13 +77,6 @@ const Dial = () => {
               {user?.masterCodeId === 1 ? '문제 등록' : '문제 보기'}
             </Typography>
           </SpeedDialAction>
-          <SpeedDialAction className="relative focus:outline-none">
-            <InformationCircleIcon
-              className="w-5 h-5"
-              onClick={() => navigate('/favorite')}
-            />
-            <Typography {...labelProps}>즐겨찾기</Typography>
-          </SpeedDialAction>
         </SpeedDialContent>
       </SpeedDial>
     </div>
