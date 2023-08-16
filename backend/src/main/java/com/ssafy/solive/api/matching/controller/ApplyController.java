@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/apply")
-@CrossOrigin("*")
 public class ApplyController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
@@ -35,7 +34,7 @@ public class ApplyController {
 
     @Autowired
     public ApplyController(ApplyService applyService, NotificationService notificationService,
-                           UserService userService) {
+        UserService userService) {
         this.applyService = applyService;
         this.notificationService = notificationService;
         this.userService = userService;
@@ -49,7 +48,7 @@ public class ApplyController {
     @Transactional
     @PostMapping()
     public CommonResponse<?> regist(@RequestBody ApplyRegistPostReq registInfo,
-                                    HttpServletRequest request) {
+        HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
@@ -61,7 +60,7 @@ public class ApplyController {
 
         // 학생에게 알림 전송
         String title =
-                applyRegistPostRes.getUser().getNickname() + "님, 등록하신 문제에 새로운 풀이 요청이 도착했습니다.";
+            applyRegistPostRes.getUser().getNickname() + "님, 등록하신 문제에 새로운 풀이 요청이 도착했습니다.";
         String content = applyRegistPostRes.getQuestionTitle();
         notificationService.send(applyRegistPostRes.getUser(), title, content);
 
@@ -76,7 +75,7 @@ public class ApplyController {
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(@RequestBody ApplyDeletePutReq deleteInfo,
-                                    HttpServletRequest request) {
+        HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);

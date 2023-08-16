@@ -23,7 +23,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/matched")
-@CrossOrigin("*")
 public class MatchedController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
@@ -34,7 +33,7 @@ public class MatchedController {
 
     @Autowired
     public MatchedController(MatchedService matchedService, NotificationService notificationService,
-                             UserService userService) {
+        UserService userService) {
         this.matchedService = matchedService;
         this.notificationService = notificationService;
         this.userService = userService;
@@ -48,7 +47,7 @@ public class MatchedController {
     @Transactional
     @PostMapping()
     public CommonResponse<?> regist(@RequestBody MatchedRegistPostReq registInfo,
-                                    HttpServletRequest request) {
+        HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
@@ -61,8 +60,8 @@ public class MatchedController {
 
         // 강사에게 알림 전송 코드. title과 content의 내용은 일단 임시
         String title =
-                matchedRegistPostRes.getUser().getNickname() + "님, 지원하신 요청이 승낙되어 매칭이 성사되었습니다. "
-                        + "강의 세션 ID는 " + sessionId + " 입니다.";
+            matchedRegistPostRes.getUser().getNickname() + "님, 지원하신 요청이 승낙되어 매칭이 성사되었습니다. "
+                + "강의 세션 ID는 " + sessionId + " 입니다.";
         notificationService.send(matchedRegistPostRes.getUser(), title, sessionId);
 
         log.info("MatchedController_regist_end: success");
@@ -76,12 +75,12 @@ public class MatchedController {
      */
     @GetMapping("/my")
     public CommonResponse<?> findMyMatching(MatchedFindMineGetReq findCondition,
-                                            HttpServletRequest request) {
+        HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
         log.info(
-                "MatchedController_findMyMatching_start: " + findCondition.toString() + ", " + userId);
+            "MatchedController_findMyMatching_start: " + findCondition.toString() + ", " + userId);
 
         findCondition.setUserId(userId);
 

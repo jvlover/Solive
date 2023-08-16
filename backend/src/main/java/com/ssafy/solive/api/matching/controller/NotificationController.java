@@ -29,7 +29,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 @RestController
 @RequestMapping("/notification")
-@CrossOrigin("*")
 public class NotificationController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return

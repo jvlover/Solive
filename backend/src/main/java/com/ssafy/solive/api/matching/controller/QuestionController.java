@@ -25,7 +25,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/question")
-@CrossOrigin("*")
 public class QuestionController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return
@@ -47,12 +46,12 @@ public class QuestionController {
      */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> regist(@RequestPart QuestionRegistPostReq registInfo,
-                                    @RequestPart("files") List<MultipartFile> fileList, HttpServletRequest request) {
+        @RequestPart("files") List<MultipartFile> fileList, HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
         log.info("QuestionController_regist_start: " + registInfo.toString()
-                + ", " + fileList.toString() + ", " + userId);
+            + ", " + fileList.toString() + ", " + userId);
 
         registInfo.setStudentId(userId);
 
@@ -69,7 +68,7 @@ public class QuestionController {
      */
     @PutMapping("/delete")
     public CommonResponse<?> delete(@RequestBody QuestionDeletePutReq deleteInfo,
-                                    HttpServletRequest request) {
+        HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
@@ -93,7 +92,7 @@ public class QuestionController {
      */
     @PutMapping()
     public CommonResponse<?> modify(@RequestBody QuestionModifyPutReq modifyInfo,
-                                    HttpServletRequest request) {
+        HttpServletRequest request) {
 
         String accessToken = request.getHeader("access-token");
         Long userId = userService.getUserIdByToken(accessToken);
