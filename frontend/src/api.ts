@@ -355,7 +355,7 @@ export const modifyProfile = async (
   );
 
   if (profileImage) {
-    formData.append('image', profileImage);
+    formData.append('files', profileImage);
   }
 
   for (const pair of formData.entries()) {
