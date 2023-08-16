@@ -25,8 +25,10 @@ const FavoritePage = () => {
   );
 
   useEffect(() => {
+    console.log('sda');
     const fetchFavorites = async () => {
       const result = await getFavorites(user.accessToken);
+      console.log(result.success);
       if (result.success) {
         setFavorites(result.data);
       } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
@@ -39,7 +41,7 @@ const FavoritePage = () => {
           getFavorites(newAccessToken);
         }
       } else {
-        navigate('/error');
+        // navigate('/error');
       }
     };
     fetchFavorites();

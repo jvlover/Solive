@@ -19,7 +19,9 @@ export const latestQuestionsSelector = selector<Question[] | null>({
   key: 'LatestQuestions',
   get: async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/latest`);
+      const response = await axios.get(
+        'https://i9a107.p.ssafy.io/api/init/time',
+      );
       return response.data;
     } catch (error) {
       console.error(error);
@@ -35,9 +37,12 @@ export const relatedQuestionsSelector = selector<Question[] | null>({
     if (!user || user.masterCodeId !== 2) return null;
 
     try {
-      const response = await axios.get(`http://localhost:8080/related`, {
-        headers: { 'access-token': user.accessToken },
-      });
+      const response = await axios.get(
+        'https://i9a107.p.ssafy.io/api/init/favorite',
+        {
+          headers: { 'access-token': user.accessToken },
+        },
+      );
       return response.data;
     } catch (error) {
       console.error(error);
