@@ -3,7 +3,6 @@ package com.ssafy.solive.db.repository;
 import static com.ssafy.solive.db.entity.QMasterCode.masterCode;
 import static com.ssafy.solive.db.entity.QMatched.matched;
 import static com.ssafy.solive.db.entity.QQuestion.question;
-import static com.ssafy.solive.db.entity.QTeacher.teacher;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -67,13 +66,13 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
      */
     private BooleanExpression mastercodeBetween(int code) {
         if (code % 1000 == 0) {
-            return masterCode.id.between(1000, 1999);
+            return matched.question.masterCode.id.between(1000, 1999);
         } else if (code % 100 == 0) {
-            return masterCode.id.between(code, code + 99);
+            return matched.question.masterCode.id.between(code, code + 99);
         } else if (code % 10 == 0) {
-            return masterCode.id.between(code, code + 9);
+            return matched.question.masterCode.id.between(code, code + 9);
         } else {
-            return masterCode.id.between(code, code);
+            return matched.question.masterCode.id.between(code, code);
         }
     }
 
@@ -81,7 +80,7 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
      * keyword 검색. 검색어 없으면 키워드 없이 검색
      */
     private BooleanExpression keywordSearch(String keyword) {
-        return keyword == null ? null : question.title.contains(keyword);
+        return keyword == null ? null : matched.question.title.contains(keyword);
     }
 
     /**
@@ -89,9 +88,9 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
      */
     private OrderSpecifier<LocalDateTime> timeSort(String sort) {
         if (sort.equals("TIME_ASC")) {  // "TIME_ASC" : 시간 오름차순 정렬
-            return question.time.asc();
+            return matched.question.time.asc();
         } else {    // "TIME_DESC" : 시간 내림차순 정렬
-            return question.time.desc();
+            return matched.question.time.desc();
         }
     }
 
@@ -99,13 +98,13 @@ public class QMatchedRepositoryImpl implements QMatchedRepository {
      * teacher id로 본인이 지원한 question 조회하기 위한 where 절에서 사용
      */
     private BooleanExpression teacherIdEq(Long id) {
-        return teacher.id.eq(id);
+        return matched.teacher.id.eq(id);
     }
 
     /**
      * question 조회할 때 matchingState 검색 조건 반영하여 where 절에서 사용
      */
     private BooleanExpression matchingStateEq(Integer id) {
-        return question.matchingState.eq(id);
+        return matched.question.matchingState.eq(id);
     }
 }

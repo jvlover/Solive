@@ -25,6 +25,9 @@ public class QuestionFindDetailRes {
     // 문제 분류(마스터코드)
     String masterCodeName;
 
+    // 문제 대분류(마스터코드)
+    String masterCodeCategory;
+
     // 문제 등록 시간
     String createTime;
 

@@ -4,8 +4,8 @@ import com.ssafy.solive.api.matching.request.QuestionDeletePutReq;
 import com.ssafy.solive.api.matching.request.QuestionFindConditionGetReq;
 import com.ssafy.solive.api.matching.request.QuestionModifyPutReq;
 import com.ssafy.solive.api.matching.request.QuestionRegistPostReq;
-import com.ssafy.solive.api.matching.response.QuestionFindConditionRes;
 import com.ssafy.solive.api.matching.response.QuestionFindDetailRes;
+import com.ssafy.solive.api.matching.response.QuestionFindRes;
 import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.exception.matching.QuestionNoImageException;
 import com.ssafy.solive.common.exception.matching.QuestionNotFoundException;
@@ -15,10 +15,12 @@ import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.Question;
 import com.ssafy.solive.db.entity.QuestionPicture;
 import com.ssafy.solive.db.entity.Student;
+import com.ssafy.solive.db.entity.Teacher;
 import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.QuestionPictureRepository;
 import com.ssafy.solive.db.repository.QuestionRepository;
 import com.ssafy.solive.db.repository.StudentRepository;
+import com.ssafy.solive.db.repository.TeacherRepository;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,16 +40,19 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionPictureRepository questionPictureRepository;
     private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
     private final MasterCodeRepository masterCodeRepository;
     private final FileUploader fileUploader;
 
     @Autowired
     public QuestionServiceImpl(QuestionRepository questionRepository,
         QuestionPictureRepository questionPictureRepository, StudentRepository studentRepository,
-        MasterCodeRepository masterCodeRepository, FileUploader fileUploader) {
+        TeacherRepository teacherRepository, MasterCodeRepository masterCodeRepository,
+        FileUploader fileUploader) {
         this.questionRepository = questionRepository;
         this.questionPictureRepository = questionPictureRepository;
         this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
         this.masterCodeRepository = masterCodeRepository;
         this.fileUploader = fileUploader;
     }
@@ -181,13 +186,13 @@ public class QuestionServiceImpl implements QuestionService {
      * @param findCondition : 검색 조건. 제목 검색어, 과목 코드, 시간 순 정렬 조건 선택 가능
      */
     @Override
-    public List<QuestionFindConditionRes> findByCondition(
+    public List<QuestionFindRes> findByCondition(
         QuestionFindConditionGetReq findCondition) {
 
         log.info("QuestionService_findByCondition_start: " + findCondition.toString());
 
         // 문제 리스트 DB에서 얻어 오기
-        List<QuestionFindConditionRes> findConditionRes = questionRepository.findByCondition(
+        List<QuestionFindRes> findConditionRes = questionRepository.findByCondition(
             findCondition);
 
         // 문제 리스트의 각 문제에 썸네일 이미지 Setting
@@ -227,7 +232,73 @@ public class QuestionServiceImpl implements QuestionService {
         // Response에 Images Setting
         findDetailRes.setPath(questionImages);
 
+        // 마스터코드 과목 대분류 추가
+        MasterCode masterCode = masterCodeRepository.findByName(findDetailRes.getMasterCodeName());
+        if (masterCode.getId() / 100 == 11) {
+            findDetailRes.setMasterCodeCategory("수학");
+        } else {
+            findDetailRes.setMasterCodeCategory("과학");
+        }
+
         log.info("QuestionService_findDetail_end: " + findDetailRes);
         return findDetailRes;
+    }
+
+    /**
+     * 강사가 접속 시 등록 최신 순으로 문제 12개 조회하기
+     */
+    @Override
+    public List<QuestionFindRes> findLatestQuestionForTeacher() {
+
+        log.info("QuestionService_findLatestQuestionForTeacher_start");
+
+        // 문제 리스트 DB에서 얻어 오기
+        List<QuestionFindRes> findRes = questionRepository.findLatestQuestionForTeacher();
+
+        // 문제 리스트의 각 문제에 썸네일 이미지 Setting
+        for (int i = 0; i < findRes.size(); i++) {
+            String questionImage = questionRepository.findQuestionImage(
+                findRes.get(i).getQuestionId());
+            findRes.get(i).setPath(questionImage);
+        }
+
+        if (findRes.size() == 0) {
+            log.info("QuestionService_findLatestQuestionForTeacher_end: No Result");
+        } else {
+            log.info("QuestionService_findLatestQuestionForTeacher_end: " + findRes);
+        }
+        return findRes;
+    }
+
+    /**
+     * 강사가 접속 시 자신이 좋아하는 과목으로 설정한 것과 똑같은 과목의 문제 최신순으로 12개 조회하기
+     *
+     * @param userId : 강사의 user Id
+     */
+    @Override
+    public List<QuestionFindRes> findFavoriteQuestionForTeacher(Long userId) {
+
+        log.info("QuestionService_findFavoriteQuestionForTeacher_start: " + userId);
+
+        Teacher teacher = teacherRepository.findById(userId)
+            .orElseThrow(NoDataException::new);
+
+        // 문제 리스트 DB에서 얻어 오기
+        List<QuestionFindRes> findRes = questionRepository.findFavoriteQuestionForTeacher(
+            teacher.getMasterCode().getId());
+
+        // 문제 리스트의 각 문제에 썸네일 이미지 Setting
+        for (int i = 0; i < findRes.size(); i++) {
+            String questionImage = questionRepository.findQuestionImage(
+                findRes.get(i).getQuestionId());
+            findRes.get(i).setPath(questionImage);
+        }
+
+        if (findRes.size() == 0) {
+            log.info("QuestionService_findFavoriteQuestionForTeacher_end: No Result");
+        } else {
+            log.info("QuestionService_findFavoriteQuestionForTeacher_end: " + findRes);
+        }
+        return findRes;
     }
 }
