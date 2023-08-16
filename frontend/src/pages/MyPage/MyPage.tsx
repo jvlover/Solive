@@ -105,17 +105,31 @@ const MyPage = () => {
                 </ListItemPrefix>
                 문제 관리
               </ListItem>
-              <ListItem
-                onClick={() => {
-                  navigate('/mypage/teachersolve');
-                }}
-                className="font-[pretendard]"
-              >
-                <ListItemPrefix>
-                  <CreditCardIcon className="w-5 h-5" />
-                </ListItemPrefix>
-                솔브포인트 출금
-              </ListItem>
+              {user.masterCodeId == 1 ? (
+                <ListItem
+                  onClick={() => {
+                    navigate('/mypage/solvepoint');
+                  }}
+                  className="font-[pretendard]"
+                >
+                  <ListItemPrefix>
+                    <CreditCardIcon className="w-5 h-5" />
+                  </ListItemPrefix>
+                  솔브포인트 관리
+                </ListItem>
+              ) : (
+                <ListItem
+                  onClick={() => {
+                    navigate('/mypage/teachersolve');
+                  }}
+                  className="font-[pretendard]"
+                >
+                  <ListItemPrefix>
+                    <CreditCardIcon className="w-5 h-5" />
+                  </ListItemPrefix>
+                  솔브포인트 출금
+                </ListItem>
+              )}
               <ListItem
                 onClick={() => {
                   navigate('/mypage/favorite');
@@ -126,17 +140,6 @@ const MyPage = () => {
                   <StarIcon className="w-5 h-5" />
                 </ListItemPrefix>
                 즐겨찾기
-              </ListItem>
-              <ListItem
-                onClick={() => {
-                  navigate('/mypage/solvepoint');
-                }}
-                className="font-[pretendard]"
-              >
-                <ListItemPrefix>
-                  <CreditCardIcon className="w-5 h-5" />
-                </ListItemPrefix>
-                솔브포인트 관리
               </ListItem>
             </List>
           </Card>
