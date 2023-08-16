@@ -10,9 +10,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
 import java.time.LocalDateTime;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -96,7 +94,6 @@ public class User extends BaseEntity {
     // 회원가입 시간
     @CreationTimestamp
     private LocalDateTime signinTime; // 한국 시간 (UTC+9)으로 초기화
-
 
     // 성별
     @Column(nullable = false)

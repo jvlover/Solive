@@ -24,7 +24,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Entity
 public class Teacher extends User {
 
-    // masterCode id, FK
+    // masterCode id, FK, 좋아하는 과목
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     private MasterCode masterCode;

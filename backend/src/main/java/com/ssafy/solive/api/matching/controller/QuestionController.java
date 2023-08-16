@@ -172,4 +172,26 @@ public class QuestionController {
         }
         return CommonResponse.success(findResList);
     }
+
+    /**
+     * 강사가 접속 시 자신이 좋아하는 과목으로 설정한 것과 똑같은 과목의 문제 최신순으로 12개 조회하기
+     *
+     * @param request : 강사의 user Id token 포함
+     */
+    @GetMapping("/init/favorite")
+    public CommonResponse<?> findFavoriteQuestionForTeacher(HttpServletRequest request) {
+
+        String accessToken = request.getHeader("access-token");
+        Long userId = userService.getUserIdByToken(accessToken);
+        log.info("QuestionController_findFavoriteQuestionForTeacher_start: " + userId);
+
+        List<QuestionFindRes> findResList = questionService.findFavoriteQuestionForTeacher(userId);
+
+        if (findResList.size() == 0) {
+            log.info("QuestionController_findFavoriteQuestionForTeacher_end: No Result");
+        } else {
+            log.info("QuestionController_findFavoriteQuestionForTeacher_end: " + findResList);
+        }
+        return CommonResponse.success(findResList);
+    }
 }

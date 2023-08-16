@@ -176,17 +176,42 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
     }
 
     /**
+     * 강사가 접속 시 자신이 좋아하는 과목으로 설정한 것과 동일한 문제 최신 순으로 12개 조회
+     */
+    @Override
+    public List<QuestionFindRes> findFavoriteQuestionForTeacher(Integer subjectId) {
+
+        log.info(
+            "QQuestionRepository_findFavoriteQuestionForTeacher_start: " + subjectId);
+
+        return queryFactory
+            .select(Projections.constructor(QuestionFindRes.class,
+                question.id.as("questionId"),
+                student.nickname.as("userNickname"),
+                question.title.as("title"),
+                question.time.as("createTime"),
+                masterCode.name.as("masterCodeName")))
+            .from(question)
+            .leftJoin(question.student, student).on(student.id.eq(question.student.id))
+            .leftJoin(question.masterCode, masterCode).on(masterCode.id.eq(question.masterCode.id))
+            .where(subjectCodeEq(subjectId))
+            .orderBy(timeSort("TIME_DESC"))
+            .limit(12)
+            .fetch();
+    }
+
+    /**
      * masterCode Range 처리
      */
     private BooleanExpression mastercodeBetween(int code) {
         if (code % 1000 == 0) {
-            return masterCode.id.between(1000, 1999);
+            return question.masterCode.id.between(1000, 1999);
         } else if (code % 100 == 0) {
-            return masterCode.id.between(code, code + 99);
+            return question.masterCode.id.between(code, code + 99);
         } else if (code % 10 == 0) {
-            return masterCode.id.between(code, code + 9);
+            return question.masterCode.id.between(code, code + 9);
         } else {
-            return masterCode.id.between(code, code);
+            return question.masterCode.id.between(code, code);
         }
     }
 
@@ -219,7 +244,7 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
      * student id로 본인이 등록한 question 조회하기 위한 where 절에서 사용
      */
     private BooleanExpression studentIdEq(Long id) {
-        return student.id.eq(id);
+        return question.student.id.eq(id);
     }
 
     /**
@@ -234,5 +259,12 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
      */
     private BooleanExpression matchingStateLt() {
         return question.matchingState.lt(2);
+    }
+
+    /**
+     * 강사의 좋아하는 과목과 문제의 과목 분류 마스터코드가 일치할 때 where 절
+     */
+    private BooleanExpression subjectCodeEq(Integer subjectId) {
+        return question.masterCode.id.eq(subjectId);
     }
 }

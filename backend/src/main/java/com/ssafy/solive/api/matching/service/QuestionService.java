@@ -24,4 +24,6 @@ public interface QuestionService {
 
     List<QuestionFindRes> findLatestQuestionForTeacher();
 
+    List<QuestionFindRes> findFavoriteQuestionForTeacher(Long userId);
+
 }

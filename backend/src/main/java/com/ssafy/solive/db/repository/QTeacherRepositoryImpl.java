@@ -43,7 +43,7 @@ public class QTeacherRepositoryImpl implements QTeacherRepository {
     }
 
     private BooleanExpression isOnline() {
-        return masterCode.id.eq(11);
+        return teacher.masterCode.id.eq(11);
     }
 
     private OrderSpecifier<Double> ratingSort() {

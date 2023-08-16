@@ -23,4 +23,6 @@ public interface QQuestionRepository {
     String findQuestionImage(Long questionId);
 
     List<QuestionFindRes> findLatestQuestionForTeacher();
+
+    List<QuestionFindRes> findFavoriteQuestionForTeacher(Integer subjectId);
 }
