@@ -142,7 +142,7 @@ const HeaderNav = () => {
         <button
             onClick={() => {
               navigate('/matchpage',{
-                // state:{applyId},
+                // state:{applyId : 넣을 applyId값},
               });
             }}>테스트하러뿅</button>
         <div className="flex items-center gap-4">

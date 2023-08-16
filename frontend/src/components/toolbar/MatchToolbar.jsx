@@ -196,10 +196,10 @@ const MatchToolbar = (props) => {
                                     boxShadow: 24,
                                     p: 4,
                                 }}>
-                                    <Typography class="text-center">
+                                    <Typography id="modalText">
                                         정말 강의실에서 나가시겠습니까?
                                     </Typography>
-                                    <div id="modalText">
+                                    <div id="modalButton">
                                         <Button onClick={leaveSession}>나가기</Button> <Button onClick={modalToggle}>취소</Button>
                                     </div>
                                 </Box>

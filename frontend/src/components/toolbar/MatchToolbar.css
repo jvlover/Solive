@@ -26,10 +26,14 @@
     padding: 16px;
   }
 
-  #modalText{
+  #modalButton{
     text-align: center;
     margin-top: 15px;
   }
+
+  #modalText{
+   text-align: center;
+}
   
   .headerLight{
     color: #706969 !important;

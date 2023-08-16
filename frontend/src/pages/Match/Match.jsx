@@ -1,21 +1,21 @@
-import registerServiceWorker from '../registerServiceWorker';
+import registerServiceWorker from '../../registerServiceWorker';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
-import { userState } from '../recoil/user/userState.js';
+import { userState } from '../../recoil/user/userState';
 import { useLocation } from 'react-router-dom';
-import VideoRoomComponent from '../components/videoroom/VideoRoom.jsx';
+import VideoRoomComponent from '../../components/videoroom/VideoRoom.jsx';
 
 const MatchPage = () =>{
     const user = useRecoilValue(userState);
     const picture = user.path;
     const Navigate = useLocation();
     const sessionName = axios.post(
-      "보낼 주소", {
+      "https://i9a107.p.ssafy.io/api/matched", {
           applyId : Navigate.applyId,
       },
       {
           headers:{
-              "헤더에 넣을 값 이름" : "넣을 정보",
+              "accessToken" : "accesstoken 받아서 넣으세요",
           },
       }
     );
