@@ -101,11 +101,11 @@ public class QApplyRepositoryImpl implements QApplyRepository {
      * @param sort : 정렬 기준
      */
     private OrderSpecifier<?> applySort(String sort) {
-        if (sort.equals("TIME")) {  // 예상 풀이시간 순 오름차순 : TIME
+        if (sort.equals("Time")) {  // 예상 풀이시간 순 오름차순 : Time
             return apply.estimatedTime.asc();
-        } else if (sort.equals("PRICE")) {  // 가격 순 오름차순 : PRICE
+        } else if (sort.equals("Price")) {  // 가격 순 오름차순 : Price
             return apply.solvePoint.asc();
-        } else {    // 평점 내림차순 : RATE
+        } else {    // 평점 내림차순 : Rate
             // teacher.ratingCount가 0일 수 있기 때문에 1을 임의로 더함
             // 최소값이 0이기 때문에 1만 더해도 절대로 0으로 나눠질 가능성이 없음
             // 정렬 순서도 원래 목적과 맞게 유지됨
