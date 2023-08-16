@@ -54,8 +54,8 @@ const TeacherSolve = () => {
 
   return (
     <div className="pt-4">
-      <div className="flex justify-center mt-5 items-start">
-        <div className="p-4 flex flex-wrap w-1/2 h-96">
+      <div className="flex items-start justify-start mt-5">
+        <div className="flex flex-wrap w-1/3 p-4 -mt-2 h-96 gap-y-11">
           {amounts.map((amount, index) => (
             <button
               key={index}
@@ -77,9 +77,9 @@ const TeacherSolve = () => {
               ></span>
             </button>
           ))}
-          <div className="flex items-center relative w-48 h-12">
+          <div className="relative flex items-center w-48 h-12">
             <span
-              className={`absolute top-1/2 transform -translate-y-1/2 left-3 w-6 h-6 ${
+              className={`absolute top-1/2 transform -translate-y-1/2 left-4 w-6 h-6 ${
                 selectedIndex === amounts.length
                   ? 'border-4 border-solive-200'
                   : 'border-2 border-black'
@@ -89,7 +89,7 @@ const TeacherSolve = () => {
             <input
               type="text"
               placeholder="직접 입력"
-              className="block w-full h-12 pl-10 border-2 border-gray-400 p-2 rounded-md"
+              className="block w-full h-12 p-2 pl-16 border-2 border-gray-400 rounded-md"
               onChange={(e) => {
                 handleClick(Number(e.target.value));
                 setSelectedIndex(amounts.length);
@@ -97,31 +97,31 @@ const TeacherSolve = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col items-center ml-4">
-          <div className="w-96 h-72 p-4 rounded-md border border-gray-200 flex flex-col justify-center items-center">
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-md w-96 h-72">
             <div>
-              <p className="mb-2 text-2xl flex items-centes">
+              <p className="flex mb-2 text-2xl items-centes">
                 {user?.nickname} 님의 SolvePoint는 {user?.solvePoint}
               </p>
             </div>
-            <div className="text-lg w-80 h-48 bg-blue-50 rounded-md flex flex-col justify-center gap-2">
-              <p className="flex items-center bg-solve-200 p-2 rounded-md">
+            <div className="flex flex-col justify-center h-48 gap-2 text-lg rounded-md w-80 bg-blue-50">
+              <p className="flex items-center p-2 rounded-md bg-solve-200">
                 현재 보유 SP: {user?.solvePoint}
-                <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
+                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-2" />
               </p>
-              <p className="flex items-center bg-solve-200 p-2 rounded-md">
+              <p className="flex items-center p-2 rounded-md bg-solve-200">
                 출금 금액: {selectedAmount}
-                <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
+                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-2" />
               </p>
               <hr className="border-t-2 border-solive-200" />
-              <p className="flex items-center bg-solve-200 p-2 rounded-md">
+              <p className="flex items-center p-2 rounded-md bg-solve-200">
                 출금 후 금액: {user?.solvePoint - selectedAmount}
-                <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
+                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-2" />
               </p>
             </div>
           </div>
 
-          <div className="w-96 h-44 p-4 mt-4 text-lg flex flex-col items-center">
+          <div className="flex flex-col items-center p-4 mt-4 text-lg w-96 h-44">
             <label className="flex items-center mb-4">
               <input
                 type="checkbox"
@@ -132,7 +132,7 @@ const TeacherSolve = () => {
               내용을 확인하였으며 금액에 동의하겠습니까?
             </label>
             <button
-              className="bg-solive-200 text-white font-bold p-2 mt-4 w-full"
+              className="w-full p-2 mt-4 font-bold text-white bg-solive-200"
               onClick={Click}
             >
               SolvePoint 출금하기
@@ -141,8 +141,8 @@ const TeacherSolve = () => {
         </div>
       </div>
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg relative w-80 h-45">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative p-8 bg-white rounded-lg w-80 h-45">
             <button
               className="absolute top-0 right-0 p-2"
               onClick={() => setShowModal(false)}
@@ -152,7 +152,7 @@ const TeacherSolve = () => {
             <h3 className="text-center">출금 금액</h3>
             <p className="text-center">{selectedAmount}원</p>
             <button
-              className="bg-blue-200 text-white font-bold p-2 mt-4 w-full"
+              className="w-full p-2 mt-4 font-bold text-white bg-blue-200"
               onClick={handleWithdraw}
             >
               SolvePoint 출금
