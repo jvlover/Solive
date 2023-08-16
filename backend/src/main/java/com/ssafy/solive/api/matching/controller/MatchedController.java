@@ -49,8 +49,7 @@ public class MatchedController {
     public CommonResponse<?> regist(@RequestBody MatchedRegistPostReq registInfo,
         HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("MatchedController_regist_start: " + registInfo.toString() + ", " + userId);
 
         registInfo.setStudentId(userId);
@@ -77,8 +76,7 @@ public class MatchedController {
     public CommonResponse<?> findMyMatching(MatchedFindMineGetReq findCondition,
         HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info(
             "MatchedController_findMyMatching_start: " + findCondition.toString() + ", " + userId);
 

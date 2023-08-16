@@ -54,8 +54,7 @@ public class QuestionController {
     public CommonResponse<?> regist(@RequestPart QuestionRegistPostReq registInfo,
         @RequestPart("files") List<MultipartFile> fileList, HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("QuestionController_regist_start: " + registInfo.toString()
             + ", " + fileList.toString() + ", " + userId);
 
@@ -76,8 +75,7 @@ public class QuestionController {
     public CommonResponse<?> delete(@RequestBody QuestionDeletePutReq deleteInfo,
         HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("QuestionController_delete_start: " + deleteInfo.toString() + ", " + userId);
 
         deleteInfo.setStudentId(userId);
@@ -100,8 +98,7 @@ public class QuestionController {
     public CommonResponse<?> modify(@RequestBody QuestionModifyPutReq modifyInfo,
         HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("QuestionController_modify_start: " + modifyInfo.toString() + ", " + userId);
 
         modifyInfo.setStudentId(userId);
@@ -181,8 +178,7 @@ public class QuestionController {
     @GetMapping("/init/favorite")
     public CommonResponse<?> findFavoriteQuestionForTeacher(HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("QuestionController_findFavoriteQuestionForTeacher_start: " + userId);
 
         List<QuestionFindRes> findResList = questionService.findFavoriteQuestionForTeacher(userId);

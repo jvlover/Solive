@@ -50,8 +50,7 @@ public class ApplyController {
     public CommonResponse<?> regist(@RequestBody ApplyRegistPostReq registInfo,
         HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("ApplyController_regist_start: " + registInfo.toString() + ", " + userId);
 
         registInfo.setTeacherId(userId);
@@ -77,8 +76,7 @@ public class ApplyController {
     public CommonResponse<?> delete(@RequestBody ApplyDeletePutReq deleteInfo,
         HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("ApplyController_delete_start: " + deleteInfo.toString() + ", " + userId);
 
         deleteInfo.setTeacherId(userId);

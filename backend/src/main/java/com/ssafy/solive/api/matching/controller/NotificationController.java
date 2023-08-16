@@ -73,8 +73,7 @@ public class NotificationController {
     @GetMapping("/{pageNum}")
     public CommonResponse<?> find(@PathVariable Integer pageNum, HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("NotificationController_find_start: " + pageNum.toString() + ", " + userId);
 
         List<NotificationFindRes> findResList = notificationService.findNotification(userId,
@@ -113,8 +112,7 @@ public class NotificationController {
     public CommonResponse<?> delete(@RequestBody NotificationDeletePutReq deleteInfo,
         HttpServletRequest request) {
 
-        String accessToken = request.getHeader("access-token");
-        Long userId = userService.getUserIdByToken(accessToken);
+        Long userId = userService.getUserIdByToken(request.getHeader("access-token"));
         log.info("NotificationController_delete_start: " + deleteInfo.toString() + ", " + userId);
 
         // http 헤더에서 유저 아이디 꺼내서 setting
