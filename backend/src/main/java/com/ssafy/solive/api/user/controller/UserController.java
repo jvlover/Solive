@@ -41,7 +41,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RestController
 @RequestMapping("/user")
-@CrossOrigin("*")
 public class UserController {
 
     private static final String SUCCESS = "success";  // API 성공 시 return

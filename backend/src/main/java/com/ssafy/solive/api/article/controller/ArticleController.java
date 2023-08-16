@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/board")
-@CrossOrigin("*")
 public class ArticleController {
 
     private static final String SUCCESS = "success"; // API 성공 시 return
@@ -44,11 +43,11 @@ public class ArticleController {
      */
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> regist(@RequestPart ArticleRegistPostReq registInfo,
-                                    @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
+        @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
 
         if (fileList != null) { // 게시물에 파일 있으면
             log.info("ArticleController_regist_start: " + registInfo.toString() + ", "
-                    + fileList);
+                + fileList);
         } else {
             log.info("ArticleController_regist_start: " + registInfo.toString());
         }
@@ -90,11 +89,11 @@ public class ArticleController {
      */
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> modify(@RequestPart ArticleModifyPutReq modifyInfo,
-                                    @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
+        @RequestPart(value = "files", required = false) List<MultipartFile> fileList) {
 
         if (fileList != null) {
             log.info("ArticleController_modify_start: " + modifyInfo.toString() + ", "
-                    + fileList);
+                + fileList);
         } else {
             log.info("ArticleController_modify_start: " + modifyInfo.toString());
         }
@@ -179,7 +178,7 @@ public class ArticleController {
     public CommonResponse<?> findAll(@RequestParam String keyword, Pageable pageable) {
 
         log.info("ArticleController_findAll_start: " + keyword + ", "
-                + pageable.toString());
+            + pageable.toString());
 
         Page<ArticleFindRes> findAllInfo = articleService.findAllArticle(keyword, pageable);
 
