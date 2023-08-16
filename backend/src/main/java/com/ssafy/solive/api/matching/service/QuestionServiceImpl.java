@@ -232,6 +232,14 @@ public class QuestionServiceImpl implements QuestionService {
         // Response에 Images Setting
         findDetailRes.setPath(questionImages);
 
+        // 마스터코드 과목 대분류 추가
+        MasterCode masterCode = masterCodeRepository.findByName(findDetailRes.getMasterCodeName());
+        if (masterCode.getId() / 100 == 11) {
+            findDetailRes.setMasterCodeCategory("수학");
+        } else {
+            findDetailRes.setMasterCodeCategory("과학");
+        }
+
         log.info("QuestionService_findDetail_end: " + findDetailRes);
         return findDetailRes;
     }
