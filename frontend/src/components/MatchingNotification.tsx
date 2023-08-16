@@ -30,7 +30,6 @@ const MatchingNotification = () => {
       eventSource.onmessage = async (e) => {
         const data = await e.data;
         const newNotification = JSON.parse(data);
-        console.log(e.data);
         setNotifications((prevNotification) => [
           newNotification,
           ...prevNotification,
