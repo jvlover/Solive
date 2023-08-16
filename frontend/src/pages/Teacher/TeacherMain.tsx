@@ -8,7 +8,14 @@ import {
   relatedQuestionsSelector,
 } from '../../recoil/question/question';
 // 문제 어떻게 나오는지 보려면 밑에 한줄 주석 해제해주세요.
-// import que from '../../assets/404.png';
+import que from '../../assets/404.png';
+import { Card, CardHeader, CardBody } from '@material-tailwind/react';
+import banner_1 from '../../assets/banner_1.png';
+import banner_2 from '../../assets/banner_2.png';
+import banner_3 from '../../assets/banner_3.png';
+import banner_4 from '../../assets/banner_4.png';
+import banner_5 from '../../assets/banner_5.png';
+
 const Teacher = () => {
   const navigate = useNavigate();
   // 문제 어떻게 나오는지 보려면 밑에 latest 주석해주세요
@@ -18,7 +25,7 @@ const Teacher = () => {
   const [latestQuestionsPage, setLatestQuestionsPage] = useState(0);
   const [relatedQuestionsPage, setRelatedQuestionsPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const banners = [1, 2, 3, 4, 5];
+  const banners = [banner_1, banner_2, banner_3, banner_4, banner_5];
 
   // 문제 어떻게 나오는지 보려면 밑에  const latest 주석 해제해주세요.
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -28,8 +35,9 @@ const Teacher = () => {
   //     path: que,
   //     title: 'title1',
   //     subject: 'subject1',
-  //     time: 'time1',
+  //     time: 1629123456,
   //     matching_state: 1,
+  //     masterCodeId: '기하1',
   //   },
   //   {
   //     id: 2,
@@ -160,21 +168,38 @@ const Teacher = () => {
   }, [latestQuestions, relatedQuestions]);
 
   const renderQuestion = (question: Question) => (
-    <div className="border-2 border-blue-200 p-2 flex flex-col items-center m-2">
-      <img
-        src={question.path}
-        alt={question.title}
-        style={{ width: '100%', aspectRatio: '1/1' }}
-      />
-      <div>{question.title}</div>
-      <div>{new Date(question.time).toLocaleString()}</div>
-    </div>
+    // <Card className="flex flex-col items-center p-2 m-2 border-2 border-blue-200">
+    <Card className="flex my-5">
+      <CardHeader shadow={false} floated={false} className="h-30">
+        <img
+          src={question.path}
+          alt={question.title}
+          style={{ width: '100%', aspectRatio: '1/1' }}
+        />
+      </CardHeader>
+      <CardBody>
+        <div className="flex items-center">
+          <div className="w-1/4">
+            <button className="p-5 btn btn-primary">
+              {question.masterCodeId}
+            </button>
+          </div>
+          <div className="ml-4">
+            <div className="text-center">{question.title}</div>
+            <br />
+            <div className="text-sm leading-tight text-center text-gray-700">
+              {new Date(question.time).toLocaleString()}
+            </div>
+          </div>
+        </div>
+      </CardBody>
+    </Card>
   );
 
   return (
     <div className="flex flex-col items-center">
       {isLoading}
-      <div className="w-full overflow-hidden h-48 flex items-center justify-center bg-gray-200 text-2xl font-bold mb-8 relative">
+      <div className="relative flex items-center justify-center w-full h-48 mb-8 overflow-hidden text-2xl font-bold bg-solive-200 bg-opacity-30">
         {banners.map((banner, idx) => (
           <div
             key={idx}
@@ -184,70 +209,135 @@ const Teacher = () => {
                 : 'opacity-0'
             }`}
           >
-            {banner}
+            <img
+              src={banner}
+              alt="{idx}"
+              style={{
+                width: '100%',
+                height: '100%',
+              }}
+            />
           </div>
         ))}
       </div>
       <div className="flex flex-row w-full">
         <div
-          className="w-1/2 p-4 text-center border-r-2 border-gray-200 flex flex-col justify-between"
-          style={{ minHeight: '550px' }}
+          className="flex-col justify-between w-1/2 p-4 text-center border-r-2 border-gray-200"
+          style={{ minHeight: '300px' }}
         >
           <div>
-            <h2 className="text-xl font-bold mb-4">최신 문제</h2>
-            <div
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
-            >
-              {latestQuestions
-                ?.slice(latestQuestionsPage * 3, (latestQuestionsPage + 1) * 3)
-                .map(renderQuestion)}
-            </div>
+            <h2 className="mb-4 text-xl font-bold">최신 문제</h2>
+            {latestQuestions?.length > 0 ? (
+              <div className="grid grid-cols-3 gap-4">
+                {latestQuestions
+                  ?.slice(
+                    latestQuestionsPage * 3,
+                    (latestQuestionsPage + 1) * 3,
+                  )
+                  .map(renderQuestion)}
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-4">
+                <Card className="flex my-5">
+                  <CardHeader shadow={false} floated={false} className="h-30">
+                    <img
+                      src={que}
+                      alt="표시할 문제가 없습니다."
+                      style={{ width: '100%', aspectRatio: '1/1' }}
+                    />
+                  </CardHeader>
+                  <CardBody>
+                    <div>No</div>
+                    <div>Question</div>
+                  </CardBody>
+                </Card>
+              </div>
+            )}
           </div>
-          <div style={{ textAlign: 'center' }}>
+          <div className="text-center">
             {/* Previous button for latestQuestions */}
             <button
               style={{ marginRight: '10px', padding: '4px 8px', width: '70px' }}
               disabled={latestQuestionsPage === 0}
-              onClick={() => setLatestQuestionsPage((prev) => prev - 1)}
+              onClick={() => {
+                if (latestQuestionsPage > 0) {
+                  setLatestQuestionsPage((prev) => prev - 1);
+                }
+              }}
             >
               이전
             </button>
             <button
               style={{ marginTop: '10px', padding: '4px 8px', width: '70px' }}
-              onClick={() => setLatestQuestionsPage((prev) => prev + 1)}
+              onClick={() => {
+                if ((latestQuestionsPage + 1) * 3 < latestQuestions.length) {
+                  setLatestQuestionsPage((prev) => prev + 1);
+                }
+              }}
             >
               다음
             </button>
           </div>
         </div>
         <div
-          className="w-1/2 p-4 text-center flex flex-col justify-between"
-          style={{ minHeight: '550px' }}
+          className="flex-col justify-between w-1/2 p-4 text-center border-r-2 border-gray-200"
+          style={{ minHeight: '300px' }}
         >
           <div>
-            <h2 className="text-xl font-bold mb-4">관련 문제</h2>
-            <div
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
-            >
-              {relatedQuestions
-                ?.slice(
-                  relatedQuestionsPage * 3,
-                  (relatedQuestionsPage + 1) * 3,
-                )
-                .map(renderQuestion)}
-            </div>
+            <h2 className="mb-4 text-xl font-bold">관련 문제</h2>
+            {relatedQuestions?.length > 0 ? (
+              <div className="grid grid-cols-3 gap-4">
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                  }}
+                >
+                  {relatedQuestions
+                    ?.slice(
+                      relatedQuestionsPage * 3,
+                      (relatedQuestionsPage + 1) * 3,
+                    )
+                    .map(renderQuestion)}
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-4">
+                <Card className="flex my-5">
+                  <CardHeader shadow={false} floated={false} className="h-30">
+                    <img
+                      src={que}
+                      alt="표시할 문제가 없습니다."
+                      style={{ width: '100%', aspectRatio: '1/1' }}
+                    />
+                  </CardHeader>
+                  <CardBody>
+                    <div>No</div>
+                    <div>Question</div>
+                  </CardBody>
+                </Card>
+              </div>
+            )}
           </div>
           <div style={{ textAlign: 'center' }}>
             <button
               style={{ marginRight: '10px', padding: '4px 8px', width: '70px' }}
               disabled={relatedQuestionsPage === 0}
-              onClick={() => setRelatedQuestionsPage((prev) => prev - 1)}
+              onClick={() => {
+                if (relatedQuestionsPage > 0) {
+                  setRelatedQuestionsPage((prev) => prev - 1);
+                }
+              }}
             >
               이전
             </button>
             <button
               style={{ marginTop: '10px', padding: '4px 8px', width: '70px' }}
-              onClick={() => setRelatedQuestionsPage((prev) => prev + 1)}
+              onClick={() => {
+                if ((relatedQuestionsPage + 1) * 3 < relatedQuestions.length) {
+                  setRelatedQuestionsPage((prev) => prev + 1);
+                }
+              }}
             >
               다음
             </button>
@@ -255,7 +345,7 @@ const Teacher = () => {
         </div>
       </div>
       <button
-        className="mb-100 py-2 px-4 mt-20 bg-blue-500 text-white text-lg font-bold rounded"
+        className="px-4 py-2 mt-5 mb-5 text-lg font-bold text-white rounded btn-primary"
         onClick={() => navigate('/teacher/question')}
       >
         모든문제 보러가기
