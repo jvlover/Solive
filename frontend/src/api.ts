@@ -193,11 +193,11 @@ export async function getMyProblems(
   accessToken: string,
 ) {
   type Problem = {
-    id: number;
+    questionId: number;
     path: string;
     title: string;
-    subject: string;
-    time: string;
+    masterCodeName: string;
+    createTime: string;
     matching_state: number;
   };
   type ApiResponse<T> = {
@@ -492,7 +492,7 @@ export async function getTeachers(accessToken: string) {
 
   try {
     const response = await axios.get<ApiResponse<Teacher[]>>(
-      BASE_URL + 'user/onlineteacher',
+      BASE_URL + '/user/onlineteacher',
       {
         headers: { 'access-token': accessToken },
       },
@@ -510,14 +510,14 @@ export async function getTeachers(accessToken: string) {
   }
 }
 
-export async function getQuestionById(id: string, accessToken: string) {
+export async function getQuestionById(id: number, accessToken: string) {
+  console.log('getQuestionById has been called!');
   type Question = {
     userNickname: string;
     title: string;
     description: string;
     path: string[];
-    subject: number;
-    subSubject: string;
+    masterCodeName: string;
     createTime: string;
     state: string;
   };
@@ -551,7 +551,7 @@ export async function getQuestionById(id: string, accessToken: string) {
 type ApplyData = {
   solvePoint: string;
   estimatedTime: string;
-  questionId: string;
+  questionId: number;
 };
 
 type ApplyResponse = {
@@ -595,7 +595,7 @@ export interface Teacher {
 }
 
 export interface GetTeachersListParams {
-  questionId: string;
+  questionId: number;
   sort: string;
   isFavorite: boolean;
 }

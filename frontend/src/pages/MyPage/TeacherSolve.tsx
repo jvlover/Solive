@@ -48,7 +48,7 @@ const TeacherSolve = () => {
 
       setShowModal(false);
     } else {
-      console.error('Charge failed');
+      navigate('./error');
     }
   };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   getQuestionById,
   getNewAccessToken,
@@ -16,7 +16,10 @@ import { userState } from '../../recoil/user/userState';
 import StarRating from '../star';
 
 const StudentQuestionDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  console.log('StudentQuestionDetail is rendered');
+  const defaultId = 1; // 원하는 default 값으로 설정
+  const { id: stringId } = useParams<{ id: string }>();
+  const id = parseInt(stringId || defaultId.toString());
   const [currentImage, setCurrentImage] = useState(0);
 
   const user = useRecoilValue(userState);
@@ -24,7 +27,31 @@ const StudentQuestionDetail = () => {
   const [teachers, setTeachers] = useState([]);
   const [sort, setSort] = useState('Time');
   const [isFavorite, setIsFavorite] = useState(false);
-  const [question, setQuestion] = useState(null);
+  const initialQuestion: QuestionType = {
+    userNickname: 'Default Nickname',
+    title: 'Default Title',
+    description: 'Default Description',
+    path: [],
+    masterCodeName: 'Default Master Code Name',
+    createTime: 'Default Create Time',
+    state: 'Default State',
+  };
+
+  const [question, setQuestion] = useState<QuestionType | null>(
+    initialQuestion,
+  );
+
+  const navigate = useNavigate();
+
+  type QuestionType = {
+    userNickname: string;
+    title: string;
+    description: string;
+    path: string[];
+    masterCodeName: string;
+    createTime: string;
+    state: string;
+  };
 
   // const question = {
   //   path: [que, ques],
@@ -70,9 +97,11 @@ const StudentQuestionDetail = () => {
   // ];
 
   useEffect(() => {
+    console.log('useEffect is called');
     const fetchQuestion = async () => {
       try {
         const result = await getQuestionById(id, user.accessToken);
+
         if (result.success) {
           setQuestion(result.data);
         } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
@@ -83,22 +112,19 @@ const StudentQuestionDetail = () => {
             if (newResult.success) {
               setQuestion(newResult.data);
             } else {
-              console.error(
-                'Failed to load question after token refresh:',
-                newResult.error,
-              );
+              alert('토큰이 만료되었습니다. 다시 로그인 해주세요');
             }
           } else {
-            console.error('Failed to refresh token');
+            alert('토큰이 만료되었습니다. 다시 로그인 해주세요');
           }
         }
       } catch (error) {
-        console.error('Error fetching question:', error);
+        // navigate('./error');
       }
     };
 
     fetchQuestion();
-  }, [id, user, setUser]);
+  }, [id, user, setUser, navigate]);
 
   useEffect(() => {
     const fetchTeachersData = async () => {
@@ -110,7 +136,6 @@ const StudentQuestionDetail = () => {
         },
         user.accessToken,
       );
-
       if (result.success) {
         setTeachers(result.data);
       } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
@@ -130,14 +155,14 @@ const StudentQuestionDetail = () => {
           );
         }
       } else {
-        console.error('Failed to load problems:', result.error);
+        // navigate('./error');
       }
     };
 
     if (user !== null) {
       fetchTeachersData();
     }
-  }, [id, user, setUser, sort, isFavorite]);
+  }, [id, user, setUser, sort, isFavorite, navigate]);
 
   const handleApply = async (applyId: number) => {
     try {
@@ -152,17 +177,11 @@ const StudentQuestionDetail = () => {
           const newResponse = await applyToTeacher(applyId, newAccessToken);
           if (newResponse.success) {
             alert('성공적으로 신청 되었습니다.');
-          } else {
-            console.error('Failed to apply:', newResponse.error);
           }
-        } else {
-          console.error('Failed to refresh token');
         }
-      } else {
-        console.error('Failed to apply:', response.error);
       }
     } catch (error) {
-      console.error(error);
+      // navigate('./error');
     }
   };
 
@@ -172,19 +191,21 @@ const StudentQuestionDetail = () => {
         <div className="flex h-full">
           <div className="w-1/2">
             <h2 className="text-2xl mb-4" style={{ fontWeight: '900' }}>
-              {question.title}
+              {question ? question.title : 'Loading...'}
             </h2>
+
             <div className="flex items-center relative mb-4 justify-center">
-              {question.path.map((image, idx) => (
-                <img
-                  key={idx}
-                  src={image}
-                  alt={`Question Image ${idx}`}
-                  className={`w-4/5 object-contain h-[450px] ${
-                    idx === currentImage ? 'block' : 'hidden'
-                  }`}
-                />
-              ))}
+              {question &&
+                question.path.map((image, idx) => (
+                  <img
+                    key={idx}
+                    src={image}
+                    alt={`Question Image ${idx}`}
+                    className={`w-4/5 object-contain h-[450px] ${
+                      idx === currentImage ? 'block' : 'hidden'
+                    }`}
+                  />
+                ))}
 
               <button
                 className="absolute top-1/2 left-0 px-3 py-1 text-white rounded border-solive-200 bg-solive-200 ml-2"
@@ -221,15 +242,15 @@ const StudentQuestionDetail = () => {
               <div className="w-full">
                 <p className="text-gray-700 font-bold mt-8">과목</p>
                 <div className="block w-full h-12 border-2 rounded-md shadow-sm border-solive-200">
-                  {question.subject}
+                  {question.masterCodeName}
                 </div>
               </div>
-              <div className="w-full">
+              {/* <div className="w-full">
                 <p className="text-gray-700 font-bold mt-8">세부과목</p>
                 <div className="block w-full h-12 border-2 rounded-md shadow-sm border-solive-200">
                   {question.subSubject}
                 </div>
-              </div>
+              </div> */}
             </div>
             <div>
               <p className="text-gray-700 font-bold border-solive-200 mt-8">

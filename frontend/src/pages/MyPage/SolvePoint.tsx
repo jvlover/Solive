@@ -43,7 +43,7 @@ const PointChargePage = () => {
 
       setShowModal(false);
     } else {
-      console.error('Charge failed');
+      navigate('./error');
     }
   };
 

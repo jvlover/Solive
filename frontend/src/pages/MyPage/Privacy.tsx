@@ -8,6 +8,7 @@ import {
 import { useRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import { Card, CardBody } from '@material-tailwind/react';
+import { useNavigate } from 'react-router-dom';
 
 const PersonalInfoPage = () => {
   const [user, setUser] = useRecoilState(userState);
@@ -18,6 +19,7 @@ const PersonalInfoPage = () => {
   const [email, setEmail] = useState('amco11@naver.com');
   const [signinTime, setSigninTime] = useState('2022.01.25');
   const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userPrivacy = async (accessToken: string) => {
@@ -35,13 +37,13 @@ const PersonalInfoPage = () => {
           getPrivacy(newAccessToken);
         }
       } else {
-        console.error('Failed to load userPrivacy: ', result.error);
+        navigate('/error');
       }
     };
     if (user !== null) {
       userPrivacy(user.accessToken);
     }
-  }, [setUser, user]);
+  }, [navigate, setUser, user]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getQuestionById, getNewAccessToken } from '../../api';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
@@ -9,15 +9,40 @@ import { userState } from '../../recoil/user/userState';
 import { applyQuestion } from '../../api';
 
 const TeacherQuestionDetail = () => {
-  const { id } = useParams<{ id: string }>();
-  const [question, setQuestion] = useState(null);
-  const [currentImage, setCurrentImage] = useState(0);
+  const defaultId = 1; // 원하는 default 값으로 설정
+  const { id: stringId } = useParams<{ id: string }>();
+  const id = parseInt(stringId || defaultId.toString());
+  const initialQuestion: QuestionType = {
+    userNickname: 'Default Nickname',
+    title: 'Default Title',
+    description: 'Default Description',
+    path: [],
+    masterCodeName: 'Default Master Code Name',
+    createTime: 'Default Create Time',
+    state: 'Default State',
+  };
 
+  const [question, setQuestion] = useState<QuestionType | null>(
+    initialQuestion,
+  );
+
+  const [currentImage, setCurrentImage] = useState(0);
+  const navigate = useNavigate();
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [solvePoint, setSolvePoint] = useState('');
   const [expectedTime, setExpectedTime] = useState('');
+
+  type QuestionType = {
+    userNickname: string;
+    title: string;
+    description: string;
+    path: string[];
+    masterCodeName: string;
+    createTime: string;
+    state: string;
+  };
 
   // const question = {
   //   path: [que, ques],
@@ -43,22 +68,20 @@ const TeacherQuestionDetail = () => {
             if (newResult.success) {
               setQuestion(newResult.data);
             } else {
-              console.error(
-                'Failed to load question after token refresh:',
-                newResult.error,
-              );
+              alert('다시 로그인 해주세요');
+              navigate('./error');
             }
           } else {
-            console.error('Failed to refresh token');
+            navigate('/error');
           }
         }
       } catch (error) {
-        console.error('Error fetching question:', error);
+        navigate('./error');
       }
     };
 
     fetchQuestion();
-  }, [id, user, setUser]);
+  }, [id, user, setUser, navigate]);
 
   return (
     <div className="flex w-screen min-h-screen text-black">
@@ -122,13 +145,13 @@ const TeacherQuestionDetail = () => {
           <div>
             <p className="text-gray-700 font-extrabold mt-4">과목</p>
             <div className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500">
-              {question.subject}
+              {question.masterCodeName}
             </div>
 
-            <p className="text-gray-700 font-extrabold mt-4">세부과목</p>
+            {/* <p className="text-gray-700 font-extrabold mt-4">세부과목</p>
             <div className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500">
               {question.subSubject}
-            </div>
+            </div> */}
           </div>
 
           <p className="text-gray-700 font-extrabold mt-4">Description:</p>

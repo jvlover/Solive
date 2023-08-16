@@ -5,8 +5,7 @@ import { useRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import DefaultProfile from '../../assets/default_profile_image.svg';
 import { Avatar, Card, CardBody, Radio } from '@material-tailwind/react';
-// import { userState } from '../../../recoil/user/userState';
-// import { useRecoilValue } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
 export interface UserProfile {
   path: string;
@@ -38,6 +37,7 @@ const ProfilePage = () => {
   const [isModified, setIsModified] = useState(false);
 
   const imageInput = useRef<HTMLInputElement>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userProfile = async (accessToken: string): Promise<void> => {
@@ -52,15 +52,15 @@ const ProfilePage = () => {
             accessToken: newAccessToken,
           });
           getProfile(newAccessToken);
+        } else {
+          navigate('/error');
         }
-      } else {
-        console.error('Failed to load userProfile:', result.error);
       }
     };
     if (user !== null) {
       userProfile(user.accessToken);
     }
-  }, [setUser, user]);
+  }, [navigate, setUser, user]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -75,7 +75,7 @@ const ProfilePage = () => {
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return; // 파일이 없는 경우 함수를 종료
+    if (!file) return;
     setProfileImageName(file.name);
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -117,15 +117,6 @@ const ProfilePage = () => {
               <p className="font-bold">프로필 이미지</p>
               <div className="flex flex-row w-full mt-3">
                 <div className="flex items-center mr-10">
-                  {/* <img
-                    src={userProfile.path || ''}
-                    alt="profile"
-                    className={`w-[96px] h-[128px] ${
-                      userProfile.path
-                        ? 'border-transparent'
-                        : 'border-2 border-solid border-solive-200'
-                    }`}
-                  /> */}
                   <Avatar
                     src={userProfile.path || DefaultProfile}
                     className="w-[100px] h-[100px] bg-solive-200 bg-opacity-30"

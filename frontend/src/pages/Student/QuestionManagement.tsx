@@ -1,11 +1,6 @@
-// API ACCESSTOKEN 만료된 경우 생각하여 구현
-// ACCESSTOKEN 밖으로 빼내기
-// 페이지
-
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
-// import que from '../../assets/404.png';
 import { getMyProblems, getNewAccessToken } from '../../api';
 import { Select, Option as MOption } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
@@ -43,128 +38,6 @@ const subjects: Subject[] = [
 ];
 
 const QuestionManagement = () => {
-  // const problems = [
-  //   {
-  //     id: 1,
-  //     path: que,
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 2,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 3,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 4,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 5,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 6,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 7,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 8,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 9,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 10,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 11,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 12,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 13,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 14,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 15,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  // ];
   const [subjectNum, setSubjectNum] = useState(0);
   const [subSubjectNum, setSubSubjectNum] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -176,12 +49,12 @@ const QuestionManagement = () => {
   const setUser = useSetRecoilState(userState);
   const [problems, setProblems] = useState([]);
   const navigate = useNavigate();
-  // const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const getProblems = async (): Promise<void> => {
       if (!user) {
-        console.error('User is not defined');
+        alert('로그인이 필요합니다!');
+        navigate('./login');
         return;
       }
 
@@ -208,13 +81,14 @@ const QuestionManagement = () => {
           getProblems();
         }
       } else {
-        console.error('Failed to load problems:', result.error);
+        navigate('./error');
       }
     };
 
     getProblems();
   }, [
     matchingState,
+    navigate,
     order,
     pageNum,
     searchKeyword,
@@ -266,8 +140,8 @@ const QuestionManagement = () => {
       setPageNum((prev) => prev + 1);
   };
 
-  const handleDetailPage = (id) => {
-    navigate(`/student/question/${id}`);
+  const handleDetailPage = (questionId: number) => {
+    navigate(`/student/question/${questionId}`);
   };
 
   return (
@@ -385,11 +259,11 @@ const QuestionManagement = () => {
         <div className="grid grid-cols-3 gap-4 pt-12">
           {problems.map((problem) => (
             <div
-              key={problem.id}
+              key={problem.questionId}
               className="flex flex-col items-center p-2 border-2 border-solive-200"
             >
               <img
-                onClick={() => handleDetailPage(problem.id)}
+                onClick={() => handleDetailPage(problem.questionId)}
                 className="h-[140px] w-[250px]"
                 src={problem.path}
                 alt="problem"
