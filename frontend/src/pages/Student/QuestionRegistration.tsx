@@ -186,7 +186,7 @@ const QuestionRegistration = () => {
 
   const handleConfirm = () => {
     setShowModal(false);
-    navigate(`/student/question/{id}`);
+    navigate(`/mypage/questionmanagement`);
   };
 
   const selectedSubject = subjects.find((s) => s.value === Number(subject));
