@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
-import { chargeSolvePoint } from '../../api';
+import { teacherSolvePoint } from '../../api';
 import { useNavigate } from 'react-router-dom';
 import sp from '../../assets/sp.png';
 
-const PointChargePage = () => {
+const TeacherSolve = () => {
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
   const [selectedAmount, setSelectedAmount] = useState(0);
@@ -26,14 +26,19 @@ const PointChargePage = () => {
   };
 
   const Click = () => {
-    if (selectedAmount === 0 || !isAgreed) return;
+    let currentAmount = user.solvePoint;
+    let withdrawalAmount = selectedAmount;
+    if (withdrawalAmount > currentAmount && isAgreed) {
+      alert('보유 금액이 부족합니다.');
+      return;
+    } else if (selectedAmount === 0 || !isAgreed) return;
     setShowModal(true);
   };
 
-  const handleCharge = async () => {
+  const handleWithdraw = async () => {
     if (!user || !user.accessToken) return;
 
-    const result = await chargeSolvePoint(selectedAmount, user.accessToken);
+    const result = await teacherSolvePoint(selectedAmount, user.accessToken);
 
     if (result.success && result.solvePoint !== undefined) {
       setUser({
@@ -105,12 +110,12 @@ const PointChargePage = () => {
                 <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
               </p>
               <p className="flex items-center bg-solve-200 p-2 rounded-md">
-                충전 금액: {selectedAmount}
+                출금 금액: {selectedAmount}
                 <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
               </p>
               <hr className="border-t-2 border-solive-200" />
               <p className="flex items-center bg-solve-200 p-2 rounded-md">
-                충전 후 금액: {user?.solvePoint + selectedAmount}
+                출금 후 금액: {user?.solvePoint - selectedAmount}
                 <img src={sp} alt="SolvePoint Icon" className="ml-2 w-6 h-6" />
               </p>
             </div>
@@ -130,7 +135,7 @@ const PointChargePage = () => {
               className="bg-solive-200 text-white font-bold p-2 mt-4 w-full"
               onClick={Click}
             >
-              SolvePoint 충전하기
+              SolvePoint 출금하기
             </button>
           </div>
         </div>
@@ -144,13 +149,13 @@ const PointChargePage = () => {
             >
               X
             </button>
-            <h3 className="text-center">충전 금액</h3>
+            <h3 className="text-center">출금 금액</h3>
             <p className="text-center">{selectedAmount}원</p>
             <button
               className="bg-blue-200 text-white font-bold p-2 mt-4 w-full"
-              onClick={handleCharge}
+              onClick={handleWithdraw}
             >
-              SolvePoint 충전
+              SolvePoint 출금
             </button>
           </div>
         </div>
@@ -159,4 +164,4 @@ const PointChargePage = () => {
   );
 };
 
-export default PointChargePage;
+export default TeacherSolve;
