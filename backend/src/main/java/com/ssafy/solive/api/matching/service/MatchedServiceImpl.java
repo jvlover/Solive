@@ -4,6 +4,7 @@ import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedPutReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
+import com.ssafy.solive.api.matching.response.MatchedFindSessionIdRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.exception.NotEnoughPointException;
@@ -247,5 +248,29 @@ public class MatchedServiceImpl implements MatchedService {
         teacher.addSolvedCount();
 
         log.info("MatchedService_endMatching_end");
+    }
+
+    /**
+     * question Id로 session Id 찾기
+     *
+     * @param questionId 문제의 id
+     */
+    @Override
+    public MatchedFindSessionIdRes findSessionId(Long questionId) {
+
+        log.info("MatchedService_findSessionId_start: " + questionId);
+
+        Question question = questionRepository.findById(questionId)
+            .orElseThrow(NoDataException::new);
+
+        Matched matched = matchedRepository.findByQuestion(question);
+
+        MatchedFindSessionIdRes matchedFindSessionIdRes = MatchedFindSessionIdRes.builder()
+            .sessionId(matched.getSessionId())
+            .build();
+
+        log.info("MatchedService_findSessionId_end: " + matchedFindSessionIdRes.getSessionId());
+
+        return matchedFindSessionIdRes;
     }
 }
