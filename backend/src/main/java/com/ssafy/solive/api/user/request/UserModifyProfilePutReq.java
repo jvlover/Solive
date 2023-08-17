@@ -6,7 +6,7 @@ import lombok.Data;
 public class UserModifyProfilePutReq {
 
     String nickname;
-    Integer gender;
-    Long experience;
     String introduce;
+    Integer gender;
+    Integer teacherSubjectName;
 }

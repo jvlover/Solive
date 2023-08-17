@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
                 studentRepository.save(student);
                 log.info("UserService_registUser_end: " + student);
             }
-        } else {  // 임시로 나머지 경우 다 강사가 회원가입 요청한 경우로 처리함
+        } else {  // 나머지 경우 다 강사가 회원가입 요청한 경우로 처리함
             Teacher teacher = Teacher.builder()
                 .masterCodeId(masterCode)
                 .stateId(logoutState)
@@ -119,6 +119,8 @@ public class UserServiceImpl implements UserService {
                 .nickname(registInfo.getNickname())
                 .email(registInfo.getEmail())
                 .gender(registInfo.getGender())
+                .masterCode(masterCodeRepository.findById(1000) // 선호과목 없음으로 초기화
+                    .orElseThrow(InvalidMasterCodeException::new))
                 .build();
 
             log.info("UserService_registUser_end: " + teacher.toString());
@@ -319,6 +321,16 @@ public class UserServiceImpl implements UserService {
             userInfo.getNickname())) {
             // 닉네임이 변경됐고 변경된 닉네임이 DB 에 있다면
             throw new DuplicatedNicknameException(); // 닉네임 중복 Exception
+        }
+
+        // 선생님일때 선호과목 변경
+        if (user.getMasterCodeId().getId() == 2) {
+            Teacher teacher = teacherRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+            MasterCode teacherSubject = masterCodeRepository.findById(
+                userInfo.getTeacherSubjectName()).orElseThrow(InvalidMasterCodeException::new);
+
+            teacher.modifySubjectId(teacherSubject);
         }
 
         user.modifyUserProfile(userInfo);
