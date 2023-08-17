@@ -58,6 +58,7 @@ const MatchPage = () => {
       userName={user.nickname}
       picture={user.path}
       sessionName={sessionName}
+      accessToken={user.accessToken}
       applyId={applyId}
       state={state}
     />
