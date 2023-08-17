@@ -5,6 +5,7 @@ import { User } from './recoil/user/userState';
 import { UserProfile } from './pages/MyPage/Profile';
 
 const BASE_URL = 'https://i9a107.p.ssafy.io/api';
+// const BASE_URL = 'http://localhost:8200';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
 const CHARGE_URL = `${BASE_URL}/user/charge`;
 const CASHOUT_URL = `${BASE_URL}/user/cashout`;
@@ -730,10 +731,9 @@ export const getReplayUrl = async (
   accessToken: string,
 ): Promise<{ success: boolean; data?: { videoUrl: string } }> => {
   try {
-    const response = await axios.get(
-      BASE_URL + `/matched/video/${id}`,
-      { headers: { 'access-token': accessToken } },
-    );
+    const response = await axios.get(BASE_URL + `/matched/video/${id}`, {
+      headers: { 'access-token': accessToken },
+    });
     return {
       success: response.data.success,
       data: response.data.data,
@@ -742,3 +742,74 @@ export const getReplayUrl = async (
     return { success: false };
   }
 };
+
+type TeacherQuestion = {
+  questionId: number;
+  path: string;
+  title: string;
+  masterCodeName: string;
+  createTime: string;
+  userNickname: string;
+};
+
+type ApiResponse<T> = {
+  success: boolean;
+  data: T;
+  error?: string;
+};
+
+export async function getMyRelated(
+  accessToken: string,
+): Promise<{ success: boolean; data?: TeacherQuestion[]; error?: any }> {
+  try {
+    const response = await axios.get<ApiResponse<TeacherQuestion[]>>(
+      BASE_URL + '/question/init/favorite',
+      {
+        headers: { 'access-token': accessToken },
+      },
+    );
+
+    if (response.data.success) {
+      return {
+        success: response.data.success,
+        data: response.data.data,
+      };
+    } else {
+      throw new Error('Failed to get related questions');
+    }
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+}
+
+export async function getLatest(
+  accessToken: string,
+): Promise<{ success: boolean; data?: TeacherQuestion[]; error?: any }> {
+  try {
+    const response = await axios.get<ApiResponse<TeacherQuestion[]>>(
+      BASE_URL + '/question/init/time',
+      {
+        headers: { 'access-token': accessToken },
+      },
+    );
+
+    if (response.data.success) {
+      return {
+        success: response.data.success,
+        data: response.data.data,
+      };
+    } else {
+      throw new Error('Failed to get latest questions');
+    }
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+}
