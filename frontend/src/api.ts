@@ -703,7 +703,7 @@ export const teacherSolvePoint = async (
 export const getReplayUrl = async (
   id: number,
   accessToken: string,
-): Promise<{ success: boolean; url?: string }> => {
+): Promise<{ success: boolean; data?: { videoUrl: string } }> => {
   try {
     const response = await axios.get(
       BASE_URL + `/matched/video/${id}`,
@@ -711,7 +711,7 @@ export const getReplayUrl = async (
     );
     return {
       success: response.data.success,
-      url: response.data.data,
+      data: response.data.data,
     };
   } catch (error) {
     return { success: false };

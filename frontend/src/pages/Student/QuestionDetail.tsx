@@ -64,7 +64,7 @@ const StudentQuestionDetail = () => {
 
         if (result.success) {
           setQuestion(result.data);
-          setReplayUrl(url.url);
+          setReplayUrl(url.data.videoUrl);
         } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
           const newAccessToken = await getNewAccessToken(user.refreshToken);
           if (newAccessToken) {
@@ -73,7 +73,7 @@ const StudentQuestionDetail = () => {
             const newUrl = await getReplayUrl(id, newAccessToken);
             if (newResult.success) {
               setQuestion(newResult.data);
-              setReplayUrl(newUrl.url);
+              setReplayUrl(newUrl.data.videoUrl);
             } else {
               alert('토큰이 만료되었습니다. 다시 로그인 해주세요');
             }
