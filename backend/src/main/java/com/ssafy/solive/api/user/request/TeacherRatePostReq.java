@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class TeacherRatePostReq {
 
-    Long teacherId; // 선생님 userId
+    Long applyId; // 해당 Matching 의 Apply id
     Integer rating; // 입력된 평점
 }
