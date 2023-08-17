@@ -78,4 +78,8 @@ public class Article extends BaseEntity {
     public void reportArticle() {
         this.reportCount++;
     }
+
+    public void incrementViewCount() {
+        this.viewCount++;
+    }
 }
