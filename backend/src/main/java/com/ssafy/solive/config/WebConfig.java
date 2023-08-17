@@ -38,12 +38,14 @@ public class WebConfig implements WebMvcConfigurer {
             .allowedHeaders("access-token", "Content-Type");
         registry
             .addMapping("/matched/**")
-            .allowedOrigins("http://localhost:5173", "https://i9a107.p.ssafy.io/")
+            .allowedOrigins("http://localhost:5173", "https://i9a107.p.ssafy.io/",
+                "https://i9a107.p.ssafy.io:8447")
             .allowedMethods("GET", "POST", "PUT", "DELETE")
             .allowedHeaders("access-token", "Content-Type");
         registry
             .addMapping("/notification/**")
-            .allowedOrigins("http://localhost:5173", "https://i9a107.p.ssafy.io/")
+            .allowedOrigins("http://localhost:5173", "https://i9a107.p.ssafy.io/",
+                "https://i9a107.p.ssafy.io:8447")
             .allowedMethods("GET", "POST", "PUT", "DELETE")
             .allowedHeaders("access-token", "Content-Type", "Last-Event-ID");
         registry
