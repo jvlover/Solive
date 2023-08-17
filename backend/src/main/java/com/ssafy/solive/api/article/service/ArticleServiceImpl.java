@@ -323,6 +323,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article article = articleRepository.findById(articleId)
             .orElseThrow(ArticleNotFoundException::new);
+        article.incrementViewCount();
         List<String> articlePicturePathNames = articlePictureRepository.findPathNameByArticle(
             articleId);
 
@@ -332,7 +333,7 @@ public class ArticleServiceImpl implements ArticleService {
             .author(article.getUser().getNickname())
             .title(article.getTitle())
             .content(article.getContent())
-            .viewCount(article.getViewCount() + 1)
+            .viewCount(article.getViewCount())
             .likeCount(article.getLikeCount())
             .reportCount(article.getReportCount())
             .time(article.getTime().toString())
