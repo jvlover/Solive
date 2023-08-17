@@ -5,7 +5,7 @@ const StarRating = ({ rating }) => {
     starsArr.push(i < stars ? '★' : '☆');
   }
   return (
-    <div className="text-yellow-400">
+    <div className="text-yellow-400 text-3xl">
       {starsArr.map((star, index) => (
         <span key={index}>{star}</span>
       ))}

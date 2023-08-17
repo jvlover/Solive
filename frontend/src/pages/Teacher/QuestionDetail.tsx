@@ -158,20 +158,21 @@ const TeacherQuestionDetail = () => {
         {isModalOpen && (
           <div className="fixed top-0 left-0 flex items-center justify-center w-screen h-screen bg-black bg-opacity-50">
             <div className="p-6 bg-white rounded-md">
-                        <button
-              className="absolute top-2 right-2 p-1 w-6 h-6 text-black z-10"
-              onClick={() => setIsModalOpen(false)}
-            >
-              X
-            </button>
+              <button
+                className="absolute top-2 right-2 p-1 w-6 h-6 text-black z-10"
+                onClick={() => setIsModalOpen(false)}
+              >
+                X
+              </button>
               <h3 className="mb-4 font-bold">문제 해결 신청</h3>
               <label className="block mb-2">
-                Solve Point:
+                <p>SolvePoint (10분당 가격)</p>
                 <input
                   type="number"
                   value={solvePoint}
                   onChange={(e) => setSolvePoint(e.target.value)}
-                  className="w-full p-2 mt-1 border"
+                  step="100"
+                  className="border p-2 mt-1 w-full"
                 />
               </label>
               <label className="block mb-4">

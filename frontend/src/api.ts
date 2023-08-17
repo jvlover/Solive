@@ -337,17 +337,17 @@ export async function questionSearch(
 
 export const modifyProfile = async (
   nickname: string,
-  experience: number,
   introduce: string,
   gender: number,
   profileImage: File | null,
   accessToken: string,
+  teacherSubjectName: number | null,
 ) => {
   const profileData = {
     nickname: nickname,
-    experience: experience,
     introduce: introduce,
     gender: gender,
+    teacherSubjectName: teacherSubjectName,
   };
   const formData = new FormData();
 
@@ -663,7 +663,7 @@ export const getFavorites = async (
 
   try {
     const response = await axios.get<FavoritesResponse>(
-      BASE_URL + '/favorite',
+      BASE_URL + '/user/favorite',
       {
         headers: { 'access-token': accessToken },
       },

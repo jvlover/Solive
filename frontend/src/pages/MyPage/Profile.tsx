@@ -18,6 +18,7 @@ export interface UserProfile {
   solvedCount: number | null;
   ratingSum: number | null;
   ratingCount: number | null;
+  teacherSubject: number;
 }
 
 const ProfilePage = () => {
@@ -33,11 +34,21 @@ const ProfilePage = () => {
     solvedCount: 0,
     ratingSum: 0,
     ratingCount: 0,
+    teacherSubject: 1000,
   });
+
+  const subjects = [
+    { label: '없음', value: '1000' },
+    { label: '수학1', value: '1110' },
+    { label: '수학2', value: '1120' },
+    { label: '기하', value: '1130' },
+    { label: '확률과 통계', value: '1140' },
+  ];
+
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
   const [profileImageName, setProfileImageName] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
-
+  const [preferredSubject, setPreferredSubject] = useState('1000');
   const imageInput = useRef<HTMLInputElement>();
   const navigate = useNavigate();
 
@@ -101,15 +112,20 @@ const ProfilePage = () => {
 
     modifyProfile(
       userProfile.nickname,
-      userProfile.experience,
       userProfile.introduce,
       userProfile.gender,
       profileImage,
       user.accessToken,
+      userProfile.teacherSubject,
     );
 
     setIsModified(false);
   };
+
+  const handleSubjectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setPreferredSubject(event.target.value);
+  };
+
   return (
     <div className="flex justify-center min-h-full min-w-fit">
       <Card className="flex my-5 w-[80vh] min-w-[600px] min-h-[80vh]">
@@ -163,6 +179,24 @@ const ProfilePage = () => {
                   className="w-full p-2 mt-4 border border-gray-300 rounded bg-opacity-30 bg-solive-200"
                 />
               </label>
+              {user.masterCodeId === 2 ? (
+                <label className="w-full mt-8 font-bold">
+                  선호과목
+                  <select
+                    value={preferredSubject}
+                    onChange={handleSubjectChange}
+                    className="w-full p-2 mt-4 border border-gray-300 rounded bg-opacity-30 bg-solive-200"
+                  >
+                    {subjects.map((subject) => (
+                      <option key={subject.value} value={subject.value}>
+                        {subject.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <></>
+              )}
               <div className="flex items-center justify-between w-full mt-8">
                 <div className="font-bold">성별</div>
                 <div className="flex gap-5">
@@ -227,7 +261,7 @@ const ProfilePage = () => {
                   <div>{`${userProfile.questionCount} 개`}</div>
                 </div>
               ) : (
-                <div>
+                <div className="w-full">
                   <div className="flex items-center justify-between w-full mt-8">
                     <div className="font-bold">푼 문제 수</div>
                     <div>{`${userProfile.solvedCount} 개`}</div>
