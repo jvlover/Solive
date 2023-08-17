@@ -11,6 +11,7 @@ import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
 import com.ssafy.solive.common.exception.InvalidMasterCodeException;
+import com.ssafy.solive.common.exception.NotEnoughPointException;
 import com.ssafy.solive.common.exception.user.DuplicatedEmailException;
 import com.ssafy.solive.common.exception.user.DuplicatedLoginIdException;
 import com.ssafy.solive.common.exception.user.DuplicatedNicknameException;
@@ -34,7 +35,6 @@ import com.ssafy.solive.db.repository.StudentRepository;
 import com.ssafy.solive.db.repository.TeacherRepository;
 import com.ssafy.solive.db.repository.UserRepository;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -377,14 +377,18 @@ public class UserServiceImpl implements UserService {
      *
      * @param userId     userId
      * @param solvePoint 충전금액
+     * @return newSolvePoint 충전한 뒤 SP
      */
     @Override
-    public void chargeSolvePoint(Long userId, Integer solvePoint) {
+    public Integer chargeSolvePoint(Long userId, Integer solvePoint) {
         log.info("UserService_chargeSolvePoint_start: " + userId + ", " + solvePoint);
         Student student = studentRepository.findById(userId)
             .orElseThrow(UserNotFoundException::new);
         student.chargeSolvePoint(solvePoint);
-        log.info("UserService_chargeSolvePoint_end");
+
+        Integer newSolvePoint = student.getSolvePoint();
+        log.info("UserService_chargeSolvePoint_end: " + newSolvePoint);
+        return newSolvePoint;
     }
 
     /**
@@ -392,14 +396,25 @@ public class UserServiceImpl implements UserService {
      *
      * @param userId     userId
      * @param solvePoint 출금금액
+     * @return newSolvePoint 환전한 뒤 SP
      */
     @Override
-    public void cashOutSolvePoint(Long userId, Integer solvePoint) {
+    public Integer cashOutSolvePoint(Long userId, Integer solvePoint) {
         log.info("UserService_cashOutSolvePoint_start: " + userId + ", " + solvePoint);
         Teacher teacher = teacherRepository.findById(userId)
             .orElseThrow(UserNotFoundException::new);
+
+        // 보유한 SP이 부족하면 Exception
+        if (teacher.getSolvePoint() < solvePoint) {
+            log.info("UserService_cashOutSolvePoint_end: NotEnoughPointException");
+            throw new NotEnoughPointException();
+        }
+
         teacher.cashOutSolvePoint(solvePoint);
-        log.info("UserService_cashOutSolvePoint_end");
+
+        Integer newSolvePoint = teacher.getSolvePoint();
+        log.info("UserService_cashOutSolvePoint_end: " + newSolvePoint);
+        return newSolvePoint;
     }
 
     /**

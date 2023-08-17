@@ -1,4 +1,4 @@
-package com.ssafy.solive.common.exception.matching;
+package com.ssafy.solive.common.exception;
 
 import com.ssafy.solive.common.exception.ErrorCode;
 import com.ssafy.solive.common.model.BaseException;

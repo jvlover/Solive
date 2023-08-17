@@ -6,7 +6,7 @@ import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.common.exception.NoDataException;
-import com.ssafy.solive.common.exception.matching.NotEnoughPointException;
+import com.ssafy.solive.common.exception.NotEnoughPointException;
 import com.ssafy.solive.db.entity.Apply;
 import com.ssafy.solive.db.entity.Matched;
 import com.ssafy.solive.db.entity.Question;
