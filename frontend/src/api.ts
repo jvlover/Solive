@@ -627,7 +627,6 @@ export const getTeachersList = async (
 };
 
 export async function applyToTeacher(applyId: number, accessToken: string) {
-  console.log(applyId);
   try {
     const response = await axios.post(
       BASE_URL + '/matched',

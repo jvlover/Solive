@@ -157,7 +157,7 @@ const TeacherQuestionDetail = () => {
         </div>
         {isModalOpen && (
           <div className="fixed top-0 left-0 flex items-center justify-center w-screen h-screen bg-black bg-opacity-50">
-            <div className="p-6 bg-white rounded-md">
+            <div className="relative p-6 bg-white rounded-md">
               <button
                 className="absolute top-2 right-2 p-1 w-6 h-6 text-black z-10"
                 onClick={() => setIsModalOpen(false)}
@@ -176,7 +176,7 @@ const TeacherQuestionDetail = () => {
                 />
               </label>
               <label className="block mb-4">
-                예상 시간:
+                예상 준비 시간(분):
                 <input
                   type="number"
                   value={expectedTime}
