@@ -10,12 +10,16 @@ import com.ssafy.solive.api.matching.service.NotificationService;
 import com.ssafy.solive.api.user.service.UserService;
 import com.ssafy.solive.common.model.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 학생이 강사가 지원한 요청들 중 하나를 수락한 후 부터의 과정들 API 컨트롤러
@@ -64,7 +68,7 @@ public class MatchedController {
         notificationService.send(matchedRegistPostRes.getUser(), title, sessionId);
 
         log.info("MatchedController_regist_end: success");
-        return CommonResponse.success(SUCCESS);
+        return CommonResponse.success(sessionId);
     }
 
     /**
