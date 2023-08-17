@@ -176,7 +176,7 @@ const TeacherQuestionDetail = () => {
                 />
               </label>
               <label className="block mb-4">
-                예상 시간:
+                예상 준비 시간(분):
                 <input
                   type="number"
                   value={expectedTime}

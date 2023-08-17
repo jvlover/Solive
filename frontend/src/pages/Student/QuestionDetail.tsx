@@ -8,11 +8,6 @@ import {
 } from '../../api';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
-// import que from '../../assets/404.png';
-// import ques from '../../assets/home-teacher.png';
-// import a from '../../assets/logo.png';
-// import b from '../../assets/logo_white.png';
-// import c from '../../assets/home-teacher.png';
 import StarRating from '../star';
 
 const StudentQuestionDetail = () => {
