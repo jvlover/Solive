@@ -19,12 +19,13 @@ const MatchPage = () => {
 
   const fetchData = async () => {
     try {
-      if (applyId) {
+      const sessionName = Navigate.state.sessionName;
+      if (!sessionName) {
         state = 'student';
         const response = await axios.post(
           'https://i9a107.p.ssafy.io/api/matched',
           {
-            applyId: applyId,
+            applyId: Navigate.state.applyId,
           },
           {
             headers: {
@@ -35,7 +36,7 @@ const MatchPage = () => {
         setSessionName(response.data.data);
       } else {
         state = 'teacher';
-        setSessionName(Navigate.state.sessionId);
+        setSessionName(sessionName);
       }
     } catch (error) {
       console.error('Error:', error);

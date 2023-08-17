@@ -724,3 +724,21 @@ export async function applyToRate(
     return { success: false, error: error.message };
   }
 }
+
+export const getReplayUrl = async (
+  id: number,
+  accessToken: string,
+): Promise<{ success: boolean; data?: { videoUrl: string } }> => {
+  try {
+    const response = await axios.get(
+      BASE_URL + `/matched/video/${id}`,
+      { headers: { 'access-token': accessToken } },
+    );
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    return { success: false };
+  }
+};

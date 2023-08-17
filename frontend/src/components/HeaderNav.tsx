@@ -14,6 +14,7 @@ import {
   Menu,
   MenuList,
   MenuItem,
+  Avatar,
 } from '@material-tailwind/react';
 import {
   DocumentTextIcon,
@@ -65,7 +66,15 @@ const HeaderNav = () => {
       <MatchingNotification />
       <Menu>
         <MenuHandler>
-          <UserIcon className="w-auto cursor-pointer h-7" />
+          {user.path ? (
+            <Avatar
+              src={user.path}
+              alt="profile"
+              className="w-auto h-7"
+            ></Avatar>
+          ) : (
+            <UserIcon className="w-auto cursor-pointer h-7" />
+          )}
         </MenuHandler>
         <MenuList>
           <MenuItem
@@ -151,15 +160,6 @@ const HeaderNav = () => {
         >
           <img src={logo} alt="Logo" className="w-auto h-10" />
         </Link>
-        <button
-          onClick={() => {
-            navigate('/matchpage', {
-              state: { applyId: 1 },
-            });
-          }}
-        >
-          테스트하러뿅
-        </button>
         <div className="flex items-center gap-4">
           <div className="hidden lg:block">{navList}</div>
           <IconButton

@@ -2,7 +2,6 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import { getMyProblems, getNewAccessToken } from '../../api';
-import { Select, Option as MOption } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 
 interface Subject {
@@ -43,7 +42,7 @@ const QuestionManagement = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [order, setOrder] = useState('TIME_ASC');
   const [pageNum, setPageNum] = useState(0);
-  const [matchingState, setMatchingState] = useState(0);
+  const [matchingState, setMatchingState] = useState(3);
 
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
@@ -112,17 +111,17 @@ const QuestionManagement = () => {
     }
   };
 
-  const handleSubjectChange = (value: string) => {
-    setSubjectNum(Number(value));
+  const handleSubjectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSubjectNum(Number(event.target.value));
     setSubSubjectNum(0);
   };
 
-  const handleSubSubjectChange = (value: string) => {
-    setSubSubjectNum(Number(value));
+  const handleSubSubjectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSubSubjectNum(Number(event.target.value));
   };
 
-  const handleMatchingStateChange = (value: string) => {
-    setMatchingState(Number(value));
+  const handleMatchingStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setMatchingState(Number(event.target.value));
   };
 
   const questionSearchKeywordChange = (
@@ -146,7 +145,7 @@ const QuestionManagement = () => {
 
   return (
     <div>
-      <div className="mx-auto mt-8 mb-8 h-[650px] w-[800px] p-6 border-2 border-gray-100 shadow-md border-opacity-70 flex flex-col justify-between">
+      <div className="mx-auto mt-8 mb-8 min-h-[650px] min-w-[800px] p-6 border-2 border-gray-100 shadow-md border-opacity-70 flex flex-col justify-between">
         <div>
           <p className="text-[18px] font-bold">내가 등록한 문제</p>
           <p className="text-[12px] mt-4">
@@ -154,56 +153,60 @@ const QuestionManagement = () => {
           </p>
           <div className="flex justify-center w-full mt-4">
             <div className="flex items-center justify-center flex-1 space-x-2">
-              <Select
-                color="blue"
-                size="md"
+              <select
                 onChange={handleSubjectChange}
-                placeholder="과목 선택"
+                className="w-full p-2 text-center border border-gray-300 rounded bg-opacity-30 bg-solive-200"
               >
+                <option selected disabled className="hidden">
+                  과목 선택
+                </option>
                 {subjects.map((subject) => (
-                  <MOption key={subject.value} value={subject.value.toString()}>
+                  <option key={subject.value} value={subject.value.toString()}>
                     {subject.label}
-                  </MOption>
+                  </option>
                 ))}
-              </Select>
+              </select>
             </div>
             <div className="flex items-center justify-center flex-1 mx-2 space-x-2">
-              <Select
-                color="blue"
-                size="md"
+              <select
                 onChange={handleSubSubjectChange}
-                placeholder="세부 과목 선택"
+                className="w-full p-2 text-center border border-gray-300 rounded bg-opacity-30 bg-solive-200"
               >
+                <option selected disabled className="hidden">
+                  세부 과목 선택
+                </option>
                 {(
                   subjects.find((subject) => subject.value === subjectNum)
                     ?.subSubjects || []
                 ).map((subSubject) => (
-                  <MOption
+                  <option
                     key={subSubject.value}
                     value={subSubject.value.toString()}
                   >
                     {subSubject.label}
-                  </MOption>
+                  </option>
                 ))}
-              </Select>
+              </select>
             </div>
             <div className="flex items-center justify-center flex-1 space-x-2">
-              <Select
-                color="blue"
-                size="md"
+              <select
+                value={matchingState}
                 onChange={handleMatchingStateChange}
-                placeholder="매칭 여부 선택"
+                className="w-full p-2 text-center border border-gray-300 rounded bg-opacity-30 bg-solive-200"
               >
-                <MOption key={0} value={'0'}>
-                  {'등록됨'}
-                </MOption>
-                <MOption key={1} value={'1'}>
-                  {'요청됨'}
-                </MOption>
-                <MOption key={2} value={'2'}>
-                  {'완료됨'}
-                </MOption>
-              </Select>
+                <option key={3} value={'3'}>
+                  전체 상태 보기
+                </option>
+                <option key={0} value={'0'}>
+                  등록됨
+                </option>
+                <option key={1} value={'1'}>
+                  요청됨
+                </option>
+                <option key={2} value={'2'}>
+                  완료됨
+                </option>
+              </select>
             </div>
           </div>
           <div className="flex items-center justify-end my-4">
@@ -259,7 +262,7 @@ const QuestionManagement = () => {
               {problems.map((problem) => (
                 <div
                   key={problem.questionId}
-                  className="flex flex-col items-center p-2 border-2 border-solive-200"
+                  className="flex flex-col items-center p-2 border-2 border-opacity-50 rounded-md border-solive-200"
                 >
                   <img
                     onClick={() => handleDetailPage(problem.questionId)}
@@ -267,10 +270,10 @@ const QuestionManagement = () => {
                     src={problem.path}
                     alt="problem"
                   />
-                  <span>
-                    {problem.title}{' '}
+                  <span className="font-bold">{problem.title}</span>
+                  <div className="p-1 mt-1 font-light border rounded text-blue-gray-700 border-blue-gray-100">
                     {matchingStateToString(problem.matchingState)}
-                  </span>
+                  </div>
                 </div>
               ))}
             </div>
