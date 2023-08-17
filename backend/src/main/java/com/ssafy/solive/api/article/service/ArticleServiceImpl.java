@@ -81,7 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (fileList != null) {
             log.info("ArticleService_registArticle_start: " + registInfo.toString() + ", "
-                + fileList.toString());
+                + fileList);
         } else {
             log.info("ArticleService_registArticle_start: " + registInfo.toString());
         }
@@ -137,7 +137,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (fileList != null) {
             log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString() + ", "
-                + fileList.toString());
+                + fileList);
         } else {
             log.info("ArticleService_modifyArticle_start: " + modifyInfo.toString());
         }
@@ -210,7 +210,7 @@ public class ArticleServiceImpl implements ArticleService {
             return true;
         }
 
-        // deleteInfo의 유저 정보와 해당 문제의 실제 유저 정보가 다를 경우
+        // deleteInfo 의 유저 정보와 해당 문제의 실제 유저 정보가 다를 경우
         log.info("ArticleService_deleteArticle_end: false");
         return false;
     }
