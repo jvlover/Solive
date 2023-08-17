@@ -39,7 +39,7 @@ const HeaderNav = () => {
   }, []);
 
   const handleLogout = async () => {
-    const result = await logoutUser(user.accessToken);
+    const result = await logoutUser(user.userId);
 
     if (result.success) {
       localStorage.removeItem('user');
@@ -91,14 +91,24 @@ const HeaderNav = () => {
             </Typography>
           </MenuItem>
           {user.masterCodeId === 1 ? (
-            <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+            <MenuItem
+              onClick={() => {
+                navigate('/student/questionregistration');
+              }}
+              className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
+            >
               <PencilSquareIcon className="w-5 h-5" />
               <Typography variant="small" className="font-normal">
                 문제 등록하기
               </Typography>
             </MenuItem>
           ) : (
-            <MenuItem className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none">
+            <MenuItem
+              onClick={() => {
+                navigate('/teacher/question');
+              }}
+              className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
+            >
               <DocumentTextIcon className="w-5 h-5" />
               <Typography variant="small" className="font-normal">
                 문제 보기
@@ -136,7 +146,9 @@ const HeaderNav = () => {
   return (
     <Navbar className="sticky top-0 z-10 max-w-full px-4 py-2 rounded-none h-max lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <Link to="/">
+        <Link
+          to={user ? (user.masterCodeId == 1 ? '/student' : '/teacher') : '/'}
+        >
           <img src={logo} alt="Logo" className="w-auto h-10" />
         </Link>
         <button

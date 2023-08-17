@@ -6,7 +6,8 @@ import { UserProfile } from './pages/MyPage/Profile';
 
 const BASE_URL = 'https://i9a107.p.ssafy.io/api';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
-const CHARGE_URL = `${BASE_URL}/charge`;
+const CHARGE_URL = `${BASE_URL}/user/charge`;
+const CASHOUT_URL = `${BASE_URL}/user/cashout`;
 
 export const fetchArticles = async (
   keyword: string,
@@ -136,18 +137,19 @@ export const likeArticle = async (userId: number, articleId: number) => {
 };
 
 export const chargeSolvePoint = async (
-  amount: number,
+  solvePoint: number,
   token: string,
 ): Promise<{ success: boolean; solvePoint?: number }> => {
   try {
     const response = await axios.put(
       `${CHARGE_URL}`,
-      { amount },
+      { solvePoint },
       { headers: { 'access-token': token } },
     );
+
     return {
       success: response.data.success,
-      solvePoint: response.data.data.solvePoint,
+      solvePoint: response.data.data,
     };
   } catch (error) {
     console.error('Error charging: ', error);
@@ -182,13 +184,22 @@ export const loginUser = async (loginData: {
   }
 };
 
-export async function getMyProblems(accessToken: string) {
+export async function getMyProblems(
+  userState: number,
+  masterCodeMiddle: number,
+  masterCodeLow: number,
+  matchingState: number,
+  keyword: string,
+  sort: string,
+  pageNum: number,
+  accessToken: string,
+) {
   type Problem = {
-    id: number;
+    questionId: number;
     path: string;
     title: string;
-    subject: string;
-    time: string;
+    masterCodeName: string;
+    createTime: string;
     matching_state: number;
   };
   type ApiResponse<T> = {
@@ -201,6 +212,15 @@ export async function getMyProblems(accessToken: string) {
       BASE_URL + '/matched/my',
       {
         headers: { 'access-token': accessToken },
+        params: {
+          userState: userState,
+          masterCodeMiddle: masterCodeMiddle,
+          masterCodeLow: masterCodeLow,
+          matchingState: matchingState,
+          keyword: keyword,
+          sort: sort,
+          pageNum: pageNum,
+        },
       },
     );
     return {
@@ -292,7 +312,7 @@ export async function questionSearch(
 ): Promise<{ success: boolean; data?: any; error?: any }> {
   try {
     const response = await axios.get(
-      `${BASE_URL}/question/?masterCodeMiddle=${subjectNum}&smasterCodeLow=${subSubjectNum}&keyword=${searchKeyword}&order=${order}&page=${pageNum}`,
+      `${BASE_URL}/question?masterCodeMiddle=${subjectNum}&masterCodeLow=${subSubjectNum}&keyword=${searchKeyword}&sort=${order}&pageNum=${pageNum}`,
       {
         headers: { 'access-token': accessToken },
       },
@@ -317,17 +337,17 @@ export async function questionSearch(
 
 export const modifyProfile = async (
   nickname: string,
-  experience: number,
   introduce: string,
   gender: number,
   profileImage: File | null,
   accessToken: string,
+  teacherSubjectName: number | null,
 ) => {
   const profileData = {
     nickname: nickname,
-    experience: experience,
     introduce: introduce,
     gender: gender,
+    teacherSubjectName: teacherSubjectName,
   };
   const formData = new FormData();
 
@@ -337,7 +357,7 @@ export const modifyProfile = async (
   );
 
   if (profileImage) {
-    formData.append('image', profileImage);
+    formData.append('files', profileImage);
   }
 
   for (const pair of formData.entries()) {
@@ -441,11 +461,11 @@ export const withdrawalUser = async (
 };
 
 export const logoutUser = async (
-  accessToken: string,
+  userId: number,
 ): Promise<{ success: boolean; error?: any }> => {
   try {
-    const response = await axios.put(BASE_URL + '/user/logout', null, {
-      headers: { 'access-token': accessToken },
+    const response = await axios.put(BASE_URL + '/user/auth/logout', {
+      userId: userId,
     });
     return {
       success: response.data.success,
@@ -474,7 +494,7 @@ export async function getTeachers(accessToken: string) {
 
   try {
     const response = await axios.get<ApiResponse<Teacher[]>>(
-      BASE_URL + '/onlineteacher',
+      BASE_URL + '/user/onlineteacher',
       {
         headers: { 'access-token': accessToken },
       },
@@ -492,14 +512,14 @@ export async function getTeachers(accessToken: string) {
   }
 }
 
-export async function getQuestionById(id: string, accessToken: string) {
+export async function getQuestionById(id: number, accessToken: string) {
   type Question = {
     userNickname: string;
     title: string;
     description: string;
     path: string[];
-    subject: number;
-    subSubject: string;
+    masterCodeName: string;
+    masterCodeCategory: string;
     createTime: string;
     state: string;
   };
@@ -533,7 +553,7 @@ export async function getQuestionById(id: string, accessToken: string) {
 type ApplyData = {
   solvePoint: string;
   estimatedTime: string;
-  questionId: string;
+  questionId: number;
 };
 
 type ApplyResponse = {
@@ -545,22 +565,138 @@ export const applyQuestion = async (
   applyData: ApplyData,
   accessToken: string,
 ): Promise<ApplyResponse> => {
-  const formData = new FormData();
-  formData.append(
-    'applyData',
-    new Blob([JSON.stringify(applyData)], { type: 'application/json' }),
-  );
-
   const response = await axios.post<ApplyResponse>(
     BASE_URL + '/apply',
-    formData,
+    applyData,
     {
       headers: {
         'access-token': accessToken,
-        'Content-Type': 'multipart/form-data',
       },
     },
   );
 
   return response.data;
+};
+
+export interface Teacher {
+  applyId: number;
+  teacherSubjectName: string;
+  path: string;
+  teacherNickname: string;
+  solvePoint: string;
+  estimatedTime: string;
+  ratingSum: number;
+  ratingCount: number;
+}
+
+export interface GetTeachersListParams {
+  questionId: number;
+  sort: string;
+  isFavorite: boolean;
+}
+
+export const getTeachersList = async (
+  params: GetTeachersListParams,
+  accessToken: string,
+): Promise<{ success: boolean; data?: Teacher[]; error?: string }> => {
+  try {
+    const response = await axios.get<{ success: boolean; data: Teacher[] }>(
+      BASE_URL + '/apply',
+      {
+        headers: { 'access-token': accessToken },
+        params: {
+          questionId: params.questionId,
+          sort: params.sort,
+          isFavorite: params.isFavorite,
+        },
+      },
+    );
+
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode = error?.response?.data?.error?.code;
+
+    return {
+      success: false,
+      error: errorCode || 'UNKNOWN_ERROR',
+    };
+  }
+};
+
+export async function applyToTeacher(applyId: number, accessToken: string) {
+  console.log(applyId);
+  try {
+    const response = await axios.post(
+      BASE_URL + '/matched',
+      { applyId },
+      {
+        headers: {
+          'access-token': accessToken,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error.message };
+  }
+}
+
+export interface FavoriteTeacher {
+  path: string;
+  teacherNickName: string;
+  teacherSubjectName: string;
+  ratingSum: number;
+  ratingCount: number;
+}
+
+export const getFavorites = async (
+  accessToken: string,
+): Promise<{ success: boolean; data?: FavoriteTeacher[]; error?: any }> => {
+  interface FavoritesResponse {
+    success: boolean;
+    data: FavoriteTeacher[];
+  }
+
+  try {
+    const response = await axios.get<FavoritesResponse>(
+      BASE_URL + '/user/favorite',
+      {
+        headers: { 'access-token': accessToken },
+      },
+    );
+    return {
+      success: response.data.success,
+      data: response.data.data,
+    };
+  } catch (error) {
+    let errorCode;
+    if (error.response && error.response.data && error.response.data.error) {
+      errorCode = error.response.data.error.code;
+    }
+    return { success: false, error: errorCode || error };
+  }
+};
+
+export const teacherSolvePoint = async (
+  solvePoint: number,
+  token: string,
+): Promise<{ success: boolean; solvePoint?: number }> => {
+  try {
+    const response = await axios.put(
+      `${CASHOUT_URL}`,
+      { solvePoint },
+      { headers: { 'access-token': token } },
+    );
+    return {
+      success: response.data.success,
+      solvePoint: response.data.data,
+    };
+  } catch (error) {
+    console.error('Error charging: ', error);
+    return { success: false };
+  }
 };

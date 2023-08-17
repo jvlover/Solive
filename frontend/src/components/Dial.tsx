@@ -49,7 +49,18 @@ const Dial = () => {
         <SpeedDialContent>
           {/* 홈으로 */}
           <SpeedDialAction className="relative focus:outline-none">
-            <HomeIcon className="w-5 h-5" onClick={() => navigate('/')} />
+            <HomeIcon
+              className="w-5 h-5"
+              onClick={() =>
+                navigate(
+                  user
+                    ? user.masterCodeId == 1
+                      ? '/student'
+                      : '/teacher'
+                    : '/',
+                )
+              }
+            />
             <Typography {...labelProps}>홈으로</Typography>
           </SpeedDialAction>
           {/* 학생이면 학생 마이페이지, 선생이면 선생 마이페이지 */}

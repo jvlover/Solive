@@ -13,12 +13,15 @@ import {
   KeyIcon,
   PencilSquareIcon,
   UserCircleIcon,
+  StarIcon,
 } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import QuestionManagement from '../Student/QuestionManagement';
 import PointChargePage from './SolvePoint';
+import TeacherSolve from './TeacherSolve';
+import FavoritePage from './Favorite';
 
 const MyPage = () => {
   const user = useRecoilValue(userState);
@@ -37,6 +40,10 @@ const MyPage = () => {
     PageComponent = QuestionManagement;
   } else if (pageName === 'solvepoint') {
     PageComponent = PointChargePage;
+  } else if (pageName === 'favorite') {
+    PageComponent = FavoritePage;
+  } else if (pageName === 'teachersolve') {
+    PageComponent = TeacherSolve;
   }
 
   useEffect(() => {
@@ -98,16 +105,41 @@ const MyPage = () => {
                 </ListItemPrefix>
                 문제 관리
               </ListItem>
+              {user.masterCodeId == 1 ? (
+                <ListItem
+                  onClick={() => {
+                    navigate('/mypage/solvepoint');
+                  }}
+                  className="font-[pretendard]"
+                >
+                  <ListItemPrefix>
+                    <CreditCardIcon className="w-5 h-5" />
+                  </ListItemPrefix>
+                  솔브포인트 관리
+                </ListItem>
+              ) : (
+                <ListItem
+                  onClick={() => {
+                    navigate('/mypage/teachersolve');
+                  }}
+                  className="font-[pretendard]"
+                >
+                  <ListItemPrefix>
+                    <CreditCardIcon className="w-5 h-5" />
+                  </ListItemPrefix>
+                  솔브포인트 출금
+                </ListItem>
+              )}
               <ListItem
                 onClick={() => {
-                  navigate('/mypage/solvepoint');
+                  navigate('/mypage/favorite');
                 }}
                 className="font-[pretendard]"
               >
                 <ListItemPrefix>
-                  <CreditCardIcon className="w-5 h-5" />
+                  <StarIcon className="w-5 h-5" />
                 </ListItemPrefix>
-                솔브포인트 관리
+                즐겨찾기
               </ListItem>
             </List>
           </Card>
