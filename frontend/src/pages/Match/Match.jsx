@@ -12,12 +12,12 @@ const MatchPage = () => {
   const Navigate = useLocation();
 
   const [sessionName, setSessionName] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        //   'https://i9a107.p.ssafy.io/api/matched',
-        'http://localhost:8200/matched',
+        'https://i9a107.p.ssafy.io/api/matched',
         {
           applyId: Navigate.state.applyId,
         },
@@ -28,16 +28,21 @@ const MatchPage = () => {
         },
       );
 
-      console.log(response.data);
-      setSessionName(response.data);
+      setSessionName(response.data.data);
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []); // applyId가 변경될 때마다 fetchData 실행
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     // 여기서 videoRoomComponent로 props 넘겨준다
