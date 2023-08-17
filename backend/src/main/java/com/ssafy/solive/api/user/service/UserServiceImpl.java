@@ -23,21 +23,21 @@ import com.ssafy.solive.common.exception.user.UserNotFoundException;
 import com.ssafy.solive.common.model.FileDto;
 import com.ssafy.solive.common.util.FileUploader;
 import com.ssafy.solive.config.JwtConfiguration;
+import com.ssafy.solive.db.entity.Apply;
 import com.ssafy.solive.db.entity.Favorite;
 import com.ssafy.solive.db.entity.FavoriteId;
 import com.ssafy.solive.db.entity.MasterCode;
 import com.ssafy.solive.db.entity.Student;
 import com.ssafy.solive.db.entity.Teacher;
 import com.ssafy.solive.db.entity.User;
+import com.ssafy.solive.db.repository.ApplyRepository;
 import com.ssafy.solive.db.repository.FavoriteRepository;
 import com.ssafy.solive.db.repository.MasterCodeRepository;
 import com.ssafy.solive.db.repository.StudentRepository;
 import com.ssafy.solive.db.repository.TeacherRepository;
 import com.ssafy.solive.db.repository.UserRepository;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,19 +56,21 @@ public class UserServiceImpl implements UserService {
     private final MasterCodeRepository masterCodeRepository;
     private final FavoriteRepository favoriteRepository;
     private final JwtConfiguration jwtConfiguration;
+    private final ApplyRepository applyRepository;
     private final FileUploader fileUploader;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository,
         TeacherRepository teacherRepository, MasterCodeRepository masterCodeRepository,
         FavoriteRepository favoriteRepository, JwtConfiguration jwtConfiguration,
-        FileUploader fileUploader) {
+        ApplyRepository applyRepository, FileUploader fileUploader) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
         this.masterCodeRepository = masterCodeRepository;
         this.favoriteRepository = favoriteRepository;
         this.jwtConfiguration = jwtConfiguration;
+        this.applyRepository = applyRepository;
         this.fileUploader = fileUploader;
     }
 
@@ -438,8 +440,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void rateTeacher(TeacherRatePostReq ratingInfo) {
         log.info("UserService_rateTeacher_start: " + ratingInfo);
-        Teacher teacher = teacherRepository.findById(ratingInfo.getTeacherId())
+
+        Apply apply = applyRepository.findById(ratingInfo.getApplyId())
             .orElseThrow(UserNotFoundException::new);
+
+        Teacher teacher = apply.getTeacher();
         teacher.addRating(ratingInfo.getRating());
         log.info("UserService_rateTeacher_end");
     }
