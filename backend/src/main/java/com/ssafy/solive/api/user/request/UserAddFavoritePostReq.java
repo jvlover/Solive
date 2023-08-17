@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class UserAddFavoritePostReq {
 
-    Long teacherId;
+    Long applyId;
 }

@@ -1,14 +1,17 @@
 package com.ssafy.solive.api.user.service;
 
-import com.ssafy.solive.api.user.request.*;
+import com.ssafy.solive.api.user.request.TeacherRatePostReq;
+import com.ssafy.solive.api.user.request.UserLoginPostReq;
+import com.ssafy.solive.api.user.request.UserModifyPasswordPutReq;
+import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
+import com.ssafy.solive.api.user.request.UserRegistPostReq;
 import com.ssafy.solive.api.user.response.StudentFavoriteGetRes;
 import com.ssafy.solive.api.user.response.TeacherOnlineGetRes;
 import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -39,7 +42,7 @@ public interface UserService {
 
     void rateTeacher(TeacherRatePostReq ratingInfo);
 
-    void addFavorite(Long studentId, Long teacherId);
+    void addFavorite(Long studentId, Long applyId);
 
     void deleteFavorite(Long studentId, Long teacherId);
 

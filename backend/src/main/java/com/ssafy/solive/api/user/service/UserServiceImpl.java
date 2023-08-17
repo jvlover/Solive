@@ -457,8 +457,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addFavorite(Long studentId, Long teacherId) {
-        log.info("UserService_addFavorite_start: " + studentId + ", " + teacherId);
+    public void addFavorite(Long studentId, Long applyId) {
+        log.info("UserService_addFavorite_start: " + studentId + ", " + applyId);
+
+        Apply apply = applyRepository.findById(applyId)
+            .orElseThrow(NoDataException::new);
+
+        Long teacherId = apply.getTeacher().getId();
 
         FavoriteId favoriteId = FavoriteId.builder()
             .studentId(studentId)
