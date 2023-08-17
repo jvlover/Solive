@@ -20,7 +20,7 @@ public class MatchedFindMineGetReq {
     // 마스터코드 소분류
     Integer masterCodeLow;
 
-    // 문제의 매칭 상태 필터링
+    // 문제의 매칭 상태 필터링. 문제 전체 검색은 3, 문제가 매칭 되었으면 2, 강사들의 지원이 있는 상태면 1, 문제가 등록만 된 초기 상태면 0
     Integer matchingState;
 
     // 검색어. Null 가능

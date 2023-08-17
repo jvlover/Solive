@@ -251,7 +251,12 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
      * 학생이 등록한 question 조회할 때 matchingState 검색 조건 반영하여 where 절에서 사용
      */
     private BooleanExpression matchingStateEq(Integer id) {
-        return question.matchingState.eq(id);
+
+        if (id == 3) {
+            return question.matchingState.lt(id);
+        } else {
+            return question.matchingState.eq(id);
+        }
     }
 
     /**
