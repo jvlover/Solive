@@ -3,12 +3,17 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import { getMyProblems, getNewAccessToken, getTeachers } from '../../api';
 import { userState } from '../../recoil/user/userState';
+import banner_1 from '../../assets/banner_1.png';
+import banner_2 from '../../assets/banner_2.png';
+import banner_3 from '../../assets/banner_3.png';
+import banner_4 from '../../assets/banner_4.png';
+import banner_5 from '../../assets/banner_5.png';
 
 const Student = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoading] = useState(true);
-  const banners = [1, 2, 3, 4, 5];
+  const banners = [banner_1, banner_2, banner_3, banner_4, banner_5];
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
   const [teachers, setTeachers] = useState([]);
@@ -42,9 +47,7 @@ const Student = () => {
           user.accessToken,
         );
         if (result.success) {
-          console.log(result.success);
           setProblems(result.data);
-          console.log(problems);
         } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
           const newAccessToken = await getNewAccessToken(user.refreshToken);
           if (newAccessToken) {
@@ -126,7 +129,7 @@ const Student = () => {
                 : 'opacity-0'
             }`}
           >
-            {banner}
+            <img src={banner} alt={String(idx)} className="w-full h-full" />
           </div>
         ))}
       </div>
@@ -136,33 +139,39 @@ const Student = () => {
             <h2 className="mt-4 mb-4 text-xl font-bold">
               현재 접속중인 선생님 목록
             </h2>
-            <div className="grid grid-cols-3 gap-4">
-              {teachers.map((teacher, index) => (
-                <div
-                  key={index}
-                  className="border-2 border-blue-200 p-2 flex flex-col items-center  h-[300px] w-[220px]"
-                >
-                  <img
-                    className="h-[200px] w-[250px]"
-                    src={teacher.path}
-                    alt="teacher"
-                  />
-                  <p>이름: {teacher.nickname}</p>
-                  <p>관심과목: {teacher.masterCodeName}</p>
-                  <p>평점: {teacher.rating}</p>
-                </div>
-              ))}
-            </div>
+            {teachers.length > 0 ? (
+              <div className="grid grid-cols-3 gap-4">
+                {teachers.map((teacher, index) => (
+                  <div
+                    key={index}
+                    className="border-2 border-solive-200 p-2 flex flex-col items-center  h-[300px] w-[220px] rounded-lg border-opacity-50"
+                  >
+                    <img
+                      className="h-[200px] w-[250px]"
+                      src={teacher.path}
+                      alt="teacher"
+                    />
+                    <p>이름: {teacher.nickname}</p>
+                    <p>관심과목: {teacher.masterCodeName}</p>
+                    <p>평점: {teacher.rating}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-48 font-semibold text-blue-gray-600">
+                접속중인 선생님이 없습니다.
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-col justify-between w-1/2 p-4 text-center border-r-2 border-gray-200">
           <h2 className="mt-4 mb-4 text-xl font-bold">내가 등록한 문제</h2>
-          <div className="flex flex-col items-center justify-center h-full mb-16">
+          <div className="flex flex-col items-center justify-center h-full my-8">
             <div className="grid grid-cols-3 gap-4">
               {problems.slice(0, 3).map((problem) => (
                 <div
                   key={problem.questiontId}
-                  className="border-2 border-blue-200 p-2 flex flex-col items-center h-[300px] w-[220px]"
+                  className="border-2 border-solive-200 p-2 flex flex-col items-center h-[300px] w-[220px] rounded-lg border-opacity-50"
                 >
                   <img
                     onClick={() => handleDetailPage(problem.questionId)}
@@ -170,20 +179,22 @@ const Student = () => {
                     src={problem.path}
                     alt="problem"
                   />
-                  <p>제목 : {problem.title}</p>
-                  <p>등록시간 : {problem.time}</p>
+                  <p className="mt-2 font-bold">{problem.title}</p>
+                  <p className="mt-1 font-extralight">
+                    {problem.createTime.replace('T', ' ').slice(0, -7)}
+                  </p>
                 </div>
               ))}
             </div>
-            <div className="flex justify-center mt-20 space-x-4 ">
+            <div className="flex justify-center mt-10 space-x-4 ">
               <button
-                className="px-4 py-2 text-white bg-blue-500 rounded"
+                className="px-4 py-2 btn-primary"
                 onClick={() => navigate('questionregistration')}
               >
                 문제 등록하기
               </button>
               <button
-                className="px-4 py-2 text-white bg-blue-500 rounded"
+                className="px-4 py-2 btn-primary"
                 onClick={() => navigate('/mypage/questionmanagement')}
               >
                 전체 보기

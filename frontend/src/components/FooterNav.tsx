@@ -1,7 +1,12 @@
 import { Typography } from '@material-tailwind/react';
 import whiteLogo from '../assets/logo_white.png';
+import { Link } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../recoil/user/userState';
 
 const FooterNav = () => {
+  const user = useRecoilValue(userState);
+
   const labelProps = {
     as: 'a',
     color: 'white',
@@ -10,14 +15,18 @@ const FooterNav = () => {
   };
 
   return (
-    <footer className="w-full bg-gray-700 p-3 border-t-2 border-blue-gray-200">
-      <div className="flex flex-row flex-wrap items-center justify-center gap-y-6 gap-x-12 bg-gray-700 text-center md:justify-between">
+    <footer className="w-full p-3 bg-gray-700 border-t-2 border-blue-gray-200">
+      <div className="flex flex-row flex-wrap items-center justify-center text-center bg-gray-700 gap-y-6 gap-x-12 md:justify-between">
         <img src={whiteLogo} alt="solive" className="h-10 w-auto ml-[10%]" />
         <ul className="flex flex-wrap items-center gap-y-2 gap-x-8 mr-[10%]">
           <li>
-            <Typography href="/" {...labelProps}>
-              홈
-            </Typography>
+            <Link
+              to={
+                user ? (user.masterCodeId == 1 ? '/student' : '/teacher') : '/'
+              }
+            >
+              <Typography {...labelProps}>홈</Typography>
+            </Link>
           </li>
           <li>
             <Typography href="https://about.gitlab.com/" {...labelProps}>

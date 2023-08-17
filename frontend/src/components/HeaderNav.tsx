@@ -146,7 +146,9 @@ const HeaderNav = () => {
   return (
     <Navbar className="sticky top-0 z-10 max-w-full px-4 py-2 rounded-none h-max lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <Link to="/">
+        <Link
+          to={user ? (user.masterCodeId == 1 ? '/student' : '/teacher') : '/'}
+        >
           <img src={logo} alt="Logo" className="w-auto h-10" />
         </Link>
         <div className="flex items-center gap-4">
