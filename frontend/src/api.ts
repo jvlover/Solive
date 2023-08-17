@@ -360,10 +360,6 @@ export const modifyProfile = async (
     formData.append('files', profileImage);
   }
 
-  for (const pair of formData.entries()) {
-    console.log(pair[0] + ': ' + pair[1]);
-  }
-
   try {
     const response = await axios.put(BASE_URL + '/user', formData, {
       headers: {

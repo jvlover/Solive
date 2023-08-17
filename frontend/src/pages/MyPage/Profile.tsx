@@ -127,15 +127,6 @@ const ProfilePage = () => {
     );
 
     if (result.success) {
-      localStorage.setItem(
-        'user',
-        JSON.stringify({
-          ...JSON.parse(localStorage.getItem('user')),
-          nickname: userProfile.nickname,
-          path: result.path,
-        }),
-      );
-
       setUser({
         ...user,
         nickname: userProfile.nickname,
