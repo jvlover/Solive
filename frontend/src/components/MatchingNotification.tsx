@@ -4,6 +4,7 @@ import {
   MenuItem,
   MenuList,
 } from '@material-tailwind/react';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Bell } from '../assets/notification.svg';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -20,6 +21,14 @@ const MatchingNotification = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const [listening, setListening] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  const handleApply = async (sessionName: string) => {
+    navigate('/matchpage', {
+      state: { sessionName: sessionName },
+    });
+  };
 
   useEffect(() => {
     if (!listening) {
@@ -75,7 +84,11 @@ const MatchingNotification = () => {
               className="flex items-center gap-2 border-none bg-none hover:outline-none hover:border-none"
             >
               <div>{notification.title}</div>
-              {/* <div>{notification.content}</div> */}
+              {user.masterCodeId === 2 && (
+                <button onClick={() => handleApply(notification.content)}>
+                  강의하기
+                </button>
+              )}
             </MenuItem>
           ))
         ) : (

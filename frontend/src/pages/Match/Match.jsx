@@ -16,19 +16,24 @@ const MatchPage = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.post(
-        'https://i9a107.p.ssafy.io/api/matched',
-        {
-          applyId: Navigate.state.applyId,
-        },
-        {
-          headers: {
-            'access-token': user.accessToken,
+      const sessionName = Navigate.state.sessionName;
+      if (!sessionName) {
+        const response = await axios.post(
+          'https://i9a107.p.ssafy.io/api/matched',
+          {
+            applyId: Navigate.state.applyId,
           },
-        },
-      );
+          {
+            headers: {
+              'access-token': user.accessToken,
+            },
+          },
+        );
 
-      setSessionName(response.data.data);
+        setSessionName(response.data.data);
+      } else {
+        setSessionName(sessionName);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
