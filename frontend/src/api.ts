@@ -701,12 +701,12 @@ export const teacherSolvePoint = async (
 };
 
 export const getReplayUrl = async (
-  questionId: number,
+  id: number,
   accessToken: string,
 ): Promise<{ success: boolean; url?: string }> => {
   try {
     const response = await axios.get(
-      BASE_URL + `/matched/video/${questionId}`,
+      BASE_URL + `/matched/video/${id}`,
       { headers: { 'access-token': accessToken } },
     );
     return {
