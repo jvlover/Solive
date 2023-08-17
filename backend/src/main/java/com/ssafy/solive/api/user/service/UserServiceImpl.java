@@ -11,6 +11,7 @@ import com.ssafy.solive.api.user.response.UserLoginPostRes;
 import com.ssafy.solive.api.user.response.UserPrivacyPostRes;
 import com.ssafy.solive.api.user.response.UserProfilePostRes;
 import com.ssafy.solive.common.exception.InvalidMasterCodeException;
+import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.exception.NotEnoughPointException;
 import com.ssafy.solive.common.exception.user.DuplicatedEmailException;
 import com.ssafy.solive.common.exception.user.DuplicatedLoginIdException;
@@ -442,7 +443,7 @@ public class UserServiceImpl implements UserService {
         log.info("UserService_rateTeacher_start: " + ratingInfo);
 
         Apply apply = applyRepository.findById(ratingInfo.getApplyId())
-            .orElseThrow(UserNotFoundException::new);
+            .orElseThrow(NoDataException::new);
 
         Teacher teacher = apply.getTeacher();
         teacher.addRating(ratingInfo.getRating());
