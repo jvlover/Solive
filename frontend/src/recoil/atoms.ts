@@ -18,8 +18,3 @@ export interface ArticlePage {
   number: number;
   totalPages: number;
 }
-
-// export const articleListState = atom<Article[] | undefined>({
-//   key: 'articleListState',
-//   default: [],
-// });

@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import { useState } from 'react';
-import { applyToRate, getNewAccessToken } from '../../api';
+import { applyToRate, getNewAccessToken, favoriteTeacher } from '../../api';
 
 const TeacherRating = () => {
   const [rating, setRating] = useState<number | null>(null);
@@ -13,17 +13,19 @@ const TeacherRating = () => {
   const applyId = parseInt(stringId || defaultApplyId.toString());
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
+  const [showFavoritePopup, setShowFavoritePopup] = useState(false);
 
   const handleStarClick = (rate: number) => {
     setRating(rate);
   };
 
+  const handlePopupConfirm = () => {
+    setShowFavoritePopup(true); // 추가됨
+  };
+
   const TeacherRate = async (applyId: number, rating: number) => {
     try {
       const result = await applyToRate(applyId, rating, user.accessToken);
-      // console.log(result);
-      console.log(result.success);
-      console.log(result);
       if (result.success) {
         setShowPopup(true);
       } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
@@ -45,8 +47,24 @@ const TeacherRating = () => {
     }
   };
 
-  const handlePopupConfirm = () => {
-    navigate('/student');
+  const addTeacherToFavorites = async (applyId: number) => {
+    try {
+      const result = await favoriteTeacher(applyId, user.accessToken);
+      if (result.success) {
+        navigate('/student');
+      } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
+        const newAccessToken = await getNewAccessToken(user.refreshToken);
+        if (newAccessToken) {
+          setUser({ ...user, accessToken: newAccessToken });
+          const newResponse = await favoriteTeacher(applyId, newAccessToken);
+          if (newResponse.success) {
+            navigate('/student');
+          }
+        }
+      }
+    } catch (error) {
+      navigate('./error');
+    }
   };
 
   return (
@@ -86,6 +104,25 @@ const TeacherRating = () => {
               className="px-4 py-2 text-white bg-solive-200"
             >
               확인
+            </button>
+          </div>
+        </div>
+      )}
+      {showFavoritePopup && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+          <div className="bg-white p-8 rounded shadow-lg">
+            <p className="mb-4">이 강사를 즐겨찾기에 추가하시겠습니까?</p>
+            <button
+              onClick={() => addTeacherToFavorites(applyId)}
+              className="px-4 py-2 mr-4 text-white bg-solive-200"
+            >
+              네
+            </button>
+            <button
+              onClick={() => navigate('/student')}
+              className="px-4 py-2 text-white bg-solive-200"
+            >
+              아니오
             </button>
           </div>
         </div>
