@@ -4,7 +4,7 @@ import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedPutReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
-import com.ssafy.solive.api.matching.response.MatchedFindSessionIdRes;
+import com.ssafy.solive.api.matching.response.MatchedFindVideoUrlRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.api.matching.service.MatchedService;
 import com.ssafy.solive.api.matching.service.NotificationService;
@@ -147,18 +147,18 @@ public class MatchedController {
     }
 
     /**
-     * question Id로 session Id 찾기
+     * question Id로 video url 찾기
      *
      * @param questionId : 문제 id
      */
     @GetMapping("/video/{questionId}")
-    public CommonResponse<?> findSessionId(@PathVariable Long questionId) {
+    public CommonResponse<?> findVideoUrl(@PathVariable Long questionId) {
 
-        log.info("MatchedController_findSessionId_start: " + questionId);
+        log.info("MatchedController_findVideoUrl_start: " + questionId);
 
-        MatchedFindSessionIdRes findRes = matchedService.findSessionId(questionId);
+        MatchedFindVideoUrlRes findRes = matchedService.findVideoUrl(questionId);
 
-        log.info("MatchedController_findSessionId_end: " + findRes.toString());
+        log.info("MatchedController_findVideoUrl_end: " + findRes.toString());
         return CommonResponse.success(findRes);
     }
 }

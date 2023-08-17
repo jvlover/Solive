@@ -4,7 +4,7 @@ import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedPutReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
-import com.ssafy.solive.api.matching.response.MatchedFindSessionIdRes;
+import com.ssafy.solive.api.matching.response.MatchedFindVideoUrlRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.common.exception.NoDataException;
 import com.ssafy.solive.common.exception.NotEnoughPointException;
@@ -251,26 +251,26 @@ public class MatchedServiceImpl implements MatchedService {
     }
 
     /**
-     * question Id로 session Id 찾기
+     * question Id로 video url 찾기
      *
      * @param questionId 문제의 id
      */
     @Override
-    public MatchedFindSessionIdRes findSessionId(Long questionId) {
+    public MatchedFindVideoUrlRes findVideoUrl(Long questionId) {
 
-        log.info("MatchedService_findSessionId_start: " + questionId);
+        log.info("MatchedService_findVideoUrl_start: " + questionId);
 
         Question question = questionRepository.findById(questionId)
             .orElseThrow(NoDataException::new);
 
         Matched matched = matchedRepository.findByQuestion(question);
 
-        MatchedFindSessionIdRes matchedFindSessionIdRes = MatchedFindSessionIdRes.builder()
-            .sessionId(matched.getSessionId())
+        MatchedFindVideoUrlRes matchedFindVideoUrlRes = MatchedFindVideoUrlRes.builder()
+            .videoUrl(matched.getVideoUrl())
             .build();
 
-        log.info("MatchedService_findSessionId_end: " + matchedFindSessionIdRes.getSessionId());
+        log.info("MatchedService_findVideoUrl_end: " + matchedFindVideoUrlRes.getVideoUrl());
 
-        return matchedFindSessionIdRes;
+        return matchedFindVideoUrlRes;
     }
 }

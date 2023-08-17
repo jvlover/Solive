@@ -4,7 +4,7 @@ import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedPutReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
-import com.ssafy.solive.api.matching.response.MatchedFindSessionIdRes;
+import com.ssafy.solive.api.matching.response.MatchedFindVideoUrlRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import java.util.List;
 
@@ -20,5 +20,5 @@ public interface MatchedService {
 
     void endMatching(MatchedPutReq sessionInfo);
 
-    MatchedFindSessionIdRes findSessionId(Long questionId);
+    MatchedFindVideoUrlRes findVideoUrl(Long questionId);
 }
