@@ -23,14 +23,11 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -253,18 +250,17 @@ public class UserController {
     /**
      * 학생이 선생님 즐겨찾기를 추가하는 api
      *
-     * @param userAddFavoritePostReq 추가하고싶은 선생님의 Id
+     * @param userAddFavoritePostReq 추가하고싶은 선생님에 접근 가능한 apply id
      * @param request                request
-     * @return
      */
     @PostMapping("/favorite/add")
     public CommonResponse<?> addFavorite(@RequestBody UserAddFavoritePostReq userAddFavoritePostReq,
         HttpServletRequest request) {
         Long studentId = userService.getUserIdByToken(request.getHeader("access-token"));
-        Long teacherId = userAddFavoritePostReq.getTeacherId();
-        log.info("UserController_addFavorite_start: " + studentId + teacherId);
+        Long applyId = userAddFavoritePostReq.getApplyId();
+        log.info("UserController_addFavorite_start: " + studentId + ", " + applyId);
 
-        userService.addFavorite(studentId, teacherId);
+        userService.addFavorite(studentId, applyId);
 
         log.info("UserController_addFavorite_end: success");
         return CommonResponse.success(SUCCESS);
