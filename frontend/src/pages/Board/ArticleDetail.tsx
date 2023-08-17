@@ -51,7 +51,7 @@ const ArticleDetail = () => {
           <div className="flex items-end justify-between mb-1">
             <Breadcrumbs className="p-1 bg-transparent">
               <div>{article?.author}</div>
-              <div>{article?.time.replace('T', ' ')} 작성</div>
+              <div>{article?.time.replace('T', ' ').slice(0, -7)} 작성</div>
             </Breadcrumbs>
             <div className="flex items-center justify-center">
               <FullHeart />
@@ -62,9 +62,7 @@ const ArticleDetail = () => {
           </div>
           <hr></hr>
           {article?.articlePicturePathNames?.map((filePath: string) => (
-            // 나중에 S3랑 연동
             <div>
-              <div>{filePath}</div>
               <img src={filePath}></img>
             </div>
           ))}
