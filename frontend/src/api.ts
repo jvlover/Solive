@@ -342,7 +342,7 @@ export const modifyProfile = async (
   profileImage: File | null,
   accessToken: string,
   teacherSubjectName: number,
-) => {
+): Promise<{ path?: string; success: boolean }> => {
   const profileData = {
     nickname: nickname,
     introduce: introduce,
@@ -364,24 +364,17 @@ export const modifyProfile = async (
     console.log(pair[0] + ': ' + pair[1]);
   }
 
-  axios
-    .put<{ success: boolean }>(BASE_URL + '/user', formData, {
+  try {
+    const response = await axios.put(BASE_URL + '/user', formData, {
       headers: {
         'access-token': accessToken,
         'Content-Type': 'multipart/form-data',
       },
-    })
-    .then((response) => {
-      if (response.data.success) {
-        console.log('Profile updated:', response);
-        alert('저장되었습니다.');
-      } else {
-        console.error('Failed to update profile: success is false');
-      }
-    })
-    .catch((error) => {
-      console.error('Failed to update profile:', error);
     });
+    return { success: response.data.success, path: response.data.data };
+  } catch (error) {
+    return { success: false };
+  }
 };
 
 export const getPrivacy = async (
@@ -730,10 +723,9 @@ export const getReplayUrl = async (
   accessToken: string,
 ): Promise<{ success: boolean; data?: { videoUrl: string } }> => {
   try {
-    const response = await axios.get(
-      BASE_URL + `/matched/video/${id}`,
-      { headers: { 'access-token': accessToken } },
-    );
+    const response = await axios.get(BASE_URL + `/matched/video/${id}`, {
+      headers: { 'access-token': accessToken },
+    });
     return {
       success: response.data.success,
       data: response.data.data,
