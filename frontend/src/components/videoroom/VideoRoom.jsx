@@ -46,6 +46,9 @@ class VideoRoomComponent extends Component {
   }
   // 컴포넌트가 마운트될 때 초기화 작업을 수행합니다.
   componentDidMount() {
+    console.log('**** props ****');
+    console.log(this.props);
+
     const openViduLayoutOptions = {
       // 비디오 레이아웃의 최대 비율과 최소 비율을 설정합니다.
       maxRatio: 3 / 2, // 가장 가로로 긴 비율
@@ -231,9 +234,8 @@ class VideoRoomComponent extends Component {
 
   // 세션에서 퇴장합니다.
   leaveSession() {
-    // 나가기전에 경고창 모달 띄우고 확인 누르면 나가기
     const mySession = this.state.session;
-
+    // const userId = mySession.뭐시기뭐시기;
     if (this.state.subscribers.length === 0) {
       this.closeSession();
     }
@@ -251,7 +253,11 @@ class VideoRoomComponent extends Component {
       localUser: undefined,
     });
 
-    location.href = '/';
+    if (this.props.state === 'teacher') {
+      location.href = '/';
+    } else {
+      location.href = `/rating/${this.props.applyId}`;
+    }
   }
 
   // 웹캠 상태 변경 이벤트 핸들러입니다.
@@ -647,6 +653,8 @@ class VideoRoomComponent extends Component {
   }
 
   async getSession() {
+    console.log('***getSession***');
+    console.log(this.props.sessionName);
     await axios
       .get(APPLICATION_SERVER_URL + 'sessions/' + this.props.sessionName, {
         headers: {
@@ -655,11 +663,15 @@ class VideoRoomComponent extends Component {
       })
       .then((res) => {
         this.state.sessionId = res.data.id;
+        console.log('***then***');
+        console.log(this.state.sessionId);
       })
       .catch(async (error) => {
         // 에러 코드가 404라면 = 검색된 세션 없으면 세션을 만듭니다
         if (error.message.substring(error.message.length - 3) === '404') {
           this.state.sessionId = await this.createSession();
+          console.log('***catch***');
+          console.log(this.state.sessionId);
         }
       });
   }

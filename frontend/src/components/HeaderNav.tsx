@@ -14,6 +14,7 @@ import {
   Menu,
   MenuList,
   MenuItem,
+  Avatar,
 } from '@material-tailwind/react';
 import {
   DocumentTextIcon,
@@ -65,7 +66,15 @@ const HeaderNav = () => {
       <MatchingNotification />
       <Menu>
         <MenuHandler>
-          <UserIcon className="w-auto cursor-pointer h-7" />
+          {user.path ? (
+            <Avatar
+              src={user.path}
+              alt="profile"
+              className="w-auto h-7"
+            ></Avatar>
+          ) : (
+            <UserIcon className="w-auto cursor-pointer h-7" />
+          )}
         </MenuHandler>
         <MenuList>
           <MenuItem

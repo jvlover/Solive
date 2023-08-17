@@ -14,21 +14,29 @@ const MatchPage = () => {
   const [sessionName, setSessionName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+  const applyId = Navigate.state.applyId;
+  const [state, setState] = useState('teacher');
+
   const fetchData = async () => {
     try {
-      const response = await axios.post(
-        'https://i9a107.p.ssafy.io/api/matched',
-        {
-          applyId: Navigate.state.applyId,
-        },
-        {
-          headers: {
-            'access-token': user.accessToken,
+      const sessionName = Navigate.state.sessionName;
+      if (!sessionName) {
+        setState('student');
+        const response = await axios.post(
+          'https://i9a107.p.ssafy.io/api/matched',
+          {
+            applyId: Navigate.state.applyId,
           },
-        },
-      );
-
-      setSessionName(response.data.data);
+          {
+            headers: {
+              'access-token': user.accessToken,
+            },
+          },
+        );
+        setSessionName(response.data.data);
+      } else {
+        setSessionName(sessionName);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -51,6 +59,8 @@ const MatchPage = () => {
       picture={user.path}
       sessionName={sessionName}
       accessToken={user.accessToken}
+      applyId={applyId}
+      state={state}
     />
   );
 };

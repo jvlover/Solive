@@ -126,6 +126,15 @@ const ProfilePage = () => {
       userProfile.teacherSubjectName,
     );
 
+    localStorage.setItem(
+      'user',
+      JSON.stringify({
+        ...JSON.parse(localStorage.getItem('user')),
+        nickname: userProfile.nickname,
+      }),
+    );
+    setUser({ ...user, nickname: userProfile.nickname });
+
     setIsModified(false);
   };
 
