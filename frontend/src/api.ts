@@ -146,10 +146,10 @@ export const chargeSolvePoint = async (
       { solvePoint },
       { headers: { 'access-token': token } },
     );
-    console.log(response.data.data);
+
     return {
       success: response.data.success,
-      solvePoint: response.data.data.solvePoint,
+      solvePoint: response.data.data,
     };
   } catch (error) {
     console.error('Error charging: ', error);
@@ -312,7 +312,7 @@ export async function questionSearch(
 ): Promise<{ success: boolean; data?: any; error?: any }> {
   try {
     const response = await axios.get(
-      `${BASE_URL}/question?masterCodeMiddle=${subjectNum}&smasterCodeLow=${subSubjectNum}&keyword=${searchKeyword}&order=${order}&page=${pageNum}`,
+      `${BASE_URL}/question?masterCodeMiddle=${subjectNum}&masterCodeLow=${subSubjectNum}&keyword=${searchKeyword}&sort=${order}&pageNum=${pageNum}`,
       {
         headers: { 'access-token': accessToken },
       },
@@ -689,18 +689,18 @@ export const getFavorites = async (
 };
 
 export const teacherSolvePoint = async (
-  amount: number,
+  solvePoint: number,
   token: string,
 ): Promise<{ success: boolean; solvePoint?: number }> => {
   try {
     const response = await axios.put(
       `${CASHOUT_URL}`,
-      { amount },
+      { solvePoint },
       { headers: { 'access-token': token } },
     );
     return {
       success: response.data.success,
-      solvePoint: response.data.data.solvePoint,
+      solvePoint: response.data.data,
     };
   } catch (error) {
     console.error('Error charging: ', error);

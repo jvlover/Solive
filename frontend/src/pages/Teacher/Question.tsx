@@ -53,130 +53,6 @@ const TeacherQuestion = () => {
   const itemsPerPage = 8;
   const navigate = useNavigate();
 
-  // 페이지 보려면 아래 주석 해제하세요.
-  // const questionList = [
-  //   {
-  //     id: 1,
-  //     path_name: que,
-  //     title: '기하와 벡터',
-  //     subject: '수학',
-  //     time: '2023-08-02',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 2,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 3,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 4,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 5,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 6,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 7,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 8,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 9,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 10,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 11,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 12,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 13,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 14,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 15,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  // ];
-
   const handleSubjectChange = (value: string) => {
     setSubjectNum(Number(value));
     setSubSubjectNum(0);
@@ -331,7 +207,7 @@ const TeacherQuestion = () => {
               >
                 <img
                   onClick={() => handleDetailPage(question.id)}
-                  src={question.path_name}
+                  src={question.path}
                   alt={question.title}
                   className="object-contain w-full h-52"
                 />
@@ -341,7 +217,7 @@ const TeacherQuestion = () => {
                     <h2 className="font-bold truncate">{question.title}</h2>
                   </div>
                   <div className="px-2 py-1 border rounded border-solive-200">
-                    <p className="truncate">{question.time.toString()}</p>
+                    <p className="truncate">{question.createTime}</p>
                   </div>
                 </div>
               </div>

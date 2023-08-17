@@ -48,7 +48,7 @@ const TeacherSolve = () => {
 
       setShowModal(false);
     } else {
-      navigate('./error');
+      // navigate('./error');
     }
   };
 
