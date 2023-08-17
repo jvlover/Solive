@@ -116,8 +116,8 @@ public class QQuestionRepositoryImpl implements QQuestionRepository {
                 keywordSearch(findCondition.getKeyword()),
                 matchingStateEq(findCondition.getMatchingState()))
             .orderBy(timeSort(findCondition.getSort()))
-            .offset(findCondition.getPageNum() * 8)
-            .limit(8)
+            .offset(findCondition.getPageNum() * 9)
+            .limit(9)
             .fetch();
     }
 
