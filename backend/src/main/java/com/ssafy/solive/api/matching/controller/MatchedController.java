@@ -4,6 +4,7 @@ import com.ssafy.solive.api.matching.request.MatchedFindMineGetReq;
 import com.ssafy.solive.api.matching.request.MatchedPutReq;
 import com.ssafy.solive.api.matching.request.MatchedRegistPostReq;
 import com.ssafy.solive.api.matching.response.MatchedFindMineRes;
+import com.ssafy.solive.api.matching.response.MatchedFindVideoUrlRes;
 import com.ssafy.solive.api.matching.response.MatchedRegistPostRes;
 import com.ssafy.solive.api.matching.service.MatchedService;
 import com.ssafy.solive.api.matching.service.NotificationService;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -142,5 +144,21 @@ public class MatchedController {
 
         log.info("MatchedController_end_end: success");
         return CommonResponse.success(SUCCESS);
+    }
+
+    /**
+     * question Id로 video url 찾기
+     *
+     * @param questionId : 문제 id
+     */
+    @GetMapping("/video/{questionId}")
+    public CommonResponse<?> findVideoUrl(@PathVariable Long questionId) {
+
+        log.info("MatchedController_findVideoUrl_start: " + questionId);
+
+        MatchedFindVideoUrlRes findRes = matchedService.findVideoUrl(questionId);
+
+        log.info("MatchedController_findVideoUrl_end: " + findRes.toString());
+        return CommonResponse.success(findRes);
     }
 }
