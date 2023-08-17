@@ -101,7 +101,7 @@ const TeacherQuestion = () => {
   };
 
   const handleNextPage = () => {
-    setPageNum((prev) => prev + 1); // pageNum 상태를 1 증가시킵니다.
+    setPageNum((prev) => prev + 1);
   };
 
   const getPageNumQuestions = () => {

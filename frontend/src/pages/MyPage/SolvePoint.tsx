@@ -33,9 +33,6 @@ const PointChargePage = () => {
   const handleCharge = async () => {
     if (!user || !user.accessToken) return;
     const result = await chargeSolvePoint(selectedAmount, user.accessToken);
-    console.log(result.success);
-    console.log(result.solvePoint);
-
     if (result.success && result.solvePoint !== undefined) {
       setUser({
         ...user,

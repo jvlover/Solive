@@ -58,11 +58,7 @@ const Teacher = () => {
     const fetchRelatedQuestions = async () => {
       try {
         let result = await getMyRelated(user.accessToken);
-        console.log(result);
-        console.log(result.success);
-        console.log(result.error);
         if (result.success) {
-          console.log(result.success);
           setRelatedQuestions(result.data);
         } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
           const newAccessToken = await getNewAccessToken(user.refreshToken);
@@ -89,12 +85,10 @@ const Teacher = () => {
   }, [user, setUser]);
 
   useEffect(() => {
-    console.log('ss');
     const fetchLatestQuestions = async () => {
       try {
         let result = await getLatest(user.accessToken);
         if (result.success) {
-          console.log(result.success);
           setLatestQuestions(result.data);
         } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
           const newAccessToken = await getNewAccessToken(user.refreshToken);

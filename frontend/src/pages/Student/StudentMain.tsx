@@ -97,11 +97,10 @@ const Student = () => {
   }, [user, setUser, navigate, problems]);
 
   useEffect(() => {
-    console.log('sss');
     const fetchTeachers = async () => {
       try {
         const result = await getTeachers(user.accessToken);
-        console.log(result.success);
+
         if (result.success) {
           setTeachers(result.data);
         } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {

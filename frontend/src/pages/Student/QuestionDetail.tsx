@@ -12,8 +12,7 @@ import { userState } from '../../recoil/user/userState';
 import StarRating from '../star';
 
 const StudentQuestionDetail = () => {
-  console.log('StudentQuestionDetail is rendered');
-  const defaultId = 1; // 원하는 default 값으로 설정
+  const defaultId = 1;
   const { id: stringId } = useParams<{ id: string }>();
   const id = parseInt(stringId || defaultId.toString());
   const [currentImage, setCurrentImage] = useState(0);
@@ -55,7 +54,6 @@ const StudentQuestionDetail = () => {
   };
 
   useEffect(() => {
-    console.log('useEffect is called');
     const fetchQuestion = async () => {
       try {
         const result = await getQuestionById(id, user.accessToken);

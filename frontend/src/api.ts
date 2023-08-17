@@ -5,7 +5,6 @@ import { User } from './recoil/user/userState';
 import { UserProfile } from './pages/MyPage/Profile';
 
 const BASE_URL = 'https://i9a107.p.ssafy.io/api';
-// const BASE_URL = 'http://localhost:8200';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
 const CHARGE_URL = `${BASE_URL}/user/charge`;
 const CASHOUT_URL = `${BASE_URL}/user/cashout`;
@@ -800,5 +799,23 @@ export async function getLatest(
       errorCode = error.response.data.error.code;
     }
     return { success: false, error: errorCode || error };
+  }
+}
+
+export async function favoriteTeacher(applyId: number, accessToken: string) {
+  try {
+    const response = await axios.post(
+      BASE_URL + '/user/favorite/add',
+      { applyId },
+      {
+        headers: {
+          'access-token': accessToken,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error.message };
   }
 }
