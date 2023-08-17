@@ -76,7 +76,7 @@ const HeaderNav = () => {
           >
             <SolvePoint className="w-5 h-5" />
             <Typography variant="small" className="font-normal">
-              {user.solvePoint} SP
+              {user.solvePoint.toLocaleString('ko-KR')} SP
             </Typography>
           </MenuItem>
           <MenuItem
