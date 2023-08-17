@@ -196,7 +196,7 @@ const QuestionRegistration = () => {
 
   return (
     <div>
-      <Typography variant="h2" className="ml-[18vw] mt-4 font-[Pretendard]">
+      <Typography variant="h2" className="ml-[18vw] mt-6 font-[Pretendard]">
         문제 등록
       </Typography>
       <div className="flex justify-center">
@@ -324,12 +324,12 @@ const QuestionRegistration = () => {
         </button>
       </div>
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg relative w-72 h-60">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative p-8 bg-white rounded-lg w-72 h-60">
             <h3>문제 등록이 완료되었습니다!</h3>
             <h3> 매칭이 완료 될 때 까지 잠시만 기다려주세요.</h3>
             <button
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              className="px-4 py-2 mt-4 text-white bg-blue-500 rounded"
               onClick={handleConfirm}
             >
               확인
