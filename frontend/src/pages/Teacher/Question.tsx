@@ -53,130 +53,6 @@ const TeacherQuestion = () => {
   const itemsPerPage = 8;
   const navigate = useNavigate();
 
-  // 페이지 보려면 아래 주석 해제하세요.
-  // const questionList = [
-  //   {
-  //     id: 1,
-  //     path_name: que,
-  //     title: '기하와 벡터',
-  //     subject: '수학',
-  //     time: '2023-08-02',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 2,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 3,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 4,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 5,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 6,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 7,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 8,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 9,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 10,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 11,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 12,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 13,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 14,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 15,
-  //     path_name: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  // ];
-
   const handleSubjectChange = (value: string) => {
     setSubjectNum(Number(value));
     setSubSubjectNum(0);
@@ -326,23 +202,21 @@ const TeacherQuestion = () => {
           ) : (
             getPageNumQuestions().map((question) => (
               <div
-                key={question.id}
-                className="w-1/5 m-2 border-2 rounded-md border-solive-200 h-72"
+                key={question.questionId}
+                className="w-1/5 m-2 border-2 rounded-md border-solive-200 border-opacity-50 h-72"
               >
                 <img
-                  onClick={() => handleDetailPage(question.id)}
-                  src={question.path_name}
+                  onClick={() => handleDetailPage(question.questionId)}
+                  src={question.path}
                   alt={question.title}
-                  className="object-contain w-full h-52"
+                  className="object-contain w-full h-48"
                 />
 
-                <div className="flex items-center h-20 p-2 space-x-2 overflow-hidden">
-                  <div className="px-2 py-1 border rounded border-solive-200">
-                    <h2 className="font-bold truncate">{question.title}</h2>
-                  </div>
-                  <div className="px-2 py-1 border rounded border-solive-200">
-                    <p className="truncate">{question.time.toString()}</p>
-                  </div>
+                <div className="flex flex-col items-center h-20 p-2 space-x-2 overflow-hidden">
+                  <p className="mt-2 font-bold">{question.title}</p>
+                  <p className="mt-1 font-extralight">
+                    {question.createTime.replace('T', ' ').slice(0, -7)}
+                  </p>
                 </div>
               </div>
             ))
