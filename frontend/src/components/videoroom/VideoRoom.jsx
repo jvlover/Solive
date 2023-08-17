@@ -257,6 +257,18 @@ class VideoRoomComponent extends Component {
       location.href = '/';
     } else {
       location.href = `/rating/${this.props.applyId}`;
+
+      axios.put(
+        'https://i9a107.p.ssafy.io/api/matched/end',
+        {
+          sessionId: this.state.sessionId,
+        },
+        {
+          headers: {
+            'access-token': this.props.accessToken,
+          },
+        },
+      );
     }
   }
 
@@ -682,15 +694,6 @@ class VideoRoomComponent extends Component {
         Authorization: 'Basic T1BFTlZJRFVBUFA6c29saXZlMTA3',
       },
     });
-    axios.put('https://i9a107.p.ssafy.io/api/matched/end', {
-        sessionId: this.state.sessionId,
-      },
-      {
-        headers:{
-          accessToken: this.props.accessToken,
-        }
-      },
-    );
   }
 
   async createToken() {
