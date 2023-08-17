@@ -101,7 +101,8 @@ const TeacherSolve = () => {
           <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-md w-96 h-72">
             <div>
               <p className="flex items-center mb-2 text-2xl">
-                {user?.nickname} 님의 SolvePoint는 {user?.solvePoint}
+                {user?.nickname} 님의 SolvePoint는{' '}
+                {user?.solvePoint.toLocaleString('ko-KR')}
                 <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-1" />
               </p>
             </div>
