@@ -56,7 +56,6 @@ const ProfilePage = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
   const [profileImageName, setProfileImageName] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
-  const [preferredSubject, setPreferredSubject] = useState(1000);
   const imageInput = useRef<HTMLInputElement>();
   const navigate = useNavigate();
 
@@ -131,7 +130,6 @@ const ProfilePage = () => {
   };
 
   const handleSubjectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setPreferredSubject(Number(event.target.value));
     setUserProfile({
       ...userProfile,
       teacherSubjectName: Number(event.target.value),
@@ -196,7 +194,7 @@ const ProfilePage = () => {
                 <label className="w-full mt-8 font-bold">
                   선호과목
                   <select
-                    value={preferredSubject}
+                    value={userProfile.teacherSubjectName}
                     onChange={handleSubjectChange}
                     className="w-full p-2 mt-4 border border-gray-300 rounded bg-opacity-30 bg-solive-200"
                   >
