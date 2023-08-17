@@ -60,7 +60,7 @@ const StudentQuestionDetail = () => {
       try {
         const result = await getQuestionById(id, user.accessToken);
 
-        const url = await getReplayUrl(String(id), user.accessToken);
+        const url = await getReplayUrl(id, user.accessToken);
 
         if (result.success) {
           setQuestion(result.data);
@@ -70,7 +70,7 @@ const StudentQuestionDetail = () => {
           if (newAccessToken) {
             setUser({ ...user, accessToken: newAccessToken });
             const newResult = await getQuestionById(id, newAccessToken);
-            const newUrl = await getReplayUrl(String(id), newAccessToken);
+            const newUrl = await getReplayUrl(id, newAccessToken);
             if (newResult.success) {
               setQuestion(newResult.data);
               setReplayUrl(newUrl.url);

@@ -701,7 +701,7 @@ export const teacherSolvePoint = async (
 };
 
 export const getReplayUrl = async (
-  questionId: string,
+  questionId: number,
   accessToken: string,
 ): Promise<{ success: boolean; url?: string }> => {
   try {
