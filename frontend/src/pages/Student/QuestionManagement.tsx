@@ -262,7 +262,7 @@ const QuestionManagement = () => {
               {problems.map((problem) => (
                 <div
                   key={problem.questionId}
-                  className="flex flex-col items-center p-2 border-2 border-solive-200"
+                  className="flex flex-col items-center p-2 border-2 border-opacity-50 rounded-md border-solive-200"
                 >
                   <img
                     onClick={() => handleDetailPage(problem.questionId)}
@@ -270,10 +270,10 @@ const QuestionManagement = () => {
                     src={problem.path}
                     alt="problem"
                   />
-                  <span>
-                    {problem.title}{' '}
+                  <span className="font-bold">{problem.title}</span>
+                  <div className="p-1 mt-1 font-light border rounded text-blue-gray-700 border-blue-gray-100">
                     {matchingStateToString(problem.matchingState)}
-                  </span>
+                  </div>
                 </div>
               ))}
             </div>
