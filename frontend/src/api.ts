@@ -341,7 +341,7 @@ export const modifyProfile = async (
   gender: number,
   profileImage: File | null,
   accessToken: string,
-  teacherSubjectName: number | null,
+  teacherSubjectName: number,
 ) => {
   const profileData = {
     nickname: nickname,

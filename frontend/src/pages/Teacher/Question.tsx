@@ -130,8 +130,8 @@ const TeacherQuestion = () => {
             <label>
               <input
                 type="radio"
-                value="TIME_ASC"
-                checked={order === 'TIME_ASC'}
+                value="TIME_DESC"
+                checked={order === 'TIME_DESC'}
                 onChange={(e) => setOrder(e.target.value)}
               />
               최신순
@@ -139,8 +139,8 @@ const TeacherQuestion = () => {
             <label className="ml-2">
               <input
                 type="radio"
-                value="TIME_DESC"
-                checked={order === 'TIME_DESC'}
+                value="TIME_ASC"
+                checked={order === 'TIME_ASC'}
                 onChange={(e) => setOrder(e.target.value)}
               />
               오래된순
