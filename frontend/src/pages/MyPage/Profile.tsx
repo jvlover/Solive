@@ -111,13 +111,13 @@ const ProfilePage = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isModified) {
       return;
     }
 
-    modifyProfile(
+    const result = await modifyProfile(
       userProfile.nickname,
       userProfile.introduce,
       userProfile.gender,
@@ -126,14 +126,24 @@ const ProfilePage = () => {
       userProfile.teacherSubjectName,
     );
 
-    localStorage.setItem(
-      'user',
-      JSON.stringify({
-        ...JSON.parse(localStorage.getItem('user')),
+    if (result.success) {
+      localStorage.setItem(
+        'user',
+        JSON.stringify({
+          ...JSON.parse(localStorage.getItem('user')),
+          nickname: userProfile.nickname,
+          path: result.path,
+        }),
+      );
+
+      setUser({
+        ...user,
         nickname: userProfile.nickname,
-      }),
-    );
-    setUser({ ...user, nickname: userProfile.nickname });
+        path: result.path,
+      });
+
+      alert('저장되었습니다.');
+    }
 
     setIsModified(false);
   };
