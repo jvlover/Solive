@@ -26,7 +26,7 @@ public interface UserService {
 
     UserPrivacyPostRes getUserPrivacyByUserId(Long userId);
 
-    void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo,
+    String modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo,
         List<MultipartFile> profilePicture);
 
     void modifyUserPassword(Long userId, UserModifyPasswordPutReq userInfo);
