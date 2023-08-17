@@ -57,4 +57,13 @@ public class Teacher extends User {
     public void addSolvedCount() {
         this.solvedCount++;
     }
+
+    /**
+     * 선생님의 선호과목 수정
+     *
+     * @param masterCode 선호과목 Code
+     */
+    public void modifySubjectId(MasterCode masterCode) {
+        this.masterCode = masterCode;
+    }
 }
