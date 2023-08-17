@@ -145,8 +145,8 @@ const QuestionManagement = () => {
   };
 
   return (
-    <div className="pt-4">
-      <div className="mx-auto mt-8 mb-8 h-[650px] w-[800px] p-6 border-2 border-solive-200 flex flex-col justify-between">
+    <div>
+      <div className="mx-auto mt-8 mb-8 h-[650px] w-[800px] p-6 border-2 border-gray-100 shadow-md border-opacity-70 flex flex-col justify-between">
         <div>
           <p className="text-[18px] font-bold">내가 등록한 문제</p>
           <p className="text-[12px] mt-4">
@@ -280,7 +280,7 @@ const QuestionManagement = () => {
             </div>
           )}
         </div>
-        <div className="flex justify-center pt-8 gap-x-3">
+        <div className="flex justify-center pt-8 gap-x-5">
           <button
             onClick={handlePrevPage}
             disabled={pageNum === 0}
