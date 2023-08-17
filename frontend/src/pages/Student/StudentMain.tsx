@@ -170,7 +170,7 @@ const Student = () => {
             <div className="grid grid-cols-3 gap-4">
               {problems.slice(0, 3).map((problem) => (
                 <div
-                  key={problem.questiontId}
+                  key={problem.questionId}
                   className="border-2 border-solive-200 p-2 flex flex-col items-center h-[300px] w-[220px] rounded-lg border-opacity-50"
                 >
                   <img
