@@ -18,7 +18,7 @@ export interface UserProfile {
   solvedCount: number | null;
   ratingSum: number | null;
   ratingCount: number | null;
-  teacherSubject: number;
+  teacherSubjectName: number;
 }
 
 const ProfilePage = () => {
@@ -34,21 +34,29 @@ const ProfilePage = () => {
     solvedCount: 0,
     ratingSum: 0,
     ratingCount: 0,
-    teacherSubject: 1000,
+    teacherSubjectName: 1000,
   });
 
   const subjects = [
-    { label: '없음', value: '1000' },
-    { label: '수학1', value: '1110' },
-    { label: '수학2', value: '1120' },
-    { label: '기하', value: '1130' },
-    { label: '확률과 통계', value: '1140' },
+    { label: '없음', value: 1000 },
+    { label: '지수로그', value: 1111 },
+    { label: '삼각함수', value: 1112 },
+    { label: '수열의극한', value: 1113 },
+    { label: '극한', value: 1121 },
+    { label: '미분', value: 1122 },
+    { label: '적분', value: 1123 },
+    { label: '확률', value: 1131 },
+    { label: '통계', value: 1132 },
+    { label: '이차곡선', value: 1141 },
+    { label: '벡터', value: 1142 },
+    { label: '공간도형', value: 1143 },
+    { label: '기타수학', value: 1151 },
   ];
 
   const [profileImage, setProfileImage] = useState<File | null>(null); // 이미지 파일 상태
   const [profileImageName, setProfileImageName] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
-  const [preferredSubject, setPreferredSubject] = useState('1000');
+  const [preferredSubject, setPreferredSubject] = useState(1000);
   const imageInput = useRef<HTMLInputElement>();
   const navigate = useNavigate();
 
@@ -116,14 +124,19 @@ const ProfilePage = () => {
       userProfile.gender,
       profileImage,
       user.accessToken,
-      userProfile.teacherSubject,
+      userProfile.teacherSubjectName,
     );
 
     setIsModified(false);
   };
 
   const handleSubjectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setPreferredSubject(event.target.value);
+    setPreferredSubject(Number(event.target.value));
+    setUserProfile({
+      ...userProfile,
+      teacherSubjectName: Number(event.target.value),
+    });
+    setIsModified(true);
   };
 
   return (
