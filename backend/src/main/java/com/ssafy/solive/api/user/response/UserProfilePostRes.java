@@ -23,4 +23,5 @@ public class UserProfilePostRes {
     Integer solvedCount;
     Integer ratingSum;
     Integer ratingCount;
+    Integer teacherSubjectName;
 }

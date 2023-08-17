@@ -275,6 +275,7 @@ public class UserServiceImpl implements UserService {
                 .solvedCount(teacher.getSolvedCount()) // 선생님일때만
                 .ratingSum(teacher.getRatingSum()) // 선생님일때만
                 .ratingCount(teacher.getRatingCount()) // 선생님일때만
+                .teacherSubjectName(teacher.getMasterCode().getId()) // 선생님일때만
                 .build();
             log.info("UserServiceImpl_getUserProfileByUserId_end: teacher: " + userProfilePostRes);
             return userProfilePostRes;
