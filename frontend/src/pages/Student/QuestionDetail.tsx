@@ -124,6 +124,9 @@ const StudentQuestionDetail = () => {
 
       if (response.success) {
         alert('성공적으로 신청 되었습니다.');
+        navigate('/matchpage', {
+          state: { applyId: applyId },
+        });
       } else if (response.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
         const newAccessToken = await getNewAccessToken(user.refreshToken);
         if (newAccessToken) {
