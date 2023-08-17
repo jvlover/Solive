@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import registerServiceWorker from '../../registerServiceWorker';
+// import registerServiceWorker from '../../registerServiceWorker';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../recoil/user/userState';
@@ -53,6 +53,6 @@ const MatchPage = () => {
     />
   );
 };
-registerServiceWorker();
+// registerServiceWorker();
 
 export default MatchPage;
