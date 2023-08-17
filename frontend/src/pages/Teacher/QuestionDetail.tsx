@@ -76,130 +76,51 @@ const TeacherQuestionDetail = () => {
   }, [id, user, setUser, navigate]);
 
   return (
-    <div className="flex w-screen min-h-screen text-black">
-      <div className="w-1/2 p-5">
-        <h2 className="text-2xl mb-4" style={{ fontWeight: '900' }}>
-          {question.title}
-        </h2>
-        <div className="relative">
-          {question.path.map((image, idx) => (
-            <img
-              key={idx}
-              src={image}
-              alt={`Question Image ${idx}`}
-              className={`w-full object-contain h-[350px] ${
-                idx === currentImage ? 'block' : 'hidden'
-              }`}
-            />
-          ))}
-          <button
-            className="absolute top-1/2 left-0 px-4 py-2 text-white rounded border-light-blue-500 bg-light-blue-500"
-            onClick={() =>
-              setCurrentImage(
-                (prev) =>
-                  (prev - 1 + question.path.length) % question.path.length,
-              )
-            }
-          >
-            ←
-          </button>
-          <button
-            className="absolute top-1/2 right-0 px-4 py-2 text-white rounded border-light-blue-500 bg-light-blue-500"
-            onClick={() =>
-              setCurrentImage((prev) => (prev + 1) % question.path.length)
-            }
-          >
-            →
-          </button>
-        </div>
-        <div className="flex justify-center mt-24">
-          <button
-            className="bg-light-blue-500 text-white px-4 py-2 rounded"
-            onClick={() => {
-              if (question.state === '완료됨') {
-                alert('이미 매칭이 완료된 문제입니다.');
-              } else {
-                setIsModalOpen(true);
-              }
-            }}
-          >
-            신청하기
-          </button>
-        </div>
-      </div>
-
-      <div className="w-1/2 p-5">
-        <div className="space-y-3">
-          <p className="text-gray-700 font-extrabold mt-4">닉네임:</p>
-          <div className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500">
-            {question.userNickname}
-          </div>
-          <div>
-            <p className="text-gray-700 font-extrabold mt-4">과목</p>
-            <div className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500">
-              {question.masterCodeCategory}
-            </div>
-
-            <p className="text-gray-700 font-extrabold mt-4">세부과목</p>
-            <div className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500">
-              {question.masterCodeName}
-            </div>
-          </div>
-
-          <p className="text-gray-700 font-extrabold mt-4">Description:</p>
-          <textarea
-            className="block w-full h-48 mt-1 border-2 rounded-md shadow-sm border-light-blue-500"
-            readOnly
-            value={question.description}
-          />
-        </div>
-      </div>
-      {isModalOpen && (
-        <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-md">
-            <h3 className="mb-4 font-bold">문제 해결 신청</h3>
-            <label className="block mb-2">
-              Solve Point:
-              <input
-                type="number"
-                value={solvePoint}
-                onChange={(e) => setSolvePoint(e.target.value)}
-                className="border p-2 mt-1 w-full"
+    <div className="flex justify-center">
+      <div className="flex w-[80vw] min-h-[81.4vh] text-black">
+        <div className="w-1/2 p-5">
+          <h2 className="mb-4 text-2xl" style={{ fontWeight: '900' }}>
+            {question.title}
+          </h2>
+          <div className="relative">
+            {question.path.map((image, idx) => (
+              <img
+                key={idx}
+                src={image}
+                alt={`Question Image ${idx}`}
+                className={`w-full object-contain h-[350px] ${
+                  idx === currentImage ? 'block' : 'hidden'
+                }`}
               />
-            </label>
-            <label className="block mb-4">
-              예상 시간:
-              <input
-                type="number"
-                value={expectedTime}
-                onChange={(e) => setExpectedTime(e.target.value)}
-                className="border p-2 mt-1 w-full"
-              />
-            </label>
+            ))}
             <button
-              className="bg-light-blue-500 text-white px-4 py-2 rounded"
-              onClick={async () => {
-                try {
-                  const response = await applyQuestion(
-                    {
-                      solvePoint: solvePoint,
-                      estimatedTime: expectedTime,
-                      questionId: id,
-                    },
-                    user.accessToken,
-                  );
-
-                  if (response.success) {
-                    alert('신청이 완료되었습니다.');
-                    setIsModalOpen(false);
-                  } else {
-                    const errorMessage =
-                      response.message ||
-                      'Error applying for the question. Please try again.';
-                    throw new Error(errorMessage);
-                  }
-                } catch (error) {
-                  alert(error.message);
+              className="absolute left-0 px-4 py-2 text-white rounded top-1/2 border-solive-200 bg-solive-200"
+              onClick={() =>
+                setCurrentImage(
+                  (prev) =>
+                    (prev - 1 + question.path.length) % question.path.length,
+                )
+              }
+            >
+              ←
+            </button>
+            <button
+              className="absolute right-0 px-4 py-2 text-white rounded top-1/2 border-solive-200 bg-solive-200"
+              onClick={() =>
+                setCurrentImage((prev) => (prev + 1) % question.path.length)
+              }
+            >
+              →
+            </button>
+          </div>
+          <div className="flex justify-center mt-24">
+            <button
+              className="px-4 py-2 text-white rounded bg-solive-200"
+              onClick={() => {
+                if (question.state === '완료됨') {
+                  alert('이미 매칭이 완료된 문제입니다.');
+                } else {
+                  setIsModalOpen(true);
                 }
               }}
             >
@@ -207,7 +128,88 @@ const TeacherQuestionDetail = () => {
             </button>
           </div>
         </div>
-      )}
+
+        <div className="w-1/2 p-5">
+          <div className="space-y-3">
+            <p className="mt-4 font-extrabold text-gray-700">닉네임</p>
+            <div className="block w-full h-16 p-2 mt-1 border-2 border-opacity-50 rounded-md shadow-sm border-solive-200">
+              {question.userNickname}
+            </div>
+            <div>
+              <p className="mt-4 font-extrabold text-gray-700">과목</p>
+              <div className="block w-full h-16 p-2 mt-1 border-2 border-opacity-50 rounded-md shadow-sm border-solive-200">
+                {question.masterCodeCategory}
+              </div>
+
+              <p className="mt-4 font-extrabold text-gray-700">세부과목</p>
+              <div className="block w-full h-16 p-2 mt-1 border-2 border-opacity-50 rounded-md shadow-sm border-solive-200">
+                {question.masterCodeName}
+              </div>
+            </div>
+
+            <p className="mt-4 font-extrabold text-gray-700">문제 설명</p>
+            <textarea
+              className="block w-full h-48 p-2 mt-1 border-2 border-opacity-50 rounded-md shadow-sm cursor-default resize-none focus:outline-none border-solive-200"
+              readOnly
+              value={question.description}
+            />
+          </div>
+        </div>
+        {isModalOpen && (
+          <div className="fixed top-0 left-0 flex items-center justify-center w-screen h-screen bg-black bg-opacity-50">
+            <div className="p-6 bg-white rounded-md">
+              <h3 className="mb-4 font-bold">문제 해결 신청</h3>
+              <label className="block mb-2">
+                Solve Point:
+                <input
+                  type="number"
+                  value={solvePoint}
+                  onChange={(e) => setSolvePoint(e.target.value)}
+                  className="w-full p-2 mt-1 border"
+                />
+              </label>
+              <label className="block mb-4">
+                예상 시간:
+                <input
+                  type="number"
+                  value={expectedTime}
+                  onChange={(e) => setExpectedTime(e.target.value)}
+                  className="w-full p-2 mt-1 border"
+                />
+              </label>
+              <button
+                className="px-4 py-2 text-white rounded bg-solive-200"
+                onClick={async () => {
+                  try {
+                    const response = await applyQuestion(
+                      {
+                        solvePoint: solvePoint,
+                        estimatedTime: expectedTime,
+                        questionId: id,
+                      },
+                      user.accessToken,
+                    );
+
+                    if (response.success) {
+                      alert('신청이 완료되었습니다.');
+                      setIsModalOpen(false);
+                    } else {
+                      const errorMessage =
+                        response.message ||
+                        'Error applying for the question. Please try again.';
+                      throw new Error(errorMessage);
+                    }
+                  } catch (error) {
+                    alert(error.message);
+                  }
+                }}
+              >
+                신청하기
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
