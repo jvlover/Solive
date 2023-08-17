@@ -83,6 +83,9 @@ public class MatchedServiceImpl implements MatchedService {
         // WebRTC 세션 Id 생성
         String sessionId = student.getLoginId() + "_" + LocalDateTime.now();
 
+        // sessionId에 특수문자 제거
+        sessionId = sessionId.replace(".", "").replace(":", "");
+
         Matched matched = Matched.builder()
             .teacher(teacher)
             .question(question)
