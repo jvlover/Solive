@@ -46,7 +46,7 @@ const QuestionManagement = () => {
 
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
-  const [problems, setProblems] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,7 +69,7 @@ const QuestionManagement = () => {
       );
 
       if (result.success) {
-        setProblems(result.data);
+        setQuestions(result.data);
       } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
         const newAccessToken = await getNewAccessToken(user.refreshToken);
         if (newAccessToken) {
@@ -135,8 +135,7 @@ const QuestionManagement = () => {
   };
 
   const handleNextPage = () => {
-    if (pageNum < Math.ceil(problems.length / 8) - 1)
-      setPageNum((prev) => prev + 1);
+    setPageNum((prev) => prev + 1); // pageNum 상태를 1 증가시킵니다.
   };
 
   const handleDetailPage = (questionId: number) => {
@@ -157,7 +156,7 @@ const QuestionManagement = () => {
                 onChange={handleSubjectChange}
                 className="w-full p-2 text-center border border-gray-300 rounded bg-opacity-30 bg-solive-200"
               >
-                <option selected disabled className="hidden">
+                <option disabled className="hidden">
                   과목 선택
                 </option>
                 {subjects.map((subject) => (
@@ -169,11 +168,12 @@ const QuestionManagement = () => {
             </div>
             <div className="flex items-center justify-center flex-1 mx-2 space-x-2">
               <select
+                value={subSubjectNum}
                 onChange={handleSubSubjectChange}
                 className="w-full p-2 text-center border border-gray-300 rounded bg-opacity-30 bg-solive-200"
               >
-                <option selected disabled className="hidden">
-                  세부 과목 선택
+                <option value={0} disabled className="hidden">
+                  세부 과목 선택 세부 과목 선택
                 </option>
                 {(
                   subjects.find((subject) => subject.value === subjectNum)
@@ -257,9 +257,9 @@ const QuestionManagement = () => {
           </div>
         </div>
         <div>
-          {problems.length ? (
+          {questions.length ? (
             <div className="grid grid-cols-3 gap-4 pt-12">
-              {problems.map((problem) => (
+              {questions.map((problem) => (
                 <div
                   key={problem.questionId}
                   className="flex flex-col items-center p-2 border-2 border-opacity-50 rounded-md border-solive-200"
@@ -293,7 +293,7 @@ const QuestionManagement = () => {
           </button>
           <button
             onClick={handleNextPage}
-            disabled={pageNum >= Math.ceil(problems.length / 8) - 1}
+            disabled={pageNum >= Math.ceil(questions.length / 9)}
             className="btn-primary"
           >
             다음

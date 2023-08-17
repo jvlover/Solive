@@ -80,6 +80,13 @@ const ArticleList = () => {
     fetchAndSetArticles(activePage - 1);
   };
 
+  const formattedTime = (time: string) => {
+    const [date, fullTime] = time.split('T');
+    // eslint-disable-next-line no-unused-vars
+    const [hourMinSec, _] = fullTime.split('.');
+    return `${date} ${hourMinSec}`;
+  };
+
   return (
     <div className="flex justify-center">
       <div className="w-[60%] min-w-fit min-h-[100vh]">
@@ -166,7 +173,7 @@ const ArticleList = () => {
               <AccordionBody className="flex justify-between pt-0 pl-6">
                 <Breadcrumbs separator="·">
                   <div>{article.author}</div>
-                  <div>{article.time.replace('T', ' ')}</div>
+                  <div>{formattedTime(article.time)}</div>
                 </Breadcrumbs>
                 <div className="flex items-center">
                   {/* 이미지 있는 글이면 아이콘으로 표시 */}
