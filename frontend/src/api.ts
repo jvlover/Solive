@@ -652,13 +652,22 @@ export async function applyToTeacher(applyId: number, accessToken: string) {
   }
 }
 
+export interface FavoriteTeacher {
+  path: string;
+  teacherNickName: string;
+  teacherSubjectName: string;
+  ratingSum: number;
+  ratingCount: number;
+}
+
 export const getFavorites = async (
   accessToken: string,
-): Promise<{ success: boolean; data?: any; error?: any }> => {
+): Promise<{ success: boolean; data?: FavoriteTeacher[]; error?: any }> => {
   interface FavoritesResponse {
     success: boolean;
-    data: any;
+    data: FavoriteTeacher[];
   }
+
   try {
     const response = await axios.get<FavoritesResponse>(
       BASE_URL + '/favorite',
