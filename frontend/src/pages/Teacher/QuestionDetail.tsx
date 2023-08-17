@@ -18,6 +18,7 @@ const TeacherQuestionDetail = () => {
     description: 'Default Description',
     path: [],
     masterCodeName: 'Default Master Code Name',
+    masterCodeCategory: 'Default Master Code Category',
     createTime: 'Default Create Time',
     state: 'Default State',
   };
@@ -40,19 +41,10 @@ const TeacherQuestionDetail = () => {
     description: string;
     path: string[];
     masterCodeName: string;
+    masterCodeCategory: string;
     createTime: string;
     state: string;
   };
-
-  // const question = {
-  //   path: [que, ques],
-  //   title: 'title1',
-  //   userNickname: '더도리',
-  //   description: '어려운 문제',
-  //   subject: '수학',
-  //   subSubject: '수학1',
-  //   state: '대기중',
-  // };
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -145,13 +137,13 @@ const TeacherQuestionDetail = () => {
           <div>
             <p className="text-gray-700 font-extrabold mt-4">과목</p>
             <div className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500">
-              {question.masterCodeName}
+              {question.masterCodeCategory}
             </div>
 
-            {/* <p className="text-gray-700 font-extrabold mt-4">세부과목</p>
+            <p className="text-gray-700 font-extrabold mt-4">세부과목</p>
             <div className="block w-full h-16 mt-1 border-2 rounded-md shadow-sm border-light-blue-500">
-              {question.subSubject}
-            </div> */}
+              {question.masterCodeName}
+            </div>
           </div>
 
           <p className="text-gray-700 font-extrabold mt-4">Description:</p>

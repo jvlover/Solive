@@ -7,6 +7,7 @@ import { UserProfile } from './pages/MyPage/Profile';
 const BASE_URL = 'https://i9a107.p.ssafy.io/api';
 const BOARD_BASE_URL = `${BASE_URL}/board`;
 const CHARGE_URL = `${BASE_URL}/user/charge`;
+const CASHOUT_URL = `${BASE_URL}/user/cashout`;
 
 export const fetchArticles = async (
   keyword: string,
@@ -136,15 +137,16 @@ export const likeArticle = async (userId: number, articleId: number) => {
 };
 
 export const chargeSolvePoint = async (
-  amount: number,
+  solvePoint: number,
   token: string,
 ): Promise<{ success: boolean; solvePoint?: number }> => {
   try {
     const response = await axios.put(
       `${CHARGE_URL}`,
-      { amount },
+      { solvePoint },
       { headers: { 'access-token': token } },
     );
+    console.log(response.data.data);
     return {
       success: response.data.success,
       solvePoint: response.data.data.solvePoint,
@@ -511,13 +513,13 @@ export async function getTeachers(accessToken: string) {
 }
 
 export async function getQuestionById(id: number, accessToken: string) {
-  console.log('getQuestionById has been called!');
   type Question = {
     userNickname: string;
     title: string;
     description: string;
     path: string[];
     masterCodeName: string;
+    masterCodeCategory: string;
     createTime: string;
     state: string;
   };
@@ -650,13 +652,22 @@ export async function applyToTeacher(applyId: number, accessToken: string) {
   }
 }
 
+export interface FavoriteTeacher {
+  path: string;
+  teacherNickName: string;
+  teacherSubjectName: string;
+  ratingSum: number;
+  ratingCount: number;
+}
+
 export const getFavorites = async (
   accessToken: string,
-): Promise<{ success: boolean; data?: any; error?: any }> => {
+): Promise<{ success: boolean; data?: FavoriteTeacher[]; error?: any }> => {
   interface FavoritesResponse {
     success: boolean;
-    data: any;
+    data: FavoriteTeacher[];
   }
+
   try {
     const response = await axios.get<FavoritesResponse>(
       BASE_URL + '/favorite',
@@ -683,7 +694,7 @@ export const teacherSolvePoint = async (
 ): Promise<{ success: boolean; solvePoint?: number }> => {
   try {
     const response = await axios.put(
-      `${CHARGE_URL}`,
+      `${CASHOUT_URL}`,
       { amount },
       { headers: { 'access-token': token } },
     );

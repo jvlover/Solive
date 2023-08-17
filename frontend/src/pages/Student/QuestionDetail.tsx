@@ -33,6 +33,7 @@ const StudentQuestionDetail = () => {
     description: 'Default Description',
     path: [],
     masterCodeName: 'Default Master Code Name',
+    masterCodeCategory: 'Default',
     createTime: 'Default Create Time',
     state: 'Default State',
   };
@@ -49,52 +50,10 @@ const StudentQuestionDetail = () => {
     description: string;
     path: string[];
     masterCodeName: string;
+    masterCodeCategory: string;
     createTime: string;
     state: string;
   };
-
-  // const question = {
-  //   path: [que, ques],
-  //   title: 'title1',
-  //   userNickname: '더도리',
-  //   description: '어려운 문제',
-  //   subject: '수학',
-  //   subSubject: '수학1',
-  //   state: '등록됨',
-  // };
-
-  // const teachers = [
-  //   {
-  //     applyId: 1,
-  //     teacherSubjectName: '기하',
-  //     path: a,
-  //     teacherNickname: '더도리2',
-  //     solvePoint: '10',
-  //     estimatedTime: '10',
-  //     ratingSum: 20,
-  //     ratingCount: 4,
-  //   },
-  //   {
-  //     applyId: 2,
-  //     teacherSubjectName: '기하',
-  //     path: b,
-  //     teacherNickname: '더도리1',
-  //     solvePoint: '10',
-  //     estimatedTime: '10',
-  //     ratingSum: 10,
-  //     ratingCount: 4,
-  //   },
-  //   {
-  //     applyId: 3,
-  //     teacherSubjectName: '기하',
-  //     path: c,
-  //     teacherNickname: '더도리3',
-  //     solvePoint: '10',
-  //     estimatedTime: '10',
-  //     ratingSum: 15,
-  //     ratingCount: 4,
-  //   },
-  // ];
 
   useEffect(() => {
     console.log('useEffect is called');
@@ -242,15 +201,15 @@ const StudentQuestionDetail = () => {
               <div className="w-full">
                 <p className="text-gray-700 font-bold mt-8">과목</p>
                 <div className="block w-full h-12 border-2 rounded-md shadow-sm border-solive-200">
+                  {question.masterCodeCategory}
+                </div>
+              </div>
+              <div className="w-full">
+                <p className="text-gray-700 font-bold mt-8">세부과목</p>
+                <div className="block w-full h-12 border-2 rounded-md shadow-sm border-solive-200">
                   {question.masterCodeName}
                 </div>
               </div>
-              {/* <div className="w-full">
-                <p className="text-gray-700 font-bold mt-8">세부과목</p>
-                <div className="block w-full h-12 border-2 rounded-md shadow-sm border-solive-200">
-                  {question.subSubject}
-                </div>
-              </div> */}
             </div>
             <div>
               <p className="text-gray-700 font-bold border-solive-200 mt-8">

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
-// import que from '../../assets/404.png';
 import { getMyProblems, getNewAccessToken, getTeachers } from '../../api';
 import { userState } from '../../recoil/user/userState';
 
@@ -14,54 +13,6 @@ const Student = () => {
   const setUser = useSetRecoilState(userState);
   const [teachers, setTeachers] = useState([]);
   const [problems, setProblems] = useState([]);
-
-  // const problems = [
-  //   {
-  //     id: 1,
-  //     path: que,
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 2,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  //   {
-  //     id: 3,
-  //     path: 'path1',
-  //     title: 'title1',
-  //     subject: 'subject1',
-  //     time: 'time1',
-  //     matching_state: 1,
-  //   },
-  // ];
-
-  // const teachers = [
-  //   {
-  //     path: que,
-  //     name: 12,
-  //     subjectId: 'subject1',
-  //     ratingRatio: 1,
-  //   },
-  //   {
-  //     path: 'path1',
-  //     name: 12,
-  //     subjectId: 'subject1',
-  //     ratingRatio: 1,
-  //   },
-  //   {
-  //     path: 'path1',
-  //     name: 12,
-  //     subjectId: 'subject1',
-  //     ratingRatio: 1,
-  //   },
-  // ];
 
   useEffect(() => {
     if (!user || user.masterCodeId !== 1) {
@@ -82,16 +33,18 @@ const Student = () => {
       try {
         const result = await getMyProblems(
           1,
-          1100,
           0,
-          1,
+          0,
+          0,
           '',
-          'TIME_ASC',
+          'Time_ASC',
           0,
           user.accessToken,
         );
         if (result.success) {
+          console.log(result.success);
           setProblems(result.data);
+          console.log(problems);
         } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
           const newAccessToken = await getNewAccessToken(user.refreshToken);
           if (newAccessToken) {
@@ -124,7 +77,7 @@ const Student = () => {
     if (user) {
       fetchProblems();
     }
-  }, [user, setUser, navigate]);
+  }, [user, setUser, navigate, problems]);
 
   useEffect(() => {
     const fetchTeachers = async () => {
@@ -208,11 +161,11 @@ const Student = () => {
             <div className="grid grid-cols-3 gap-4">
               {problems.slice(0, 3).map((problem) => (
                 <div
-                  key={problem.id}
+                  key={problem.questiontId}
                   className="border-2 border-blue-200 p-2 flex flex-col items-center h-[300px] w-[220px]"
                 >
                   <img
-                    onClick={() => handleDetailPage(problem.id)}
+                    onClick={() => handleDetailPage(problem.questionId)}
                     className="h-[200px] w-[250px]"
                     src={problem.path}
                     alt="problem"

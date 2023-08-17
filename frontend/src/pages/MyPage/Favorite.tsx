@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 export interface Teacher {
   path: string;
-  userNickName: string;
+  teacherNickName: string;
   teacherSubjectName: string;
   ratingSum: number;
   ratingCount: number;
@@ -27,6 +27,7 @@ const FavoritePage = () => {
   useEffect(() => {
     const fetchFavorites = async () => {
       const result = await getFavorites(user.accessToken);
+      console.log(result.success);
       if (result.success) {
         setFavorites(result.data);
       } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
@@ -39,7 +40,7 @@ const FavoritePage = () => {
           getFavorites(newAccessToken);
         }
       } else {
-        navigate('/error');
+        // navigate('/error');
       }
     };
     fetchFavorites();
@@ -54,7 +55,7 @@ const FavoritePage = () => {
               <img src={teacher.path} alt="teacher" className="object-cover" />
             </div>
             <h2 className="text-lg font-semibold mt-2">
-              {teacher.userNickName}
+              {teacher.teacherNickName}
             </h2>
             <p>{teacher.teacherSubjectName}</p>
             <StarRating rating={teacher.ratingSum / teacher.ratingCount} />
