@@ -313,9 +313,10 @@ public class UserServiceImpl implements UserService {
      * @param userId         userId
      * @param userInfo       바꿀 정보들
      * @param profilePicture 변경할 프로필 사진
+     * @return 바뀐 프로필 사진의 path
      */
     @Override
-    public void modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo,
+    public String modifyUserProfile(Long userId, UserModifyProfilePutReq userInfo,
         List<MultipartFile> profilePicture) { // List 로 받지만 length 1
         log.info("UserService_modifyUserProfile_start: " + userId + ", "
             + userInfo.toString() + ", " + profilePicture);
@@ -345,9 +346,14 @@ public class UserServiceImpl implements UserService {
             // 프로필 사진 정보 수정, 프로필 사진은 항상 length 1
             FileDto fileDto = fileUploader.fileUpload(profilePicture, "profile").get(0);
             user.modifyProfilePicture(fileDto);
+            String path = fileDto.getPath();
+            log.info("UserService_modifyUserProfile_end: " + path);
+            return path;
         }
 
-        log.info("UserService_modifyUserProfile_end");
+        // 저장할 프로필 사진이 없으면
+        log.info("UserService_modifyUserProfile_end: null");
+        return null;
     }
 
     /**

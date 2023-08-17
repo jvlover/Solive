@@ -133,6 +133,7 @@ public class UserController {
      *
      * @param userInfo UserModifyProfilePutReq
      * @param request  access-token 이 들어있는 request
+     * @return 수정된 프로필 사진의 path
      */
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> modifyProfile(@RequestPart UserModifyProfilePutReq userInfo,
@@ -142,10 +143,9 @@ public class UserController {
         log.info("UserController_modifyProfile_start: " + userInfo + ", " + profilePicture + ", "
             + userId);
 
-        userService.modifyUserProfile(userId, userInfo, profilePicture);
-        log.info("UserController_modifyProfile_end: success");
-        return CommonResponse.success(SUCCESS);
-
+        String path = userService.modifyUserProfile(userId, userInfo, profilePicture);
+        log.info("UserController_modifyProfile_end: " + path);
+        return CommonResponse.success(path);
     }
 
     /**
