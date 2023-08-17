@@ -700,3 +700,21 @@ export const teacherSolvePoint = async (
     return { success: false };
   }
 };
+
+export const getReplayUrl = async (
+  questionId: string,
+  accessToken: string,
+): Promise<{ success: boolean; url?: string }> => {
+  try {
+    const response = await axios.get(
+      BASE_URL + `/matched/video/${questionId}`,
+      { headers: { 'access-token': accessToken } },
+    );
+    return {
+      success: response.data.success,
+      url: response.data.data,
+    };
+  } catch (error) {
+    return { success: false };
+  }
+};
