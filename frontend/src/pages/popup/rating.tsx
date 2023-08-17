@@ -1,17 +1,48 @@
+import { useParams, useNavigate } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { userState } from '../../recoil/user/userState';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { applyToRate, getNewAccessToken } from '../../api';
 
 const TeacherRating = () => {
   const [rating, setRating] = useState<number | null>(null);
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
+  const defaultApplyId = 1;
+  const { applyId: stringId } = useParams<{ applyId: string }>();
+  const applyId = parseInt(stringId || defaultApplyId.toString());
+  const user = useRecoilValue(userState);
+  const setUser = useSetRecoilState(userState);
 
   const handleStarClick = (rate: number) => {
     setRating(rate);
   };
 
-  const handleSubmit = () => {
-    setShowPopup(true);
+  const TeacherRate = async (applyId: number, rating: number) => {
+    try {
+      const result = await applyToRate(applyId, rating, user.accessToken);
+      // console.log(result);
+      console.log(result.success);
+      console.log(result);
+      if (result.success) {
+        setShowPopup(true);
+      } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
+        const newAccessToken = await getNewAccessToken(user.refreshToken);
+        if (newAccessToken) {
+          setUser({ ...user, accessToken: newAccessToken });
+          const newResponse = await applyToRate(
+            applyId,
+            rating,
+            newAccessToken,
+          );
+          if (newResponse.success) {
+            alert('성공적으로 신청 되었습니다.');
+          }
+        }
+      }
+    } catch (error) {
+      navigate('./error');
+    }
   };
 
   const handlePopupConfirm = () => {
@@ -36,7 +67,7 @@ const TeacherRating = () => {
         ))}
       </div>
       <button
-        onClick={handleSubmit}
+        onClick={() => TeacherRate(applyId, rating)}
         className="px-4 py-2 text-white bg-solive-200"
         disabled={rating === null}
       >

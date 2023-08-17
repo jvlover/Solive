@@ -699,3 +699,28 @@ export const teacherSolvePoint = async (
     return { success: false };
   }
 };
+
+export async function applyToRate(
+  applyId: number,
+  rating: number,
+  accessToken: string,
+) {
+  console.log(applyId);
+  console.log(rating);
+  console.log(accessToken);
+  try {
+    const response = await axios.put(
+      BASE_URL + '/user/rate',
+      { applyId, rating },
+      {
+        headers: {
+          'access-token': accessToken,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error.message };
+  }
+}

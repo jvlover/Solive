@@ -47,6 +47,7 @@ const TeacherSolve = () => {
       });
 
       setShowModal(false);
+      alert('환전이 완료 되었습니다.');
     } else {
       navigate('./error');
     }

@@ -231,9 +231,8 @@ class VideoRoomComponent extends Component {
 
   // 세션에서 퇴장합니다.
   leaveSession() {
-    // 나가기전에 경고창 모달 띄우고 확인 누르면 나가기
     const mySession = this.state.session;
-
+    // const userId = mySession.뭐시기뭐시기;
     if (this.state.subscribers.length === 0) {
       this.closeSession();
     }
@@ -251,7 +250,11 @@ class VideoRoomComponent extends Component {
       localUser: undefined,
     });
 
-    location.href = '/';
+    if (this.props.state === 'teacher') {
+      location.href = '/';
+    } else {
+      location.href = `/rating/${this.props.applyId}`;
+    }
   }
 
   // 웹캠 상태 변경 이벤트 핸들러입니다.

@@ -52,8 +52,8 @@ const App = () => {
           path="/teacher/question/:id"
           element={<TeacherQuestionDetail />}
         />
-        <Route path="/matchpage" element={<Match/>}/>
-        <Route path="/rating" element={<TeacherRating />} />
+        <Route path="/matchpage" element={<Match />} />
+        <Route path="/rating/:applyId/" element={<TeacherRating />} />
       </Routes>
       <FooterNav />
     </Router>
