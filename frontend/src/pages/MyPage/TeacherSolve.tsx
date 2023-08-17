@@ -67,7 +67,7 @@ const TeacherSolve = () => {
                 setSelectedIndex(index);
               }}
             >
-              {amount}원
+              {amount.toLocaleString('ko-KR')}원
               <span
                 className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 ${
                   selectedIndex === index
@@ -100,23 +100,24 @@ const TeacherSolve = () => {
         <div className="flex flex-col items-center">
           <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-md w-96 h-72">
             <div>
-              <p className="flex mb-2 text-2xl items-centes">
+              <p className="flex items-center mb-2 text-2xl">
                 {user?.nickname} 님의 SolvePoint는 {user?.solvePoint}
+                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-1" />
               </p>
             </div>
             <div className="flex flex-col justify-center h-48 gap-2 text-lg rounded-md w-80 bg-blue-50">
               <p className="flex items-center p-2 rounded-md bg-solve-200">
-                현재 보유 SP: {user?.solvePoint}
-                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-2" />
+                현재 보유 SP: {user?.solvePoint.toLocaleString('ko-KR')}
+                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-1" />
               </p>
               <p className="flex items-center p-2 rounded-md bg-solve-200">
-                출금 금액: {selectedAmount}
-                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-2" />
+                출금 금액: {selectedAmount.toLocaleString('ko-KR')}원
               </p>
               <hr className="border-t-2 border-solive-200" />
               <p className="flex items-center p-2 rounded-md bg-solve-200">
-                출금 후 금액: {user?.solvePoint - selectedAmount}
-                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-2" />
+                출금 후 SP:{' '}
+                {(user?.solvePoint - selectedAmount).toLocaleString('ko-KR')}
+                <img src={sp} alt="SolvePoint Icon" className="w-6 h-6 ml-1" />
               </p>
             </div>
           </div>
