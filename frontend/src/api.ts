@@ -565,19 +565,12 @@ export const applyQuestion = async (
   applyData: ApplyData,
   accessToken: string,
 ): Promise<ApplyResponse> => {
-  const formData = new FormData();
-  formData.append(
-    'applyData',
-    new Blob([JSON.stringify(applyData)], { type: 'application/json' }),
-  );
-
   const response = await axios.post<ApplyResponse>(
     BASE_URL + '/apply',
-    formData,
+    applyData,
     {
       headers: {
         'access-token': accessToken,
-        'Content-Type': 'multipart/form-data',
       },
     },
   );
