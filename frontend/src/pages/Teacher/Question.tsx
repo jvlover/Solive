@@ -202,23 +202,21 @@ const TeacherQuestion = () => {
           ) : (
             getPageNumQuestions().map((question) => (
               <div
-                key={question.id}
-                className="w-1/5 m-2 border-2 rounded-md border-solive-200 h-72"
+                key={question.questionId}
+                className="w-1/5 m-2 border-2 rounded-md border-solive-200 border-opacity-50 h-72"
               >
                 <img
-                  onClick={() => handleDetailPage(question.id)}
+                  onClick={() => handleDetailPage(question.questionId)}
                   src={question.path}
                   alt={question.title}
-                  className="object-contain w-full h-52"
+                  className="object-contain w-full h-48"
                 />
 
-                <div className="flex items-center h-20 p-2 space-x-2 overflow-hidden">
-                  <div className="px-2 py-1 border rounded border-solive-200">
-                    <h2 className="font-bold truncate">{question.title}</h2>
-                  </div>
-                  <div className="px-2 py-1 border rounded border-solive-200">
-                    <p className="truncate">{question.createTime}</p>
-                  </div>
+                <div className="flex flex-col items-center h-20 p-2 space-x-2 overflow-hidden">
+                  <p className="mt-2 font-bold">{question.title}</p>
+                  <p className="mt-1 font-extralight">
+                    {question.createTime.replace('T', ' ').slice(0, -7)}
+                  </p>
                 </div>
               </div>
             ))
