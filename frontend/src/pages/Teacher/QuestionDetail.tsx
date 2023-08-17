@@ -3,9 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getQuestionById, getNewAccessToken } from '../../api';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
-// import que from '../../assets/404.png';
-// import ques from '../../assets/home-teacher.png';
-// import axios from 'axios';
 import { applyQuestion } from '../../api';
 
 const TeacherQuestionDetail = () => {

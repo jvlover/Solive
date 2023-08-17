@@ -16,8 +16,22 @@ const Student = () => {
   const banners = [banner_1, banner_2, banner_3, banner_4, banner_5];
   const user = useRecoilValue(userState);
   const setUser = useSetRecoilState(userState);
-  const [teachers, setTeachers] = useState([]);
   const [problems, setProblems] = useState([]);
+  const defaultTeachers = [
+    {
+      nickname: 'Teacher A',
+      masterCodeName: 'Math',
+      rating: 4.5,
+      path: 'path_to_image_A',
+    },
+    {
+      nickname: 'Teacher B',
+      masterCodeName: 'Science',
+      rating: 5,
+      path: 'path_to_image_B',
+    },
+  ];
+  const [teachers, setTeachers] = useState(defaultTeachers);
 
   useEffect(() => {
     if (!user || user.masterCodeId !== 1) {
@@ -83,9 +97,11 @@ const Student = () => {
   }, [user, setUser, navigate, problems]);
 
   useEffect(() => {
+    console.log('sss');
     const fetchTeachers = async () => {
       try {
         const result = await getTeachers(user.accessToken);
+        console.log(result.success);
         if (result.success) {
           setTeachers(result.data);
         } else if (result.error === 'JWT_TOKEN_EXPIRED_EXCEPTION') {
