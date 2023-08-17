@@ -1,12 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Signup from './pages/Signup/Signup';
+import SignupSelect from './pages/Signup/SignupSelect';
 import Home from './pages/Home';
-import StudentSignup from './pages/Signup/StudentSignup';
-import TeacherSignup from './pages/Signup/TeacherSignup';
+import Signup from './pages/Signup/Signup';
 import Login from './pages/Login/Login';
 import QuestionRegistration from './pages/Student/QuestionRegistration';
-import Profile from './pages/Student/mypage/Profile';
-import Privacy from './pages/Student/mypage/Privacy';
 import HeaderNav from './components/HeaderNav';
 import Dial from './components/Dial';
 import FooterNav from './components/FooterNav';
@@ -14,9 +11,15 @@ import ArticleList from './pages/Board/ArticleList';
 import ArticleDetail from './pages/Board/ArticleDetail';
 import ArticleRegist from './pages/Board/ArticleRegist';
 import ArticleModify from './pages/Board/ArticleModify';
-import SolvePoint from './pages/Student/mypage/SolvePoint';
-import QuestionManagement from './pages/Student/mypage/QuestionManagement';
+import Teacher from './pages/Teacher/TeacherMain';
 import Error404 from './pages/Error404';
+import MyPage from './pages/MyPage/MyPage';
+import TeacherQuestion from './pages/Teacher/Question';
+import Student from './pages/Student/StudentMain';
+import StudentQuestionDetail from './pages/Student/QuestionDetail';
+import TeacherQuestionDetail from './pages/Teacher/QuestionDetail';
+import Match from './pages/Match/Match';
+import TeacherRating from './pages/popup/rating';
 
 const App = () => {
   return (
@@ -27,24 +30,30 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="*" element={<Error404 />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={<SignupSelect />} />
         <Route path="/board" element={<ArticleList />} />
         <Route path="/board/:id" element={<ArticleDetail />} />
         <Route path="/board/regist" element={<ArticleRegist />} />
         <Route path="/board/modify/:id" element={<ArticleModify />} />
-        <Route path="/signup/StudentSignup" element={<StudentSignup />} />
-        <Route path="/signup/TeacherSignup" element={<TeacherSignup />} />
+        <Route path="/signup/:userType" element={<Signup />} />
         <Route
           path="student/questionregistration"
           element={<QuestionRegistration />}
         />
-        <Route path="/student/mypage/profile" element={<Profile />} />
-        <Route path="/student/mypage/privacy" element={<Privacy />} />
-        <Route path="/student/mypage/solvepoint" element={<SolvePoint />} />
+        <Route path="/mypage/:pageName" element={<MyPage />} />
+        <Route path="/teacher" element={<Teacher />} />
+        <Route path="/teacher/question" element={<TeacherQuestion />} />
+        <Route path="/student" element={<Student />} />
         <Route
-          path="/student/mypage/questionmanagement"
-          element={<QuestionManagement />}
+          path="/student/question/:id"
+          element={<StudentQuestionDetail />}
         />
+        <Route
+          path="/teacher/question/:id"
+          element={<TeacherQuestionDetail />}
+        />
+        <Route path="/matchpage" element={<Match />} />
+        <Route path="/rating/:applyId/" element={<TeacherRating />} />
       </Routes>
       <FooterNav />
     </Router>
