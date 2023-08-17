@@ -193,10 +193,10 @@ public class UserController {
         Integer solvePoint = userChargePutReq.getSolvePoint();
         log.info("UserController_chargeSolvePoint_start: " + solvePoint + ", " + userId);
 
-        userService.chargeSolvePoint(userId, solvePoint);
+        Integer newSolvePoint = userService.chargeSolvePoint(userId, solvePoint);
 
-        log.info("UserController_chargeSolvePoint_end: success");
-        return CommonResponse.success(SUCCESS);
+        log.info("UserController_chargeSolvePoint_end: " + newSolvePoint);
+        return CommonResponse.success(newSolvePoint);
     }
 
     /**
@@ -212,10 +212,10 @@ public class UserController {
         Integer solvePoint = userCashOutPutReq.getSolvePoint();
         log.info("UserController_cashoutSolvePoint_start: " + solvePoint + ", " + userId);
 
-        userService.cashOutSolvePoint(userId, solvePoint);
+        Integer newSolvePoint = userService.cashOutSolvePoint(userId, solvePoint);
 
-        log.info("UserController_cashoutSolvePoint_end: success");
-        return CommonResponse.success(SUCCESS);
+        log.info("UserController_cashoutSolvePoint_end: " + newSolvePoint);
+        return CommonResponse.success(newSolvePoint);
     }
 
     /**

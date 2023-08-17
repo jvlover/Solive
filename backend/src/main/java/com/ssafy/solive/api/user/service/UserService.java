@@ -33,9 +33,9 @@ public interface UserService {
 
     void deleteUser(Long userId);
 
-    void chargeSolvePoint(Long userId, Integer solvePoint);
+    Integer chargeSolvePoint(Long userId, Integer solvePoint);
 
-    void cashOutSolvePoint(Long userId, Integer solvePoint);
+    Integer cashOutSolvePoint(Long userId, Integer solvePoint);
 
     void rateTeacher(TeacherRatePostReq ratingInfo);
 
