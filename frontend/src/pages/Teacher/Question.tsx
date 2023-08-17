@@ -4,10 +4,6 @@ import { questionSearch, getNewAccessToken } from '../../api';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../../recoil/user/userState';
 import { useNavigate } from 'react-router-dom';
-// import que from '../../assets/full_heart.svg';
-
-// 페이지 보려면 아래 한줄 주석하세요.
-// 페이지 보려면 아래 주석 해제하세요.
 
 interface Subject {
   label: string;
@@ -105,13 +101,12 @@ const TeacherQuestion = () => {
   };
 
   const handleNextPage = () => {
-    if (pageNum < Math.ceil(questionList.length / itemsPerPage) - 1)
-      setPageNum((prev) => prev + 1);
+    setPageNum((prev) => prev + 1); // pageNum 상태를 1 증가시킵니다.
   };
 
   const getPageNumQuestions = () => {
-    const start = pageNum * itemsPerPage;
-    const end = start + itemsPerPage;
+    const start = 0;
+    const end = 8;
     return questionList.slice(start, end);
   };
 
@@ -233,9 +228,7 @@ const TeacherQuestion = () => {
           <button
             className="px-5 btn-primary"
             onClick={handleNextPage}
-            disabled={
-              pageNum >= Math.ceil(questionList.length / itemsPerPage) - 1
-            }
+            disabled={pageNum >= Math.ceil(questionList.length / itemsPerPage)}
           >
             다음
           </button>
@@ -244,5 +237,4 @@ const TeacherQuestion = () => {
     </div>
   );
 };
-
 export default TeacherQuestion;
