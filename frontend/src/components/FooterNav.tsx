@@ -25,7 +25,9 @@ const FooterNav = () => {
                 user ? (user.masterCodeId == 1 ? '/student' : '/teacher') : '/'
               }
             >
-              <Typography {...labelProps}>홈</Typography>
+              <div className="font-[Pretendard] font-normal transition-colors text-white hover:text-solive-100 focus:text-solive-100">
+                홈
+              </div>
             </Link>
           </li>
           <li>
