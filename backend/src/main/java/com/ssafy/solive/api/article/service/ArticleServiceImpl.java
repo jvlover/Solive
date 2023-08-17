@@ -57,7 +57,8 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleServiceImpl(UserRepository userRepository,
         MasterCodeRepository masterCodeRepository,
         ArticleRepository articleRepository, ArticlePictureRepository articlePictureRepository,
-        ArticleLikeRepository articleLikeRepository, ArticleReportRepository articleReportRepository,
+        ArticleLikeRepository articleLikeRepository,
+        ArticleReportRepository articleReportRepository,
         FileUploader fileUploader) {
         this.userRepository = userRepository;
         this.masterCodeRepository = masterCodeRepository;
@@ -269,7 +270,8 @@ public class ArticleServiceImpl implements ArticleService {
             .article(reportInfo.getArticleId())
             .build();
 
-        ArticleReport articleReport = articleReportRepository.findById(articleReportId).orElse(null);
+        ArticleReport articleReport = articleReportRepository.findById(articleReportId)
+            .orElse(null);
 
         if (articleReport == null) {
             User reportUser = userRepository.findById(reportInfo.getUserReportId())
@@ -330,7 +332,7 @@ public class ArticleServiceImpl implements ArticleService {
             .author(article.getUser().getNickname())
             .title(article.getTitle())
             .content(article.getContent())
-            .viewCount(article.getViewCount())
+            .viewCount(article.getViewCount() + 1)
             .likeCount(article.getLikeCount())
             .reportCount(article.getReportCount())
             .time(article.getTime().toString())
@@ -355,7 +357,8 @@ public class ArticleServiceImpl implements ArticleService {
         log.info("ArticleService_findAllArticle_start: " + keyword + ", "
             + pageable.toString());
 
-        Page<ArticleFindRes> articleFindRes = articleRepository.findByTitleContaining(keyword, pageable)
+        Page<ArticleFindRes> articleFindRes = articleRepository.findByTitleContaining(keyword,
+                pageable)
             .map(m -> ArticleFindRes.builder()
                 .id(m.getId())
                 .userId(m.getUser().getId())
