@@ -292,7 +292,9 @@ const ProfilePage = () => {
                     <div>{`${
                       userProfile.ratingCount === 0
                         ? '신규 선생님입니다'
-                        : userProfile.ratingSum / userProfile.ratingCount
+                        : (
+                            userProfile.ratingSum / userProfile.ratingCount
+                          ).toFixed(1)
                     }`}</div>
                   </div>
                 </div>
