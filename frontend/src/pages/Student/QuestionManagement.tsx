@@ -173,7 +173,7 @@ const QuestionManagement = () => {
                 className="w-full p-2 text-center border border-gray-300 rounded bg-opacity-30 bg-solive-200"
               >
                 <option value={0} disabled className="hidden">
-                  세부 과목 선택 세부 과목 선택
+                  세부 과목 선택
                 </option>
                 {(
                   subjects.find((subject) => subject.value === subjectNum)
