@@ -1,6 +1,7 @@
 package com.ssafy.solive.db.entity;
 
-import com.ssafy.solive.api.request.UserModifyProfilePutReq;
+import com.ssafy.solive.api.user.request.UserModifyProfilePutReq;
+import com.ssafy.solive.common.model.FileDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -16,7 +17,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Where;
 
 @Getter
 @ToString
@@ -26,6 +29,7 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
+@Where(clause = "deleted_at is null")
 @Entity
 public class User extends BaseEntity {
 
@@ -59,24 +63,20 @@ public class User extends BaseEntity {
     @Column(nullable = false, columnDefinition = "VARCHAR(40)")
     private String email;
 
-    // 프로필 사진의 URL
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String pictureUrl;
-
     // 프로필 사진의 이름
-    @Column(columnDefinition = "VARCHAR(100)")
-    private String pictureName;
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String fileName;
 
     // 프로필 사진의 실제 업로드 된 파일이름
     @Column(columnDefinition = "VARCHAR(100)")
-    private String fileName;
+    private String originalName;
 
     // 프로필 사진의 업로드 경로
-    @Column(columnDefinition = "VARCHAR(100)")
-    private String pathName;
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String path;
 
     // 프로필 사진의 확장자명
-    @Column(columnDefinition = "VARCHAR(10)")
+    @Column(columnDefinition = "VARCHAR(100)")
     private String contentType;
 
     // 소개글
@@ -87,13 +87,21 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "BIGINT DEFAULT 0")
     private Long experience;
 
+    // 보유한 SP
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer solvePoint;
+
     // 회원가입 시간
-    @Column(columnDefinition = "DATETIME DEFAULT NOW()")
-    private LocalDateTime signinTime;
+    @CreationTimestamp
+    private LocalDateTime signinTime; // 한국 시간 (UTC+9)으로 초기화
 
     // 성별
     @Column(nullable = false)
     private Integer gender;
+
+    // 회원탈퇴 여부, 회원탈퇴시 탈퇴시간 부여
+    @Column
+    private LocalDateTime deletedAt;
 
     /**
      * 로그인 시 사용자의 state를 로그인 상태(12)로 변경
@@ -104,18 +112,10 @@ public class User extends BaseEntity {
         this.stateId = masterCode;
     }
 
-    // 회원탈퇴 여부, 회원탈퇴시 탈퇴시간 부여
-    private LocalDateTime deletedAt;
-
     /**
      * @param userInfo userInfo
      */
     public void modifyUserProfile(UserModifyProfilePutReq userInfo) {
-        this.pictureUrl = userInfo.getPictureUrl();
-        this.pictureName = userInfo.getPictureName();
-        this.fileName = userInfo.getFileName();
-        this.pathName = userInfo.getPathName();
-        this.contentType = userInfo.getContentType();
         this.nickname = userInfo.getNickname();
         this.gender = userInfo.getGender();
         this.introduce = userInfo.getIntroduce();
@@ -146,12 +146,49 @@ public class User extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
+    public void modifyProfilePicture(FileDto fileDto) {
+        this.fileName = fileDto.getFileName();
+        this.originalName = fileDto.getOriginalName();
+        this.path = fileDto.getPath();
+        this.contentType = fileDto.getContentType();
+    }
+
+    public void logout(MasterCode stateId) {
+        this.stateId = stateId;
+        this.refreshToken = null;
+    }
+
     /**
-     * 임시라 지워질 듯
+     * 학생이 Solve Point 를 충전할 때
      *
-     * @param code 바뀔 코드
+     * @param solvePoint 충전할 금액
      */
-    public void setCode(MasterCode code) {
-        this.masterCodeId = code;
+    public void chargeSolvePoint(int solvePoint) {
+        this.solvePoint += solvePoint;
+    }
+
+    /**
+     * 강사가 Solve Point 를 출금할 때
+     *
+     * @param solvePoint 출금할 금액
+     */
+    public void cashOutSolvePoint(Integer solvePoint) {
+        this.solvePoint -= solvePoint;
+    }
+
+    /**
+     * 매칭 종료 후 학생과 강사의 경험치 증가
+     */
+    public void addExperience() {
+        this.experience += 100;
+    }
+
+    /**
+     * 강의 매칭에 필요했던 solve point 만큼 학생에겐 마이너스, 강사에겐 플러스 변동
+     *
+     * @param amount : solve point 변동량
+     */
+    public void modifySolvePoint(Integer amount) {
+        this.solvePoint += amount;
     }
 }

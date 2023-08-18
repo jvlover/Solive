@@ -5,13 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
@@ -51,10 +54,10 @@ public class Article extends BaseEntity {
     @Column
     private LocalDateTime deletedAt;
 
-    @Column(columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreationTimestamp
     private LocalDateTime time;
 
-    @Column(columnDefinition = "DATETIME DEFAULT NOW()")
+    @CreationTimestamp
     private LocalDateTime lastUpdateTime;
 
     public void modifyArticle(MasterCode masterCode, String title, String content) {
@@ -74,5 +77,9 @@ public class Article extends BaseEntity {
 
     public void reportArticle() {
         this.reportCount++;
+    }
+
+    public void incrementViewCount() {
+        this.viewCount++;
     }
 }

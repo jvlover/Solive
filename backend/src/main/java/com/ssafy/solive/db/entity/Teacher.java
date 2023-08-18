@@ -24,7 +24,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Entity
 public class Teacher extends User {
 
-    // masterCode id, FK
+    // masterCode id, FK, 좋아하는 과목
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     private MasterCode masterCode;
@@ -41,19 +41,6 @@ public class Teacher extends User {
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer ratingCount;
 
-    // 환전 가능한 SP
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private Integer solvePoint;
-
-    /**
-     * 강사가 Solve Point를 출금할 때
-     *
-     * @param solvePoint 출금할 금액
-     */
-    public void cashOutSolvePoint(Integer solvePoint) {
-        this.solvePoint -= solvePoint;
-    }
-
     /**
      * 학생이 강사를 평가했을 때
      *
@@ -62,5 +49,21 @@ public class Teacher extends User {
     public void addRating(Integer rating) {
         this.ratingCount++;
         this.ratingSum += rating;
+    }
+
+    /**
+     * 매칭 종료 후 강사의 푼 문제 수 증가
+     */
+    public void addSolvedCount() {
+        this.solvedCount++;
+    }
+
+    /**
+     * 선생님의 선호과목 수정
+     *
+     * @param masterCode 선호과목 Code
+     */
+    public void modifySubjectId(MasterCode masterCode) {
+        this.masterCode = masterCode;
     }
 }
