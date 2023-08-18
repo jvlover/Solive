@@ -208,7 +208,11 @@ const TeacherQuestion = () => {
                 />
 
                 <div className="flex flex-col items-center h-20 p-2 space-x-2 overflow-hidden">
-                  <p className="mt-2 font-bold">{question.title}</p>
+                  <p className="mt-2 font-bold">
+                    {question.title.length > 14
+                      ? question.title.slice(0, 15) + ' ...'
+                      : question.title}
+                  </p>
                   <p className="mt-1 font-extralight">
                     {question.createTime.replace('T', ' ').slice(0, -7)}
                   </p>
